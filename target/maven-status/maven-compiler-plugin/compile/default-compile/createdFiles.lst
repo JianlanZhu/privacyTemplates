@@ -1,0 +1,5 @@
+edu\cmu\api\Saying.class
+edu\cmu\PrivacyTemplatesConfiguration.class
+edu\cmu\health\TemplateHealthCheck.class
+edu\cmu\PrivacyTemplatesApplication.class
+edu\cmu\resources\HelloWorldResource.class
