@@ -95,6 +95,15 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-bom</artifactId>
+      <version>1.2.4</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
   <reporting>
     <plugins>
       <plugin>
@@ -111,22 +120,6 @@
       </plugin>
     </plugins>
   </reporting>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.dropwizard</groupId>
-        <artifactId>dropwizard-bom</artifactId>
-        <version>${dropwizard.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.dropwizard</groupId>
-        <artifactId>dropwizard-core</artifactId>
-        <version>${dropwizard.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <properties>
     <dropwizard.version>1.2.4</dropwizard.version>
     <mainClass>edu.cmu.PrivacyTemplatesApplication</mainClass>
