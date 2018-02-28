@@ -1,4 +1,0 @@
-logging:
-  level: INFO
-  loggers:
-    edu.cmu: DEBUG

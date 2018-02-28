@@ -1,6 +1,10 @@
 template: Hello, %s!
 defaultName: Stranger
 
+server:
+  adminContextPath: /admin
+  rootPath: /api/
+
 # Database settings.
 database:
     # the name of the JDBC driver, mysql in our case
@@ -11,3 +15,8 @@ database:
     password: root
     # the JDBC URL; the database is called DWGettingStarted
     url: jdbc:mysql://localhost:3306/privacyTemplates
+
+logging:
+  level: INFO
+  loggers:
+    edu.cmu: DEBUG

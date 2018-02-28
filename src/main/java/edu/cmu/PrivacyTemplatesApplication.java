@@ -6,6 +6,7 @@ import edu.cmu.db.entities.Employee;
 import edu.cmu.health.TemplateHealthCheck;
 import edu.cmu.resources.HelloWorldResource;
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -28,6 +29,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         }
     };
 
+    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.html");
+
     public static void main(final String[] args) throws Exception {
         new PrivacyTemplatesApplication().run(args);
     }
@@ -40,6 +43,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     @Override
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
+        bootstrap.addBundle(assetsBundle);
     }
 
     @Override
