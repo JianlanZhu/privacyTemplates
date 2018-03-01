@@ -5,6 +5,7 @@ CREATE TABLE request (
   createdByID                   INT,
   caseNumber                    INT,
   caseTypeID                    INT,
+  FOREIGN KEY (caseTypeID) REFERENCES casetype(caseTypeID),
   suspectUserName               VARCHAR(256),
   suspectLastName               VARCHAR(256),
   suspectFirstName              VARCHAR(256),
