@@ -2,7 +2,7 @@ package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
-import edu.cmu.api.Saying;
+import edu.cmu.resources.interaction.SayingOutput;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,9 +26,9 @@ public class HelloWorldResource {
 
     @GET
     @Timed
-    public Saying sayHello(@QueryParam("name") Optional<String> name) {
+    public SayingOutput sayHello(@QueryParam("name") Optional<String> name) {
         final String value = String.format(template, name.or(defaultName));
-        return new Saying(counter.incrementAndGet(), value);
+        return new SayingOutput(counter.incrementAndGet(), value);
     }
 }
 

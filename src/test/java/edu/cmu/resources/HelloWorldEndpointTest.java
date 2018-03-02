@@ -1,7 +1,7 @@
 package edu.cmu.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.cmu.api.Saying;
+import edu.cmu.resources.interaction.SayingOutput;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class HelloWorldEndpointTest {
     @Test
     public void helloWorldDropwizard() throws IOException {
         String expectedJson = "{\"id\":1,\"content\":\"Hello, dropwizard!\"}";
-        Saying expectedSaying = new Saying(1, "Hello, dropwizard!");
+        SayingOutput expectedSayingOutput = new SayingOutput(1, "Hello, dropwizard!");
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,25 +33,25 @@ public class HelloWorldEndpointTest {
 
         assertThat(resp).isEqualTo(expectedJson);
 
-        Saying parsedSaying = objectMapper.readValue(resp, Saying.class);
-        assertThat(parsedSaying.getId())
-                .isEqualTo(expectedSaying.getId())
+        SayingOutput parsedSayingOutput = objectMapper.readValue(resp, SayingOutput.class);
+        assertThat(parsedSayingOutput.getId())
+                .isEqualTo(expectedSayingOutput.getId())
                 .isEqualTo(1);
-        assertThat(parsedSaying.getContent())
-                .isEqualTo(expectedSaying.getContent())
+        assertThat(parsedSayingOutput.getContent())
+                .isEqualTo(expectedSayingOutput.getContent())
                 .isEqualTo("Hello, dropwizard!");
     }
 
     @Test
     public void helloWorldAbsentName() {
-        Saying parsedSaying = resources.client()
+        SayingOutput parsedSayingOutput = resources.client()
                 .target("/hello-world")
                 .request()
-                .get(Saying.class);
+                .get(SayingOutput.class);
 
-        Saying expectedSaying = new Saying(1, "Hello, Stranger!");
-        assertThat(parsedSaying.getId()).isEqualTo(expectedSaying.getId()).isEqualTo(1);
-        assertThat(parsedSaying.getContent()).isEqualTo(expectedSaying.getContent()).isEqualTo("Hello, Stranger!");
+        SayingOutput expectedSayingOutput = new SayingOutput(1, "Hello, Stranger!");
+        assertThat(parsedSayingOutput.getId()).isEqualTo(expectedSayingOutput.getId()).isEqualTo(1);
+        assertThat(parsedSayingOutput.getContent()).isEqualTo(expectedSayingOutput.getContent()).isEqualTo("Hello, Stranger!");
     }
 
 }

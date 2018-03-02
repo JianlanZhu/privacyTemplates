@@ -2,7 +2,7 @@ package edu.cmu.resources;
 
 
 import com.google.common.base.Optional;
-import edu.cmu.api.Saying;
+import edu.cmu.resources.interaction.SayingOutput;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,13 +19,13 @@ public class HelloWorldResourceTest {
 
     @Test
     public void sayHelloUsesDefaultIfNameAbsent() {
-        Saying result = helloWorldResource.sayHello(Optional.absent());
+        SayingOutput result = helloWorldResource.sayHello(Optional.absent());
         assertThat(result.getContent()).contains("TestUser");
     }
 
     @Test
     public void sayHelloUsesPassedName() {
-        Saying result = helloWorldResource.sayHello(Optional.of("PresentUser"));
+        SayingOutput result = helloWorldResource.sayHello(Optional.of("PresentUser"));
         assertThat(result.getContent()).contains("PresentUser");
     }
 
