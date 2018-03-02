@@ -1,10 +1,11 @@
 package edu.cmu;
 
-import edu.cmu.api.EmployeesResource;
+import edu.cmu.resources.EmployeesResource;
 import edu.cmu.db.dao.EmployeeDAO;
 import edu.cmu.db.entities.Employee;
 import edu.cmu.health.TemplateHealthCheck;
 import edu.cmu.resources.HelloWorldResource;
+import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
@@ -51,6 +52,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
                     Environment environment) {
 
         environment.jersey().register(new EmployeesResource(new EmployeeDAO(hibernateBundle.getSessionFactory())));
+        environment.jersey().register(new RequestResource());
 
         environment.jersey().register(
                 new HelloWorldResource(
