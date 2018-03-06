@@ -13,8 +13,8 @@ database:
     user: root
     # the password
     password: root
-    # the JDBC URL; the database is called DWGettingStarted
-    url: jdbc:mysql://localhost:3306/privacyTemplates
+    # the JDBC URL; the database is called privacytemplates
+    url: jdbc:mysql://localhost:3306/privacytemplates
 
 logging:
   level: INFO

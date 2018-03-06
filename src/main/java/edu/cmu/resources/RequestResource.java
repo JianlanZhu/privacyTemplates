@@ -7,6 +7,7 @@ import edu.cmu.resources.interaction.GenerateRequestInput;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+//TODO: change path names to be RESTful
 @Path("/request")
 @Produces(MediaType.APPLICATION_JSON)
 public class RequestResource {
