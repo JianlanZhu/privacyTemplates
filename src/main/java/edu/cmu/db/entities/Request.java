@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "casetype")
+@Table(name = "request")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
                 query = "select e from Request e")
