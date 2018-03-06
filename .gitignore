@@ -1,5 +1,6 @@
-.idea
-.idea/*
+.gitignore
 target
-target/*
+.idea
 *.iml
+rerun.sh
+flyway.conf
