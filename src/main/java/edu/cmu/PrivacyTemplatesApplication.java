@@ -36,7 +36,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         }
     };
 
-    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.html");
+    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.jsp");
 
     public static void main(final String[] args) throws Exception {
         new PrivacyTemplatesApplication().run(args);
