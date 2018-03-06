@@ -1,9 +1,10 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import edu.cmu.resources.interaction.SayingOutput;
+import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.Request;
 import edu.cmu.resources.interaction.GenerateRequestInput;
-import org.assertj.core.util.Strings;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -11,14 +12,30 @@ import javax.ws.rs.core.MediaType;
 @Path("/request")
 public class RequestResource {
 
+    private RequestDAO requestDAO;
+
+    public RequestResource(RequestDAO requestDAO) {
+        this.requestDAO = requestDAO;
+    }
+
     @POST
     @Path("/generate")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
     @Timed
-    public void generateRequest(GenerateRequestInput generateRequestInput) {
-        if(generateRequestInput.getCaseNumber() <= 0 || Strings.isNullOrEmpty(generateRequestInput.getSuspectUserName())){
-            throw new BadRequestException();
+    public Request generateRequest(GenerateRequestInput generateRequestInput) {
+        if (!isValidInput(generateRequestInput)) {
+            throw new BadRequestException("Input for generating request is invalid.");
         }
+
+        Request request = new Request(generateRequestInput.getCaseNumber(), generateRequestInput.getSuspectUserName());
+        request = requestDAO.persistNewRequest(request);
+        return request;
+    }
+
+    private static boolean isValidInput(GenerateRequestInput input) {
+        return input.getSuspectUserName() != null && input.getCaseNumber() > 0;
     }
 }
 
