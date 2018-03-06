@@ -4,3 +4,5 @@ target
 *.iml
 rerun.sh
 flyway.conf
+dependency-reduced-pom.xml
+privacyTemplatesFabio.yml
