@@ -1,4 +1,4 @@
-// Write JavaScript here 
+//Function validates all the form elements
 function validate(){
   if(validateCaseDetails()) {
     if(validateBasicInfo()) {
@@ -8,6 +8,7 @@ function validate(){
   }
 }
 
+//Validates all elements in case details tab
 function validateCaseDetails() {
   var element = "inputCaseID";
   var caseId = document.getElementById(element);
@@ -19,6 +20,7 @@ function validateCaseDetails() {
   return true;
 }
 
+//Validates all elements in basic info tab
 function validateBasicInfo() {
   var element = "basicInfo";
   var baseInfo = document.getElementById(element);
@@ -29,27 +31,4 @@ function validateBasicInfo() {
     return false;
   }
   return true;
-}
-
-function isStringEmpty(data) {
-  if (data.value.trim() === "") {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-function showAlert(orgitemId, errmsg) {
-  itemId = orgitemId + "Error";
-  item = document.getElementById(itemId);
-  item.innerHTML = errmsg;
-  $('#'+itemId).show();
-}
-
-function hideError(itemId) {
-  if(itemId === undefined) {
-    itemId = '.alert';
-  }
-  $(itemId).hide();
 }
