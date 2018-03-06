@@ -178,7 +178,7 @@ public class Request {
     }
 
     public Request(long caseNumber, String suspectUserName) {
-        //this.caseNumber = caseNumber;
+        this.caseNumber = caseNumber;
         this.suspectUserName = suspectUserName;
         this.requestDate = Instant.now();
     }
