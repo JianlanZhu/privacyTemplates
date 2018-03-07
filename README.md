@@ -7,6 +7,17 @@ Our project uses Dropwizard as a bundle of well established web frameworks such 
 For our frontend, we leverage the well-known Bootstrap CSS library.
 The project is built with Maven.
 
+## Structure of the repository
+- java.edu.cmu:
+    - The api, cli, and client packages will most likely remain.
+    - The core package will contain business logic in the future.
+    - The db package contains data access objects (DAOs) for database access and entities for Hibernate's mapping of objects to tables.
+    - The health package might contain application health checks in the future.
+    - The resources package contains classes for registering endpoints of the application.
+- resources:
+    - The assets package contains static contents to be served
+    - The db.migration package contains SQL migrations for evolving our DB schema over time.   
+
 ## General Remarks
 Static assets are served from the resources/assets folder.
 API endpoints are implemented through resources which should be added in resources package. 

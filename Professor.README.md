@@ -42,3 +42,4 @@ Currently, we have the code written to handle the simple request data as describ
 
 ### Other things:
 - Other files like EmployeeResource.java or SayingOutput.java etc. are for exemplary purpose only obtained from tutorials. They will be removed as soon as everyone feels fully comfortable with the framework.
+- We've got a sample test running, but in general, there has not been effort put into it so far.
