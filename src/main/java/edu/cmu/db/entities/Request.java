@@ -5,6 +5,9 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 import java.time.Instant;
 
+/**
+ * This class is used by Hibernate to map a Java object to the corresponding table in the database.
+ */
 @Entity
 @Table(name = "request")
 @NamedQueries({

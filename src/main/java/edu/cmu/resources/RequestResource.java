@@ -9,16 +9,27 @@ import io.dropwizard.hibernate.UnitOfWork;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * This class is used for registering endpoints regarding requests.
+ */
 //TODO: change path names to be RESTful
 @Path("/request")
 public class RequestResource {
 
+    /**
+     * Responsible for accessing the database.
+     */
     private RequestDAO requestDAO;
 
     public RequestResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
     }
 
+    /**
+     * Endpoint for creating a new request.
+     * @param generateRequestInput Input parameters
+     * @return the generated request including generated fields like ID.
+     */
     @POST
     @Path("/generate")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -35,6 +46,11 @@ public class RequestResource {
         return request;
     }
 
+    /**
+     * Respsonsible for backend mdiation. Should check fo data formats etc.. NOT for business logic!
+     * @param input the incoming request.
+     * @return true if data format is valid, false otherwise.
+     */
     private static boolean isValidInput(GenerateRequestInput input) {
         return input.getSuspectUserName() != null && input.getCaseNumber() > 0;
     }

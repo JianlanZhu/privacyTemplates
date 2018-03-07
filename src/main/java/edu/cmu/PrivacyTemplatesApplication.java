@@ -20,7 +20,7 @@ import org.hibernate.SessionFactory;
 public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesConfiguration> {
 
     /**
-     * Hibernate bundle.
+     * Introduces Hibernate to the application. Needs to list all entities that are to be used.
      */
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
@@ -36,8 +36,14 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         }
     };
 
+    /**
+     * Enables serving static assets.
+     */
     private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.jsp");
 
+    /**
+     * Main entry point.
+     */
     public static void main(final String[] args) throws Exception {
         new PrivacyTemplatesApplication().run(args);
     }
@@ -53,6 +59,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         bootstrap.addBundle(assetsBundle);
     }
 
+    /**
+     * Starts the whole application. Resources (i.e., endpoints) need to be regstered here.
+     * @param configuration
+     * @param environment
+     */
     @Override
     public void run(PrivacyTemplatesConfiguration configuration,
                     Environment environment) {

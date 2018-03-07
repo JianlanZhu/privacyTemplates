@@ -8,10 +8,11 @@ import org.hibernate.SessionFactory;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Responsible for database interaction regarding requests.
+ */
 public class RequestDAO extends AbstractDAO<Request> {
-    /**
-     * @param sessionFactory Hibernate session factory.
-     */
+
     public RequestDAO(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
