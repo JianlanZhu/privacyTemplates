@@ -51,18 +51,18 @@
             </ul>
         </div>
         <!-- Case details tab -->
+        <form id="ReqForm">
         <div class="col-sm-9" >
             <div class="tab-content">
                 <div id="caseDet" class="tab-pane fade in active">
                     <h3>Case Details</h3>
-                    <form>
                         <div class="row">
                             <div class="form-group col-sm-4">
-                                <label for="inputCaseID">Case ID:</label>
-                                <input type="text" class="form-control" id="inputCaseID" placeholder="Enter Case Id" name="caseID" onfocus="hideError()"/>
+                                <label for="caseNumber">Case ID:</label>
+                                <input type="text" class="form-control" id="caseNumber" placeholder="Enter Case Id" name="caseID" onfocus="hideError()"/>
                             </div>
                         </div>
-                        <div class="row alert alert-danger collapse" id="inputCaseIDError" ></div>
+                        <div class="row alert alert-danger collapse" id="caseNumberError" ></div>
                         <div class="row">
                             <div class="form-group col-sm-4">
                                 <label for="singleSelectCaseType">Case Type</label>
@@ -72,7 +72,6 @@
                                 </select>
                             </div>
                         </div>
-                    </form>
                 </div>
                 <!-- Basic info tab -->
                 <div id="basicInfo" class="tab-pane fade">
@@ -81,9 +80,9 @@
                     <p class="text-primary">Please fill in <kbd>atleast one</kbd> field!!</p>
                     <div class="row alert alert-danger collapse" id="basicInfoError" ></div>
                     <div class="form-group">
-                        <label for="inputUsrName">User Name:</label>
-                        <input type="text" class="form-control" id="inputUsrName" placeholder="Enter User Name" onfocus="hideError()"/>
-                        <div class="row alert alert-danger collapse" id="inputUsrNameError" ></div>
+                        <label for="suspectUserName">User Name:</label>
+                        <input type="text" class="form-control" id="suspectUserName" placeholder="Enter User Name" onfocus="hideError()"/>
+                        <div class="row alert alert-danger collapse" id="suspectUserNameError" ></div>
                     </div>
                     <div class="form-group">
                         <label for="inputProfileLink">Profile Link:</label>
@@ -281,6 +280,7 @@
                 </div>
             </div>
         </div>
+	</form>
     </div>
 
     <div class="container text-center">

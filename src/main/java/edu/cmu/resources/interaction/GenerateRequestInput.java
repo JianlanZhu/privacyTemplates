@@ -4,28 +4,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
 public class GenerateRequestInput {
-    private long id;
+    private long caseNumber;
 
-    @Length(max = 3)
-    private String content;
+    private String suspectUserName;
 
     public GenerateRequestInput() {
         // Jackson deserialization
     }
 
-    public GenerateRequestInput(long id, String content) {
-        this.id = id;
-        this.content = content;
+    public GenerateRequestInput(long caseNumber, String suspectUserName) {
+        this.caseNumber = caseNumber;
+        this.suspectUserName = suspectUserName;
     }
 
     @JsonProperty
-    public long getId() {
-        return id;
+    public long getCaseNumber() {
+        return caseNumber;
     }
 
     @JsonProperty
-    public String getContent() {
-        return content;
+    public String getSuspectUserName() {
+        return suspectUserName;
     }
 }
 

@@ -1,5 +1,8 @@
 package edu.cmu;
 
+import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.CaseType;
+import edu.cmu.db.entities.Request;
 import edu.cmu.resources.EmployeesResource;
 import edu.cmu.db.dao.EmployeeDAO;
 import edu.cmu.db.entities.Employee;
@@ -12,6 +15,7 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.hibernate.SessionFactory;
 
 public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesConfiguration> {
 
@@ -20,7 +24,9 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
      */
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
-            Employee.class
+            Employee.class,
+            Request.class,
+            CaseType.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(
@@ -30,7 +36,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         }
     };
 
-    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.html");
+    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.jsp");
 
     public static void main(final String[] args) throws Exception {
         new PrivacyTemplatesApplication().run(args);
@@ -51,8 +57,10 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     public void run(PrivacyTemplatesConfiguration configuration,
                     Environment environment) {
 
-        environment.jersey().register(new EmployeesResource(new EmployeeDAO(hibernateBundle.getSessionFactory())));
-        environment.jersey().register(new RequestResource());
+        SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
+
+        environment.jersey().register(new EmployeesResource(new EmployeeDAO(sessionFactory)));
+        environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
 
         environment.jersey().register(
                 new HelloWorldResource(

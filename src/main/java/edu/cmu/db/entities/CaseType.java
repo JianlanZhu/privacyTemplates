@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "casetype")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.CaseType.findAll",
-                query = "select e from casetype e")
+                query = "select e from CaseType e")
 })
 public class CaseType {
 
