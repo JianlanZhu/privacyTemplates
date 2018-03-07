@@ -3,9 +3,10 @@ CREATE TABLE request (
   PRIMARY KEY (requestID),
   requestDate                   TIMESTAMP,
   createdByID                   INT,
+  FOREIGN KEY (createdByID) REFERENCES user (userId),
   caseNumber                    INT,
   caseTypeID                    INT,
-  FOREIGN KEY (caseTypeID) REFERENCES casetype(caseTypeID),
+  FOREIGN KEY (caseTypeID) REFERENCES casetype (caseTypeID),
   suspectUserName               VARCHAR(256),
   suspectLastName               VARCHAR(256),
   suspectFirstName              VARCHAR(256),
@@ -16,7 +17,7 @@ CREATE TABLE request (
   requestSearchThroughDate      DATE,
   suspectContactInformation     BIT(1),
   suspectMiniFeed               BIT(1),
-  suspecStatusHistory           BIT(1),
+  suspectStatusHistory          BIT(1),
   suspectShares                 BIT(1),
   suspectNotes                  BIT(1),
   suspectWallPostings           BIT(1),
@@ -34,5 +35,7 @@ CREATE TABLE request (
   filterCommunicantsUserName    VARCHAR(256),
   filterKeywords                VARCHAR(256),
   filterKeywordsCategory        INT,
-  filterLocation                VARCHAR(256)
+  filterLocation                VARCHAR(256),
+  requestStateID                INT,
+  FOREIGN KEY (requestStateID) REFERENCES requeststate (requestStateID)
 );
