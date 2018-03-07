@@ -1,8 +1,13 @@
+//All functions related to request form
+
 //Function validates all the form elements
 function validate(){
   if(validateCaseDetails()) {
     if(validateBasicInfo()) {
-      alert("successfully validated");
+	  var form = document.getElementById("ReqForm");
+	  var url = "/api/request/generate";
+	  var inputData = generateFormData(form);
+	  postData(url, inputData, showResponseFromServer);
       return true;
     }
   }
@@ -10,7 +15,7 @@ function validate(){
 
 //Validates all elements in case details tab
 function validateCaseDetails() {
-  var element = "inputCaseID";
+  var element = "caseNumber";
   var caseId = document.getElementById(element);
   if (isStringEmpty(caseId)) {
     $('[href="#caseDet"]').tab('show');
@@ -24,11 +29,17 @@ function validateCaseDetails() {
 function validateBasicInfo() {
   var element = "basicInfo";
   var baseInfo = document.getElementById(element);
-  if(isStringEmpty(document.getElementById("inputUsrName")) &&
+  if(isStringEmpty(document.getElementById("suspectUserName")) &&
     isStringEmpty(document.getElementById("inputProfileLink"))){
     $('[href="#basicInfo"]').tab('show');
     showAlert(element, "Enter at lease one identifier");
     return false;
   }
   return true;
+}
+
+//Temporarily adding this function for prototype 1
+// The function purpose will be modified later.
+function showResponseFromServer(response){
+	alert("Response from server: "+response);
 }

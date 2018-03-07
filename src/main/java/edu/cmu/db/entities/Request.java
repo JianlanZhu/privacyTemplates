@@ -1,13 +1,15 @@
 package edu.cmu.db.entities;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "casetype")
+@Table(name = "request")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
-                query = "select e from request e")
+                query = "select e from Request e")
 })
 public class Request {
 
@@ -173,6 +175,12 @@ public class Request {
         this.filterKeywords = filterKeywords;
         this.filterKeywordsCategory = filterKeywordsCategory;
         this.filterLocation = filterLocation;
+    }
+
+    public Request(long caseNumber, String suspectUserName) {
+        this.caseNumber = caseNumber;
+        this.suspectUserName = suspectUserName;
+        this.requestDate = Instant.now();
     }
 
     public long getRequestID() {
