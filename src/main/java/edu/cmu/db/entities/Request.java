@@ -1,5 +1,8 @@
 package edu.cmu.db.entities;
 
+import edu.cmu.db.enums.CaseType;
+import edu.cmu.db.enums.RequestState;
+
 import javax.persistence.*;
 import java.time.Instant;
 
@@ -27,9 +30,8 @@ public class Request {
     @Column(name = "caseNumber")
     private long caseNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "caseTypeId")
-    private CaseType caseType;
+    @Column(name = "caseType")
+    private String caseType;
 
     @Column(name = "suspectUserName")
     private String suspectUserName;
@@ -128,7 +130,7 @@ public class Request {
         this.requestCreatedDate = requestCreatedDate;
         this.createdByID = createdByID;
         this.caseNumber = caseNumber;
-        this.caseType = caseType;
+        this.caseType = caseType.name();
         this.suspectUserName = suspectUserName;
         this.suspectLastName = suspectLastName;
         this.suspectFirstName = suspectFirstName;
@@ -160,10 +162,12 @@ public class Request {
         this.filterLocation = filterLocation;
     }
 
-    public Request(long caseNumber, String suspectUserName) {
+    public Request(long caseNumber, String suspectUserName, long createdByID, CaseType caseType, RequestState requestState) {
         this.caseNumber = caseNumber;
         this.suspectUserName = suspectUserName;
         this.requestCreatedDate = Instant.now();
+        this.createdByID = createdByID;
+        this.caseType = caseType.name();
     }
 
     public long getRequestID() {
@@ -198,11 +202,11 @@ public class Request {
         this.caseNumber = caseNumber;
     }
 
-    public CaseType getCaseType() {
+    public String getCaseType() {
         return caseType;
     }
 
-    public void setCaseType(CaseType caseType) {
+    public void setCaseType(String caseType) {
         this.caseType = caseType;
     }
 

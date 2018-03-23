@@ -2,7 +2,9 @@ package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -20,6 +22,7 @@ public class RequestResource {
      * Responsible for accessing the database.
      */
     private RequestDAO requestDAO;
+    private RequestDAO caseTypeDAO;
 
     public RequestResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
@@ -41,9 +44,13 @@ public class RequestResource {
             throw new BadRequestException("Input for generating request is invalid.");
         }
 
-        Request request = new Request(generateRequestInput.getCaseNumber(), generateRequestInput.getSuspectUserName());
-        request = requestDAO.persistNewRequest(request);
-        return request;
+        try {
+            Request request = new Request(generateRequestInput.getCaseNumber(), generateRequestInput.getSuspectUserName(), generateRequestInput.getUserID(), CaseType.valueOf(generateRequestInput.getCaseType()), RequestState.FILED);
+            request = requestDAO.persistNewRequest(request);
+            return request;
+        } catch (IllegalArgumentException e){
+            throw new BadRequestException("Malformed Request");
+        }
     }
 
     /**
@@ -52,7 +59,17 @@ public class RequestResource {
      * @return true if data format is valid, false otherwise.
      */
     private static boolean isValidInput(GenerateRequestInput input) {
-        return input.getSuspectUserName() != null && input.getCaseNumber() > 0;
+        if(input.getSuspectUserName() == null || input.getCaseNumber() <= 0){
+            return false;
+        }
+
+        try{
+            CaseType.valueOf(input.getCaseType());
+        } catch (IllegalArgumentException e){
+            return false;
+        }
+
+        return true;
     }
 }
 
