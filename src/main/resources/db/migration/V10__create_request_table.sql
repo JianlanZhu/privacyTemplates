@@ -17,7 +17,7 @@ CREATE TABLE request (
   requestSearchThroughDate      DATE,
   suspectContactInformation     BIT(1),
   suspectMiniFeed               BIT(1),
-  suspectStatusHistory           BIT(1),
+  suspectStatusHistory          BIT(1),
   suspectShares                 BIT(1),
   suspectNotes                  BIT(1),
   suspectWallPostings           BIT(1),
