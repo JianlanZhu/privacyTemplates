@@ -1,6 +1,5 @@
 package edu.cmu.db.dao;
 
-import edu.cmu.db.entities.Employee;
 import edu.cmu.db.entities.Request;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
