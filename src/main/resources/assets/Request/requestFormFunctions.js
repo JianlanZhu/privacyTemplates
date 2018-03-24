@@ -5,7 +5,7 @@ function validate(){
   if(validateCaseDetails()) {
     if(validateBasicInfo()) {
 	  var form = document.getElementById("ReqForm");
-	  var url = "/api/request/generate";
+	  var url = "/api/request";
 	  var inputData = generateFormData(form);
 	  postData(url, inputData, showResponseFromServer);
       return true;

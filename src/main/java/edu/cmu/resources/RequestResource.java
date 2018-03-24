@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class is used for registering endpoints regarding requests.
  */
-//TODO: change path names to be RESTful
 @Path("/request")
 public class RequestResource {
 
@@ -21,7 +20,6 @@ public class RequestResource {
      * Responsible for accessing the database.
      */
     private RequestDAO requestDAO;
-    private RequestDAO caseTypeDAO;
 
     public RequestResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
@@ -33,7 +31,6 @@ public class RequestResource {
      * @return the generated request including generated fields like ID.
      */
     @POST
-    @Path("/generate")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
