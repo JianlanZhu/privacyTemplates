@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
-import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -40,12 +39,11 @@ public class RequestResource {
     @UnitOfWork
     @Timed
     public Request generateRequest(GenerateRequestInput generateRequestInput) {
-        if (!isValidInput(generateRequestInput)) {
-            throw new BadRequestException("Input for generating request is invalid.");
-        }
+        checkInputValidity(generateRequestInput);
 
         try {
-            Request request = new Request(generateRequestInput.getCaseNumber(), generateRequestInput.getSuspectUserName(), generateRequestInput.getUserID(), CaseType.valueOf(generateRequestInput.getCaseType()), RequestState.FILED);
+            // TODO replace hard coded userID 1 by userID of currently authenticated user
+            Request request = new Request(1, generateRequestInput.getCaseID(), generateRequestInput.getCaseType(), generateRequestInput.getSuspectUserName(), generateRequestInput.getLastName(), generateRequestInput.getFirstName(), generateRequestInput.getMiddleName(), generateRequestInput.getEmail(), generateRequestInput.getPhoneNumber(), generateRequestInput.getRequestedDataStartDate(), generateRequestInput.getRequestedDataEndDate(), generateRequestInput.isContactInformationRequested(), generateRequestInput.isMiniFeedRequested(), generateRequestInput.isStatusHistoryRequested(), generateRequestInput.isSharesRequested(), generateRequestInput.isNotesRequested(), generateRequestInput.isWallPostingsRequested(), generateRequestInput.isFriendListRequested(), generateRequestInput.isVideosRequested(), generateRequestInput.isGroupsRequested(), generateRequestInput.isPastEventsRequested(), generateRequestInput.isFutureEventsRequested(), generateRequestInput.isPhotosRequested(), generateRequestInput.isPrivateMessagesRequested(), generateRequestInput.isGroupInfoRequested(), generateRequestInput.isIPLogRequested(), null, null, generateRequestInput.getCommunicantsUserNames(), generateRequestInput.getKeywords(), generateRequestInput.getKeywordCategories(), generateRequestInput.getLocationZipCode());
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e){
@@ -54,22 +52,31 @@ public class RequestResource {
     }
 
     /**
-     * Respsonsible for backend mdiation. Should check fo data formats etc.. NOT for business logic!
+     * Respsonsible for backend mediation. Should check fo data formats etc.. NOT for business logic!
      * @param input the incoming request.
      * @return true if data format is valid, false otherwise.
      */
-    private static boolean isValidInput(GenerateRequestInput input) {
-        if(input.getSuspectUserName() == null || input.getCaseNumber() <= 0){
-            return false;
+    private static void checkInputValidity(GenerateRequestInput input) {
+        if(input.getSuspectUserName() == null){
+            throw new BadRequestException("Invalid user name.");
+        }
+
+        if(input.getCaseID() <= 0){
+            // TODO maybe replace with actual check whether case is present in data base?
+            throw new BadRequestException("Invalid case ID.");
         }
 
         try{
-            CaseType.valueOf(input.getCaseType());
+            // for now, case type can either be null, or oe of the values specified in the enum
+            if(input.getCaseType() != null){
+                // will throw exception if case type is invalid
+                CaseType.valueOf(input.getCaseType());
+            }
         } catch (IllegalArgumentException e){
-            return false;
+            throw new BadRequestException("Invalid Case Type.");
         }
 
-        return true;
+        //TODO additional checks
     }
 }
 

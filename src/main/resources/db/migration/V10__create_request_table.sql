@@ -4,10 +4,11 @@ CREATE TABLE request (
   requestCreatedDate            TIMESTAMP,
   createdByID                   INT,
   FOREIGN KEY (createdByID) REFERENCES user (userId),
-  caseNumber                    INT,
-  caseType                    VARCHAR(256) CHECK(
-    casetype='FELONY' OR caseType='MISDEMEANOR'
+  caseID                        INT,
+  caseType                      VARCHAR(256) CHECK (
+    casetype = 'FELONY' OR caseType = 'MISDEMEANOR'
   ),
+  profileLink                   VARCHAR(256),
   suspectUserName               VARCHAR(256),
   suspectLastName               VARCHAR(256),
   suspectFirstName              VARCHAR(256),
@@ -37,7 +38,7 @@ CREATE TABLE request (
   filterKeywords                VARCHAR(256),
   filterKeywordsCategory        INT,
   filterLocation                VARCHAR(256),
-  requestState                  VARCHAR(256) CHECK(
-    requestState='FILED' OR requestState='REJECTED' OR requestState='ANSWERED'
+  requestState                  VARCHAR(256) CHECK (
+    requestState = 'FILED' OR requestState = 'REJECTED' OR requestState = 'ANSWERED'
   )
 );

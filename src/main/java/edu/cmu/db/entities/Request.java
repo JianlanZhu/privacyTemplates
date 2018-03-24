@@ -27,8 +27,8 @@ public class Request {
     @Column(name = "createdByID")
     private long createdByID;
 
-    @Column(name = "caseNumber")
-    private long caseNumber;
+    @Column(name = "caseID")
+    private long caseID;
 
     @Column(name = "caseType")
     private String caseType;
@@ -126,11 +126,11 @@ public class Request {
     public Request() {
     }
 
-    public Request(Instant requestCreatedDate, long createdByID, long caseNumber, CaseType caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation) {
-        this.requestCreatedDate = requestCreatedDate;
+    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation) {
+        this.requestCreatedDate = Instant.now();
         this.createdByID = createdByID;
-        this.caseNumber = caseNumber;
-        this.caseType = caseType.name();
+        this.caseID = caseID;
+        this.caseType = caseType;
         this.suspectUserName = suspectUserName;
         this.suspectLastName = suspectLastName;
         this.suspectFirstName = suspectFirstName;
@@ -162,14 +162,6 @@ public class Request {
         this.filterLocation = filterLocation;
     }
 
-    public Request(long caseNumber, String suspectUserName, long createdByID, CaseType caseType, RequestState requestState) {
-        this.caseNumber = caseNumber;
-        this.suspectUserName = suspectUserName;
-        this.requestCreatedDate = Instant.now();
-        this.createdByID = createdByID;
-        this.caseType = caseType.name();
-    }
-
     public long getRequestID() {
         return requestID;
     }
@@ -194,12 +186,12 @@ public class Request {
         this.createdByID = createdByID;
     }
 
-    public long getCaseNumber() {
-        return caseNumber;
+    public long getCaseID() {
+        return caseID;
     }
 
-    public void setCaseNumber(long caseNumber) {
-        this.caseNumber = caseNumber;
+    public void setCaseID(long caseID) {
+        this.caseID = caseID;
     }
 
     public String getCaseType() {

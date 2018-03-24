@@ -15,7 +15,7 @@ function validate(){
 
 //Validates all elements in case details tab
 function validateCaseDetails() {
-  var element = "caseNumber";
+  var element = "caseID";
   var caseId = document.getElementById(element);
   if (isStringEmpty(caseId)) {
     $('[href="#caseDet"]').tab('show');
