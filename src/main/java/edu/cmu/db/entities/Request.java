@@ -1,9 +1,9 @@
 package edu.cmu.db.entities;
 
-import edu.cmu.db.enums.CaseType;
-import edu.cmu.db.enums.RequestState;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.time.Instant;
 
 /**
@@ -123,10 +123,14 @@ public class Request {
     @Column(name = "filterLocation")
     private String filterLocation;
 
+    @JsonIgnore
+    @Column(name = "warrant")
+    private Blob warrant;
+
     public Request() {
     }
 
-    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation) {
+    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
         this.requestCreatedDate = Instant.now();
         this.createdByID = createdByID;
         this.caseID = caseID;
@@ -160,6 +164,7 @@ public class Request {
         this.filterKeywords = filterKeywords;
         this.filterKeywordsCategory = filterKeywordsCategory;
         this.filterLocation = filterLocation;
+        this.warrant = warrant;
     }
 
     public long getRequestID() {
@@ -432,5 +437,29 @@ public class Request {
 
     public void setFilterLocation(String filterLocation) {
         this.filterLocation = filterLocation;
+    }
+
+    public String getSuspectRegisteredEmailAddress() {
+        return suspectRegisteredEmailAddress;
+    }
+
+    public void setSuspectRegisteredEmailAddress(String suspectRegisteredEmailAddress) {
+        this.suspectRegisteredEmailAddress = suspectRegisteredEmailAddress;
+    }
+
+    public String getSuspectRegisteredPhoneNumber() {
+        return suspectRegisteredPhoneNumber;
+    }
+
+    public void setSuspectRegisteredPhoneNumber(String suspectRegisteredPhoneNumber) {
+        this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
+    }
+
+    public Blob getWarrant() {
+        return warrant;
+    }
+
+    public void setWarrant(Blob warrant) {
+        this.warrant = warrant;
     }
 }

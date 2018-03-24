@@ -8,7 +8,9 @@ import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
@@ -52,6 +54,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(assetsBundle);
+        bootstrap.addBundle(new MultiPartBundle());
     }
 
     /**
@@ -68,6 +71,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
 
         environment.healthChecks().register("template", new TemplateHealthCheck(configuration.getTemplate()));
+
+        environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
     }
 

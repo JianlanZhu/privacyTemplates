@@ -40,5 +40,6 @@ CREATE TABLE request (
   filterLocation                VARCHAR(256),
   requestState                  VARCHAR(256) CHECK (
     requestState = 'FILED' OR requestState = 'REJECTED' OR requestState = 'ANSWERED'
-  )
+  ),
+  warrant                       LONGBLOB
 );

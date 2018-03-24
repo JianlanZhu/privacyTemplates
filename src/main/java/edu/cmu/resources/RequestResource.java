@@ -1,14 +1,24 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import io.dropwizard.hibernate.UnitOfWork;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.hibernate.Hibernate;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -27,20 +37,39 @@ public class RequestResource {
 
     /**
      * Endpoint for creating a new request.
-     * @param generateRequestInput Input parameters
+     * @param generateRequestInput Parameters for the generated request
+     * @param fileField The warrant file
      * @return the generated request including generated fields like ID.
      */
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     @Timed
-    public Request generateRequest(GenerateRequestInput generateRequestInput) {
-        checkInputValidity(generateRequestInput);
+    public Request generateRequest(@FormDataParam("warrantFile") final FormDataBodyPart fileField,
+                                   @FormDataParam("requestInformation") FormDataBodyPart generateRequestInput) {
+        generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+        GenerateRequestInput parsedInput = generateRequestInput.getValueAs(GenerateRequestInput.class);
+
+        checkInputValidity(parsedInput);
+
+        Blob warrantBlob = null;
+        if(fileField != null) {
+            InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
+
+            try {
+                byte[] warrantBytes = ByteStreams.toByteArray(warrantFileInputStream);
+                warrantBlob = new SerialBlob(warrantBytes);
+            } catch (IOException e) {
+                throw new BadRequestException("File not readable.");
+            } catch (SQLException e) {
+                throw new InternalServerErrorException("Failed to handle uploaded warrant.");
+            }
+        }
 
         try {
             // TODO replace hard coded userID 1 by userID of currently authenticated user
-            Request request = new Request(1, generateRequestInput.getCaseID(), generateRequestInput.getCaseType(), generateRequestInput.getSuspectUserName(), generateRequestInput.getLastName(), generateRequestInput.getFirstName(), generateRequestInput.getMiddleName(), generateRequestInput.getEmail(), generateRequestInput.getPhoneNumber(), generateRequestInput.getRequestedDataStartDate(), generateRequestInput.getRequestedDataEndDate(), generateRequestInput.isContactInformationRequested(), generateRequestInput.isMiniFeedRequested(), generateRequestInput.isStatusHistoryRequested(), generateRequestInput.isSharesRequested(), generateRequestInput.isNotesRequested(), generateRequestInput.isWallPostingsRequested(), generateRequestInput.isFriendListRequested(), generateRequestInput.isVideosRequested(), generateRequestInput.isGroupsRequested(), generateRequestInput.isPastEventsRequested(), generateRequestInput.isFutureEventsRequested(), generateRequestInput.isPhotosRequested(), generateRequestInput.isPrivateMessagesRequested(), generateRequestInput.isGroupInfoRequested(), generateRequestInput.isIPLogRequested(), null, null, generateRequestInput.getCommunicantsUserNames(), generateRequestInput.getKeywords(), generateRequestInput.getKeywordCategories(), generateRequestInput.getLocationZipCode());
+            Request request = new Request(1, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e){
