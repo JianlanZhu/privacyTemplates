@@ -1,8 +1,9 @@
 package edu.cmu.db.entities;
 
-import org.joda.time.DateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.time.Instant;
 
 /**
@@ -12,7 +13,7 @@ import java.time.Instant;
 @Table(name = "request")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
-                query = "select e from Request e")
+                query = "select r from Request r")
 })
 public class Request {
 
@@ -20,19 +21,17 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long requestID;
 
-    // TODO change name
-    @Column(name = "requestDate")
-    private Instant requestDate;
+    @Column(name = "requestCreatedDate")
+    private Instant requestCreatedDate;
 
     @Column(name = "createdByID")
     private long createdByID;
 
-    @Column(name = "caseNumber")
-    private long caseNumber;
+    @Column(name = "caseID")
+    private long caseID;
 
-    @ManyToOne
-    @JoinColumn(name = "caseTypeId")
-    private CaseType caseType;
+    @Column(name = "caseType")
+    private String caseType;
 
     @Column(name = "suspectUserName")
     private String suspectUserName;
@@ -52,73 +51,56 @@ public class Request {
     @Column(name = "suspectRegisteredPhoneNumber")
     private String suspectRegisteredPhoneNumber;
 
-    // TODO change name
-    @Column(name = "requestSearchFromDate")
-    private Instant requestSearchFromDate;
+    @Column(name = "requestedDataStartDate")
+    private Instant requestedDataStartDate;
 
-    // TODO change name
-    @Column(name = "requestSearchThroughDate")
-    private Instant requestSearchThroughDate;
+    @Column(name = "requestedDataEndDate")
+    private Instant requestedDataEndDate;
 
-    // TODO rename
-    @Column(name = "suspectContactInformation")
-    private boolean suspectContactInformation;
+    @Column(name = "isContactInformationRequested")
+    private boolean isContactInformationRequested;
 
-    // TODO rename
-    @Column(name = "suspectMiniFeed")
-    private boolean suspectMiniFeed;
+    @Column(name = "isMiniFeedRequested")
+    private boolean isMiniFeedRequested;
 
-    // TODO rename
-    @Column(name = "suspectStatusHistory")
-    private boolean suspectStatusHistory;
+    @Column(name = "isStatusHistoryRequested")
+    private boolean isStatusHistoryRequested;
 
-    // TODO rename
-    @Column(name = "suspectShares")
-    private boolean suspectShares;
+    @Column(name = "isSharesRequested")
+    private boolean isSharesRequested;
 
-    // TODO rename
-    @Column(name = "suspectNotes")
-    private boolean suspectNotes;
+    @Column(name = "isNotesRequested")
+    private boolean isNotesRequested;
 
-    // TODO rename
-    @Column(name = "suspectWallPostings")
-    private boolean suspectWallPostings;
+    @Column(name = "isWallPostingsRequested")
+    private boolean isWallPostingsRequested;
 
-    // TODO rename
-    @Column(name = "suspectFriendList")
-    private boolean suspectFriendList;
+    @Column(name = "isFriendListRequested")
+    private boolean isFriendListRequested;
 
-    // TODO rename
-    @Column(name = "suspectVideoList")
-    private boolean suspectVideoList;
+    @Column(name = "isVideosRequested")
+    private boolean isVideosRequested;
 
-    // TODO rename
-    @Column(name = "suspectGroupList")
-    private boolean suspectGroupList;
+    @Column(name = "isGroupsRequested")
+    private boolean isGroupsRequested;
 
-    // TODO rename
-    @Column(name = "suspectPastEvents")
-    private boolean suspectPastEvents;
+    @Column(name = "isPastEventsRquested")
+    private boolean isPastEventsRquested;
 
-    // TODO rename
-    @Column(name = "suspectFutureEvents")
-    private boolean suspectFutureEvents;
+    @Column(name = "isFutureEventsRequested")
+    private boolean isFutureEventsRequested;
 
-    // TODO rename
-    @Column(name = "suspectPhotos")
-    private boolean suspectPhotos;
+    @Column(name = "isPhotosRequested")
+    private boolean isPhotosRequested;
 
-    // TODO rename
-    @Column(name = "suspectPrivateMessages")
-    private boolean suspectPrivateMessages;
+    @Column(name = "isPrivateMessagesRequested")
+    private boolean isPrivateMessagesRequested;
 
-    // TODO rename
-    @Column(name = "suspectGroupInfo")
-    private boolean suspectGroupInfo;
+    @Column(name = "isGroupInfoRequested")
+    private boolean isGroupInfoRequested;
 
-    // TODO rename
-    @Column(name = "suspectIPLogs")
-    private boolean suspectIPLogs;
+    @Column(name = "isIPLogRequested")
+    private boolean isIPLogRequested;
 
     // TODO difference to searchDateFrom?
     @Column(name = "filterStartTime")
@@ -140,14 +122,18 @@ public class Request {
 
     @Column(name = "filterLocation")
     private String filterLocation;
-    
+
+    @JsonIgnore
+    @Column(name = "warrant")
+    private Blob warrant;
+
     public Request() {
     }
 
-    public Request(Instant requestDate, long createdByID, long caseNumber, CaseType caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestSearchFromDate, Instant requestSearchThroughDate, boolean suspectContactInformation, boolean suspectMiniFeed, boolean suspectStatusHistory, boolean suspectShares, boolean suspectNotes, boolean suspectWallPostings, boolean suspectFriendList, boolean suspectVideoList, boolean suspectGroupList, boolean suspectPastEvents, boolean suspectFutureEvents, boolean suspectPhotos, boolean suspectPrivateMessages, boolean suspectGroupInfo, boolean suspectIPLogs, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation) {
-        this.requestDate = requestDate;
+    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
+        this.requestCreatedDate = Instant.now();
         this.createdByID = createdByID;
-        this.caseNumber = caseNumber;
+        this.caseID = caseID;
         this.caseType = caseType;
         this.suspectUserName = suspectUserName;
         this.suspectLastName = suspectLastName;
@@ -155,35 +141,30 @@ public class Request {
         this.suspectMiddleName = suspectMiddleName;
         this.suspectRegisteredEmailAddress = suspectRegisteredEmailAddress;
         this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
-        this.requestSearchFromDate = requestSearchFromDate;
-        this.requestSearchThroughDate = requestSearchThroughDate;
-        this.suspectContactInformation = suspectContactInformation;
-        this.suspectMiniFeed = suspectMiniFeed;
-        this.suspectStatusHistory = suspectStatusHistory;
-        this.suspectShares = suspectShares;
-        this.suspectNotes = suspectNotes;
-        this.suspectWallPostings = suspectWallPostings;
-        this.suspectFriendList = suspectFriendList;
-        this.suspectVideoList = suspectVideoList;
-        this.suspectGroupList = suspectGroupList;
-        this.suspectPastEvents = suspectPastEvents;
-        this.suspectFutureEvents = suspectFutureEvents;
-        this.suspectPhotos = suspectPhotos;
-        this.suspectPrivateMessages = suspectPrivateMessages;
-        this.suspectGroupInfo = suspectGroupInfo;
-        this.suspectIPLogs = suspectIPLogs;
+        this.requestedDataStartDate = requestedDataStartDate;
+        this.requestedDataEndDate = requestedDataEndDate;
+        this.isContactInformationRequested = isContactInformationRequested;
+        this.isMiniFeedRequested = isMiniFeedRequested;
+        this.isStatusHistoryRequested = isStatusHistoryRequested;
+        this.isSharesRequested = isSharesRequested;
+        this.isNotesRequested = isNotesRequested;
+        this.isWallPostingsRequested = isWallPostingsRequested;
+        this.isFriendListRequested = isFriendListRequested;
+        this.isVideosRequested = isVideosRequested;
+        this.isGroupsRequested = isGroupsRequested;
+        this.isPastEventsRquested = isPastEventsRquested;
+        this.isFutureEventsRequested = isFutureEventsRequested;
+        this.isPhotosRequested = isPhotosRequested;
+        this.isPrivateMessagesRequested = isPrivateMessagesRequested;
+        this.isGroupInfoRequested = isGroupInfoRequested;
+        this.isIPLogRequested = isIPLogRequested;
         this.filterStartTime = filterStartTime;
         this.filterEndTime = filterEndTime;
         this.filterCommunicantsUserName = filterCommunicantsUserName;
         this.filterKeywords = filterKeywords;
         this.filterKeywordsCategory = filterKeywordsCategory;
         this.filterLocation = filterLocation;
-    }
-
-    public Request(long caseNumber, String suspectUserName) {
-        this.caseNumber = caseNumber;
-        this.suspectUserName = suspectUserName;
-        this.requestDate = Instant.now();
+        this.warrant = warrant;
     }
 
     public long getRequestID() {
@@ -194,12 +175,12 @@ public class Request {
         this.requestID = requestID;
     }
 
-    public Instant getRequestDate() {
-        return requestDate;
+    public Instant getRequestCreatedDate() {
+        return requestCreatedDate;
     }
 
-    public void setRequestDate(Instant requestDate) {
-        this.requestDate = requestDate;
+    public void setRequestCreatedDate(Instant requestCreatedDate) {
+        this.requestCreatedDate = requestCreatedDate;
     }
 
     public long getCreatedByID() {
@@ -210,19 +191,19 @@ public class Request {
         this.createdByID = createdByID;
     }
 
-    public long getCaseNumber() {
-        return caseNumber;
+    public long getCaseID() {
+        return caseID;
     }
 
-    public void setCaseNumber(long caseNumber) {
-        this.caseNumber = caseNumber;
+    public void setCaseID(long caseID) {
+        this.caseID = caseID;
     }
 
-    public CaseType getCaseType() {
+    public String getCaseType() {
         return caseType;
     }
 
-    public void setCaseType(CaseType caseType) {
+    public void setCaseType(String caseType) {
         this.caseType = caseType;
     }
 
@@ -274,140 +255,140 @@ public class Request {
         this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
     }
 
-    public Instant getRequestSearchFromDate() {
-        return requestSearchFromDate;
+    public Instant getRequestedDataStartDate() {
+        return requestedDataStartDate;
     }
 
-    public void setRequestSearchFromDate(Instant requestSearchFromDate) {
-        this.requestSearchFromDate = requestSearchFromDate;
+    public void setRequestedDataStartDate(Instant requestedDataStartDate) {
+        this.requestedDataStartDate = requestedDataStartDate;
     }
 
-    public Instant getRequestSearchThroughDate() {
-        return requestSearchThroughDate;
+    public Instant getRequestedDataEndDate() {
+        return requestedDataEndDate;
     }
 
-    public void setRequestSearchThroughDate(Instant requestSearchThroughDate) {
-        this.requestSearchThroughDate = requestSearchThroughDate;
+    public void setRequestedDataEndDate(Instant requestedDataEndDate) {
+        this.requestedDataEndDate = requestedDataEndDate;
     }
 
-    public boolean isSuspectContactInformation() {
-        return suspectContactInformation;
+    public boolean isContactInformationRequested() {
+        return isContactInformationRequested;
     }
 
-    public void setSuspectContactInformation(boolean suspectContactInformation) {
-        this.suspectContactInformation = suspectContactInformation;
+    public void setContactInformationRequested(boolean contactInformationRequested) {
+        this.isContactInformationRequested = contactInformationRequested;
     }
 
-    public boolean isSuspectMiniFeed() {
-        return suspectMiniFeed;
+    public boolean isMiniFeedRequested() {
+        return isMiniFeedRequested;
     }
 
-    public void setSuspectMiniFeed(boolean suspectMiniFeed) {
-        this.suspectMiniFeed = suspectMiniFeed;
+    public void setMiniFeedRequested(boolean miniFeedRequested) {
+        this.isMiniFeedRequested = miniFeedRequested;
     }
 
-    public boolean isSuspectStatusHistory() {
-        return suspectStatusHistory;
+    public boolean isStatusHistoryRequested() {
+        return isStatusHistoryRequested;
     }
 
-    public void setSuspectStatusHistory(boolean suspectStatusHistory) {
-        this.suspectStatusHistory = suspectStatusHistory;
+    public void setStatusHistoryRequested(boolean statusHistoryRequested) {
+        this.isStatusHistoryRequested = statusHistoryRequested;
     }
 
-    public boolean isSuspectShares() {
-        return suspectShares;
+    public boolean isSharesRequested() {
+        return isSharesRequested;
     }
 
-    public void setSuspectShares(boolean suspectShares) {
-        this.suspectShares = suspectShares;
+    public void setSharesRequested(boolean sharesRequested) {
+        this.isSharesRequested = sharesRequested;
     }
 
-    public boolean isSuspectNotes() {
-        return suspectNotes;
+    public boolean isNotesRequested() {
+        return isNotesRequested;
     }
 
-    public void setSuspectNotes(boolean suspectNotes) {
-        this.suspectNotes = suspectNotes;
+    public void setNotesRequested(boolean notesRequested) {
+        this.isNotesRequested = notesRequested;
     }
 
-    public boolean isSuspectWallPostings() {
-        return suspectWallPostings;
+    public boolean isWallPostingsRequested() {
+        return isWallPostingsRequested;
     }
 
-    public void setSuspectWallPostings(boolean suspectWallPostings) {
-        this.suspectWallPostings = suspectWallPostings;
+    public void setWallPostingsRequested(boolean wallPostingsRequested) {
+        this.isWallPostingsRequested = wallPostingsRequested;
     }
 
-    public boolean isSuspectFriendList() {
-        return suspectFriendList;
+    public boolean isFriendListRequested() {
+        return isFriendListRequested;
     }
 
-    public void setSuspectFriendList(boolean suspectFriendList) {
-        this.suspectFriendList = suspectFriendList;
+    public void setFriendListRequested(boolean friendListRequested) {
+        this.isFriendListRequested = friendListRequested;
     }
 
-    public boolean isSuspectVideoList() {
-        return suspectVideoList;
+    public boolean isVideosRequested() {
+        return isVideosRequested;
     }
 
-    public void setSuspectVideoList(boolean suspectVideoList) {
-        this.suspectVideoList = suspectVideoList;
+    public void setVideosRequested(boolean videosRequested) {
+        this.isVideosRequested = videosRequested;
     }
 
-    public boolean isSuspectGroupList() {
-        return suspectGroupList;
+    public boolean isGroupsRequested() {
+        return isGroupsRequested;
     }
 
-    public void setSuspectGroupList(boolean suspectGroupList) {
-        this.suspectGroupList = suspectGroupList;
+    public void setGroupsRequested(boolean groupsRequested) {
+        this.isGroupsRequested = groupsRequested;
     }
 
-    public boolean isSuspectPastEvents() {
-        return suspectPastEvents;
+    public boolean isPastEventsRquested() {
+        return isPastEventsRquested;
     }
 
-    public void setSuspectPastEvents(boolean suspectPastEvents) {
-        this.suspectPastEvents = suspectPastEvents;
+    public void setPastEventsRquested(boolean pastEventsRquested) {
+        this.isPastEventsRquested = pastEventsRquested;
     }
 
-    public boolean isSuspectFutureEvents() {
-        return suspectFutureEvents;
+    public boolean isFutureEventsRequested() {
+        return isFutureEventsRequested;
     }
 
-    public void setSuspectFutureEvents(boolean suspectFutureEvents) {
-        this.suspectFutureEvents = suspectFutureEvents;
+    public void setFutureEventsRequested(boolean futureEventsRequested) {
+        this.isFutureEventsRequested = futureEventsRequested;
     }
 
-    public boolean isSuspectPhotos() {
-        return suspectPhotos;
+    public boolean isPhotosRequested() {
+        return isPhotosRequested;
     }
 
-    public void setSuspectPhotos(boolean suspectPhotos) {
-        this.suspectPhotos = suspectPhotos;
+    public void setPhotosRequested(boolean photosRequested) {
+        this.isPhotosRequested = photosRequested;
     }
 
-    public boolean isSuspectPrivateMessages() {
-        return suspectPrivateMessages;
+    public boolean isPrivateMessagesRequested() {
+        return isPrivateMessagesRequested;
     }
 
-    public void setSuspectPrivateMessages(boolean suspectPrivateMessages) {
-        this.suspectPrivateMessages = suspectPrivateMessages;
+    public void setPrivateMessagesRequested(boolean privateMessagesRequested) {
+        this.isPrivateMessagesRequested = privateMessagesRequested;
     }
 
-    public boolean isSuspectGroupInfo() {
-        return suspectGroupInfo;
+    public boolean isGroupInfoRequested() {
+        return isGroupInfoRequested;
     }
 
-    public void setSuspectGroupInfo(boolean suspectGroupInfo) {
-        this.suspectGroupInfo = suspectGroupInfo;
+    public void setGroupInfoRequested(boolean groupInfoRequested) {
+        this.isGroupInfoRequested = groupInfoRequested;
     }
 
-    public boolean isSuspectIPLogs() {
-        return suspectIPLogs;
+    public boolean isIPLogRequested() {
+        return isIPLogRequested;
     }
 
-    public void setSuspectIPLogs(boolean suspectIPLogs) {
-        this.suspectIPLogs = suspectIPLogs;
+    public void setIPLogRequested(boolean IPLogRequested) {
+        this.isIPLogRequested = IPLogRequested;
     }
 
     public Instant getFilterStartTime() {
@@ -456,5 +437,29 @@ public class Request {
 
     public void setFilterLocation(String filterLocation) {
         this.filterLocation = filterLocation;
+    }
+
+    public String getSuspectRegisteredEmailAddress() {
+        return suspectRegisteredEmailAddress;
+    }
+
+    public void setSuspectRegisteredEmailAddress(String suspectRegisteredEmailAddress) {
+        this.suspectRegisteredEmailAddress = suspectRegisteredEmailAddress;
+    }
+
+    public String getSuspectRegisteredPhoneNumber() {
+        return suspectRegisteredPhoneNumber;
+    }
+
+    public void setSuspectRegisteredPhoneNumber(String suspectRegisteredPhoneNumber) {
+        this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
+    }
+
+    public Blob getWarrant() {
+        return warrant;
+    }
+
+    public void setWarrant(Blob warrant) {
+        this.warrant = warrant;
     }
 }

@@ -1,18 +1,28 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import io.dropwizard.hibernate.UnitOfWork;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.hibernate.Hibernate;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 /**
  * This class is used for registering endpoints regarding requests.
  */
-//TODO: change path names to be RESTful
 @Path("/request")
 public class RequestResource {
 
@@ -27,32 +37,72 @@ public class RequestResource {
 
     /**
      * Endpoint for creating a new request.
-     * @param generateRequestInput Input parameters
+     * @param generateRequestInput Parameters for the generated request
+     * @param fileField The warrant file
      * @return the generated request including generated fields like ID.
      */
     @POST
-    @Path("/generate")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     @Timed
-    public Request generateRequest(GenerateRequestInput generateRequestInput) {
-        if (!isValidInput(generateRequestInput)) {
-            throw new BadRequestException("Input for generating request is invalid.");
+    public Request generateRequest(@FormDataParam("warrantFile") final FormDataBodyPart fileField,
+                                   @FormDataParam("requestInformation") FormDataBodyPart generateRequestInput) {
+        generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+        GenerateRequestInput parsedInput = generateRequestInput.getValueAs(GenerateRequestInput.class);
+
+        checkInputValidity(parsedInput);
+
+        Blob warrantBlob = null;
+        if(fileField != null) {
+            InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
+
+            try {
+                byte[] warrantBytes = ByteStreams.toByteArray(warrantFileInputStream);
+                warrantBlob = new SerialBlob(warrantBytes);
+            } catch (IOException e) {
+                throw new BadRequestException("File not readable.");
+            } catch (SQLException e) {
+                throw new InternalServerErrorException("Failed to handle uploaded warrant.");
+            }
         }
 
-        Request request = new Request(generateRequestInput.getCaseNumber(), generateRequestInput.getSuspectUserName());
-        request = requestDAO.persistNewRequest(request);
-        return request;
+        try {
+            // TODO replace hard coded userID 1 by userID of currently authenticated user
+            Request request = new Request(1, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
+            request = requestDAO.persistNewRequest(request);
+            return request;
+        } catch (IllegalArgumentException e){
+            throw new BadRequestException("Malformed Request");
+        }
     }
 
     /**
-     * Respsonsible for backend mdiation. Should check fo data formats etc.. NOT for business logic!
+     * Respsonsible for backend mediation. Should check fo data formats etc.. NOT for business logic!
      * @param input the incoming request.
      * @return true if data format is valid, false otherwise.
      */
-    private static boolean isValidInput(GenerateRequestInput input) {
-        return input.getSuspectUserName() != null && input.getCaseNumber() > 0;
+    private static void checkInputValidity(GenerateRequestInput input) {
+        if(input.getSuspectUserName() == null){
+            throw new BadRequestException("Invalid user name.");
+        }
+
+        if(input.getCaseID() <= 0){
+            // TODO maybe replace with actual check whether case is present in data base?
+            throw new BadRequestException("Invalid case ID.");
+        }
+
+        try{
+            // for now, case type can either be null, or oe of the values specified in the enum
+            if(input.getCaseType() != null){
+                // will throw exception if case type is invalid
+                CaseType.valueOf(input.getCaseType());
+            }
+        } catch (IllegalArgumentException e){
+            throw new BadRequestException("Invalid Case Type.");
+        }
+
+        //TODO additional checks
     }
 }
 

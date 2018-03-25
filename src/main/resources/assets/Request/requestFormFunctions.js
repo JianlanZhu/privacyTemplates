@@ -5,7 +5,7 @@ function validate(){
   if(validateCaseDetails()) {
     if(validateBasicInfo()) {
 	  var form = document.getElementById("ReqForm");
-	  var url = "/api/request/generate";
+	  var url = "/api/request";
 	  var inputData = generateFormData(form);
 	  postData(url, inputData, showResponseFromServer);
       return true;
@@ -15,7 +15,7 @@ function validate(){
 
 //Validates all elements in case details tab
 function validateCaseDetails() {
-  var element = "caseNumber";
+  var element = "caseID";
   var caseId = document.getElementById(element);
   if (isStringEmpty(caseId)) {
     $('[href="#caseDet"]').tab('show');

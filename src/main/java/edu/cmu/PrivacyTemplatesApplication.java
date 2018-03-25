@@ -1,18 +1,16 @@
 package edu.cmu;
 
 import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.entities.CaseType;
 import edu.cmu.db.entities.Request;
-import edu.cmu.resources.EmployeesResource;
-import edu.cmu.db.dao.EmployeeDAO;
-import edu.cmu.db.entities.Employee;
+import edu.cmu.db.entities.User;
 import edu.cmu.health.TemplateHealthCheck;
-import edu.cmu.resources.HelloWorldResource;
 import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
@@ -24,9 +22,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
      */
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
-            Employee.class,
             Request.class,
-            CaseType.class
+            User.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(
@@ -57,6 +54,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(assetsBundle);
+        bootstrap.addBundle(new MultiPartBundle());
     }
 
     /**
@@ -70,16 +68,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
 
-        environment.jersey().register(new EmployeesResource(new EmployeeDAO(sessionFactory)));
         environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
 
-        environment.jersey().register(
-                new HelloWorldResource(
-                        configuration.getTemplate(),
-                        configuration.getDefaultName()
-                ));
-
         environment.healthChecks().register("template", new TemplateHealthCheck(configuration.getTemplate()));
+
+        environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
     }
 
