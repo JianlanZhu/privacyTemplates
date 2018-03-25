@@ -28,4 +28,8 @@ public class UserDAO extends AbstractDAO<User> {
         persist(user);
         return user;
     }
+
+    public Optional<User> findByUsername(String userName) {
+        return namedQuery("edu.cmu.db.entities.User.findByUsername").setParameter("userName", userName).uniqueResultOptional();
+    }
 }

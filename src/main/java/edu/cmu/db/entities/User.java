@@ -1,15 +1,18 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
+import java.security.Principal;
 import java.time.Instant;
 
 @Entity
 @Table(name = "user")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.User.findAll",
-                query = "select u from User u")
+                query = "select u from User u"),
+        @NamedQuery(name = "edu.cmu.db.entities.User.findByUsername",
+                query = "select u from User u where u.userName = :userName")
 })
-public class User {
+public class User implements Principal{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,5 +101,10 @@ public class User {
 
     public void setUserCreatedDate(Instant userCreatedDate) {
         this.userCreatedDate = userCreatedDate;
+    }
+
+    @Override
+    public String getName() {
+        return userName;
     }
 }

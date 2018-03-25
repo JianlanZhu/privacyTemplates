@@ -1,15 +1,20 @@
 package edu.cmu;
 
+import edu.cmu.auth.UserAuthenticator;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.health.TemplateHealthCheck;
 import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -59,6 +64,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
     /**
      * Starts the whole application. Resources (i.e., endpoints) need to be regstered here.
+     *
      * @param configuration
      * @param environment
      */
@@ -69,6 +75,15 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
 
         environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
+
+        UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+                .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
+
+        environment.jersey().register(new BasicCredentialAuthFilter.Builder<User>()
+                .setAuthenticator(userAuthenticator)
+                .buildAuthFilter());
+        //If you want to use @Auth to inject a custom Principal type into your resource
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         environment.healthChecks().register("template", new TemplateHealthCheck(configuration.getTemplate()));
 

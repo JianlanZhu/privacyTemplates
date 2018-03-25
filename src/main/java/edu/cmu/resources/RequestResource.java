@@ -3,9 +3,11 @@ package edu.cmu.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
 import edu.cmu.resources.interaction.GenerateRequestInput;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -46,7 +48,8 @@ public class RequestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     @Timed
-    public Request generateRequest(@FormDataParam("warrantFile") final FormDataBodyPart fileField,
+    public Request generateRequest(@Auth User user,
+                                   @FormDataParam("warrantFile") final FormDataBodyPart fileField,
                                    @FormDataParam("requestInformation") FormDataBodyPart generateRequestInput) {
         generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         GenerateRequestInput parsedInput = generateRequestInput.getValueAs(GenerateRequestInput.class);
@@ -68,8 +71,7 @@ public class RequestResource {
         }
 
         try {
-            // TODO replace hard coded userID 1 by userID of currently authenticated user
-            Request request = new Request(1, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
+            Request request = new Request(user.getUserID(), parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e){
