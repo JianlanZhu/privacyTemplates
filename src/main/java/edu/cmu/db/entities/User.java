@@ -1,5 +1,7 @@
 package edu.cmu.db.entities;
 
+import edu.cmu.db.enums.UserType;
+
 import javax.persistence.*;
 import java.security.Principal;
 import java.time.Instant;
@@ -47,6 +49,7 @@ public class User implements Principal{
         this.userID = userID;
     }
 
+    // TODO might want to change to multiple flags, so multiple roles per user are possible
     public String getUserType() {
         return userType;
     }

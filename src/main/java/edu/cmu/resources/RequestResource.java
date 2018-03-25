@@ -6,6 +6,7 @@ import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.enums.UserType;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -13,6 +14,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.hibernate.Hibernate;
 
+import javax.annotation.security.RolesAllowed;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 import javax.ws.rs.*;
@@ -46,6 +48,7 @@ public class RequestResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Timed
     public Request generateRequest(@Auth User user,

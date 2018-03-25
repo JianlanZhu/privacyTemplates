@@ -1,5 +1,6 @@
 package edu.cmu;
 
+import edu.cmu.auth.AppAuthorizer;
 import edu.cmu.auth.UserAuthenticator;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.UserDAO;
@@ -9,6 +10,7 @@ import edu.cmu.health.TemplateHealthCheck;
 import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
@@ -18,6 +20,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.hibernate.SessionFactory;
 
 public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesConfiguration> {
@@ -79,9 +82,19 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
 
-        environment.jersey().register(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(userAuthenticator)
-                .buildAuthFilter());
+        environment.jersey().register(
+                new AuthDynamicFeature(
+                        new BasicCredentialAuthFilter.Builder<User>()
+                        .setAuthenticator(userAuthenticator)
+                        .setAuthorizer(new AppAuthorizer())
+                        .setRealm("Basic Auth Realm")
+                        .buildAuthFilter()
+                )
+        );
+
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+
         //If you want to use @Auth to inject a custom Principal type into your resource
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
