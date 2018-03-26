@@ -3,20 +3,19 @@ package edu.cmu.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
-import edu.cmu.db.entities.Request;
-import edu.cmu.db.enums.UserType;
 import edu.cmu.resources.interaction.GenerateRequestInput;
+import edu.cmu.resources.views.GenerateRequestView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.views.View;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.hibernate.Hibernate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -46,6 +45,7 @@ public class RequestResource {
      * @return the generated request including generated fields like ID.
      */
     @POST
+    @Path("/requestForm")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
@@ -108,6 +108,12 @@ public class RequestResource {
         }
 
         //TODO additional checks
+    }
+
+    @GET
+    @Path("/requestForm")
+    public View showGenerateRequestView(){
+        return new GenerateRequestView();
     }
 }
 

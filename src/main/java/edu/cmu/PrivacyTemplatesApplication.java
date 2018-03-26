@@ -6,7 +6,7 @@ import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
-import edu.cmu.health.TemplateHealthCheck;
+import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.RequestResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -20,6 +20,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.hibernate.SessionFactory;
 
@@ -44,7 +45,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     /**
      * Enables serving static assets.
      */
-    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.jsp");
+    private final AssetsBundle viewAssets = new AssetsBundle("/js", "/js");
 
     /**
      * Main entry point.
@@ -61,8 +62,9 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     @Override
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
-        bootstrap.addBundle(assetsBundle);
+        bootstrap.addBundle(viewAssets);
         bootstrap.addBundle(new MultiPartBundle());
+        bootstrap.addBundle(new ViewBundle<>());
     }
 
     /**
@@ -78,6 +80,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
 
         environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
+        environment.jersey().register(new LandingPageResource());
 
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
@@ -85,20 +88,15 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(
                 new AuthDynamicFeature(
                         new BasicCredentialAuthFilter.Builder<User>()
-                        .setAuthenticator(userAuthenticator)
-                        .setAuthorizer(new AppAuthorizer())
-                        .setRealm("Basic Auth Realm")
-                        .buildAuthFilter()
+                                .setAuthenticator(userAuthenticator)
+                                .setAuthorizer(new AppAuthorizer())
+                                .setRealm("Basic Auth Realm")
+                                .buildAuthFilter()
                 )
         );
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-
-        //If you want to use @Auth to inject a custom Principal type into your resource
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-
-        environment.healthChecks().register("template", new TemplateHealthCheck(configuration.getTemplate()));
 
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
