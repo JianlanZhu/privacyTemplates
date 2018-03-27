@@ -6,8 +6,8 @@ import java.time.Instant;
 @Entity
 @Table(name = "keywordcategory")
 @NamedQueries({
-        @NamedQuery(name = "edu.cmu.db.entities.User.findAll",
-                query = "select c from KeywordCategory kc")
+        @NamedQuery(name = "edu.cmu.db.entities.KeywordCategory.findAll",
+                query = "select kc from KeywordCategory kc")
 })
 
 public class KeywordCategory {
