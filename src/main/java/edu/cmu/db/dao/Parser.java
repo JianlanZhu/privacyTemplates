@@ -1,8 +1,11 @@
 package edu.cmu.db.dao;
 
 import com.google.common.io.Files;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Parser {
     private static final String MESSAGE_PATH = "src/main/resources/SomeonesData";
@@ -25,7 +28,15 @@ public class Parser {
     private static void parseOneMessageFile(File file) {
         if (file != null && Files.getFileExtension(file.getName()).equals(HTML)) {
             // parse html file
+            Document doc;
+            try {
+                doc = Jsoup.parse(file, "UTF-8");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
             // get
+
         }
     }
 }
