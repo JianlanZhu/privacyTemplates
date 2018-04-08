@@ -15,10 +15,20 @@ public class Parser {
     private static final String MESSAGE_PATH = "src/main/resources/SomeonesData";
     private static final String HTML = "html";
 
+    /**
+     * parseProfile is used to parse message files under a certain directory.
+     *
+     * @param path Directory where messages files are.
+     */
     public static void parseProfile(String path) {
         parseMessageFiles(MESSAGE_PATH);
     }
 
+    /**
+     * parseMessageFiles is used to parse all message files under message directory.
+     *
+     * @param path Directory where messages files are.
+     */
     private static void parseMessageFiles(String path) {
         File directory = new File(path);
         File[] messageFiles = directory.listFiles();
@@ -29,6 +39,11 @@ public class Parser {
         }
     }
 
+    /**
+     * parseOneMessageFile is used to parse a single message html file.
+     *
+     * @param file
+     */
     private static void parseOneMessageFile(File file) {
         if (file != null && Files.getFileExtension(file.getName()).equals(HTML)) {
             // parse html file
@@ -79,7 +94,7 @@ public class Parser {
                         // print the result for checking
                         System.out.println(thisMessage.getMessageSender());
                         System.out.println(thisMessage.getStartingTime());
-                        System.out.println(thisMessage.getMessageContent());
+                        System.out.println(thisMessage.getMessageContent() + "\n");
                         // TODO: store the new record to the cb
 
                     } else if (count == 1) {
@@ -112,6 +127,13 @@ public class Parser {
         }
     }
 
+    /**
+     * getConvertedTime is used to convert time in message file to the form that can be
+     * converted to Timestamp class in Java.
+     *
+     * @param originalTime time represented in message file
+     * @return String time representation that can be converted to timestamp in Java
+     */
     private static String getConvertedTime(String originalTime) {
         // original time: Monday, 21 December 2015 at 16:37 EST
         // converted to time like: 1985-04-12T23:20:50.52
@@ -122,6 +144,11 @@ public class Parser {
         return convertedTime;
     }
 
+    /**
+     * getMonth is used to convert month expression into integer.
+     * @param month month represented in string
+     * @return int month represented in integer
+     */
     private static int getMonth(String month) {
         switch (month) {
             case "January": return 1;
