@@ -10,6 +10,7 @@ CREATE TABLE user (
   firstName       VARCHAR(256),
   userName        VARCHAR(256) UNIQUE,
   password        VARCHAR(256),
+  salt            VARCHAR(256),
   accountEnabled  BIT,
   userCreatedDate TIMESTAMP
 );
