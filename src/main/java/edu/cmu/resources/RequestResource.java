@@ -121,8 +121,9 @@ public class RequestResource {
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/all")
+    @UnitOfWork
     public View listAllRequests(){
-        return new ListAllRequestsView();
+        return new ListAllRequestsView(requestDAO.findAll());
     }
 }
 
