@@ -79,10 +79,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
                     Environment environment) {
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
+        RequestDAO requestDAO = new RequestDAO(sessionFactory);
 
-        environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
+        environment.jersey().register(new RequestResource(requestDAO));
         environment.jersey().register(new LandingPageResource());
-        environment.jersey().register(new SocialMediaResource());
+        environment.jersey().register(new SocialMediaResource(requestDAO));
 
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));

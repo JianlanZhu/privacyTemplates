@@ -38,8 +38,8 @@ CREATE TABLE request (
   filterKeywords                VARCHAR(256),
   filterKeywordsCategory        INT,
   filterLocation                VARCHAR(256),
-  requestState                  VARCHAR(256) CHECK (
-    requestState = 'FILED' OR requestState = 'REJECTED' OR requestState = 'ANSWERED'
+  status                        VARCHAR(256) CHECK (
+    status = 'FILED' OR status = 'REJECTED' OR status = 'ANSWERED'
   ),
   warrant                       LONGBLOB
 );
