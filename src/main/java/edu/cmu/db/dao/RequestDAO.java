@@ -40,4 +40,8 @@ public class RequestDAO extends AbstractDAO<Request> {
             return true;
         }
     }
+
+    public List<Request> findAllForUser(long userID) {
+        return list(namedQuery("edu.cmu.db.entities.Request.findAllForUser").setParameter("userId", userID));
+    }
 }
