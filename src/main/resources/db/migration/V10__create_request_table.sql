@@ -39,8 +39,8 @@ CREATE TABLE request (
   filterKeywordsCategory        INT,
   FOREIGN KEY (filterKeywordsCategory) REFERENCES keywordcategory (categoryId),
   filterLocation                VARCHAR(256),
-  requestState                  VARCHAR(256) CHECK (
-    requestState = 'FILED' OR requestState = 'REJECTED' OR requestState = 'ANSWERED'
+  status                        VARCHAR(256) CHECK (
+    status = 'FILED' OR status = 'REJECTED' OR status = 'ANSWERED'
   ),
   warrant                       LONGBLOB
 );
