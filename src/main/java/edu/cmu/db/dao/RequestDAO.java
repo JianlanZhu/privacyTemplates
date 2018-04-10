@@ -17,7 +17,7 @@ public class RequestDAO extends AbstractDAO<Request> {
     }
 
     public List<Request> findAll() {
-        return list(namedQuery("cedu.cmu.db.entities.Request.findAll"));
+        return list(namedQuery("edu.cmu.db.entities.Request.findAll"));
     }
 
     public Optional<Request> findById(long id) {

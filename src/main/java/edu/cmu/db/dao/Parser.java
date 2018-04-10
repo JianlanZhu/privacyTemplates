@@ -1,7 +1,10 @@
 package edu.cmu.db.dao;
 
 import com.google.common.io.Files;
+import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Message;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,18 +13,28 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Random;
 
 public class Parser {
     private static final String MESSAGE_PATH = "src/main/resources/SomeonesData";
     private static final String HTML = "html";
+    private Random conversationIDGen = new Random();
+    private Random messageIDGen = new Random();
+    private SessionFactory sessionFactory; // just for testing
+    private ConversationDAO conversationDAO;
+    private MessageDAO messageDAO;
 
     /**
      * parseProfile is used to parse message files under a certain directory.
      *
      * @param path Directory where messages files are.
      */
-    public static void parseProfile(String path) {
-        parseMessageFiles(MESSAGE_PATH);
+    public void parseProfile(String path, SessionFactory sessionFactory, ConversationDAO conversationDAO,
+                             MessageDAO messageDAO) {
+        this.conversationDAO = conversationDAO;
+        this.messageDAO = messageDAO;
+        this.sessionFactory = sessionFactory;
+        parseMessageFiles(MESSAGE_PATH); // should take path here
     }
 
     /**
@@ -29,12 +42,18 @@ public class Parser {
      *
      * @param path Directory where messages files are.
      */
-    private static void parseMessageFiles(String path) {
+    private void parseMessageFiles(String path) {
         File directory = new File(path);
         File[] messageFiles = directory.listFiles();
         if (messageFiles != null) {
             for (File file : messageFiles) {
-                parseOneMessageFile(file);
+                int conversationID = conversationIDGen.nextInt();
+                while (conversationDAO.findById(conversationID) != null) {
+                    conversationID++;
+                }
+                System.out.println("*****************************" + file.getName() + "******************************");
+                // parse each message file
+                parseOneMessageFile(file, conversationID);
             }
         }
     }
@@ -44,7 +63,7 @@ public class Parser {
      *
      * @param file
      */
-    private static void parseOneMessageFile(File file) {
+    private void parseOneMessageFile(File file, int conversationID) {
         if (file != null && Files.getFileExtension(file.getName()).equals(HTML)) {
             // parse html file
             Document doc;
@@ -78,9 +97,16 @@ public class Parser {
                     String originalTime = messageHeader.select("span.meta").first().text();
                     String convertedTime = getConvertedTime(originalTime);
                     sentTime = Timestamp.valueOf(convertedTime);
+                    // set one messageID for the message
+                    long messageID = messageIDGen.nextLong();
+                    while (messageDAO.findById(messageID) != null) {
+                        messageID++;
+                    }
                     // update message
                     thisMessage.setMessageSender(sender);
                     thisMessage.setStartingTime(sentTime);
+                    thisMessage.setConversationID(conversationID);
+                    thisMessage.setMessageID(messageID);
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
@@ -95,7 +121,7 @@ public class Parser {
                         System.out.println(thisMessage.getMessageSender());
                         System.out.println(thisMessage.getStartingTime());
                         System.out.println(thisMessage.getMessageContent() + "\n");
-                        // TODO: store the new record to the cb
+                        // TODO: store the new record to db
 
                     } else if (count == 1) {
                         count++;
@@ -109,21 +135,6 @@ public class Parser {
                     }
                 }
             }
-
-//            for (int i = 1; i <= conversation.size(); i++) {
-//                // choose nth header
-//                Element messageHeader = conversation.select("div.message:nth-child(" + (i + 1) + ")").first();
-//                // get sender
-//                String sender = messageHeader.select("span.user").first().text();
-//                // get message sent time
-//                String originalTime = messageHeader.select("span.meta").first().text();
-//                String convertedTime = getConvertedTime(originalTime);
-//                Timestamp sentTime = Timestamp.valueOf(convertedTime);
-//                // choose nth message
-//
-//            }
-
-
         }
     }
 
@@ -134,7 +145,7 @@ public class Parser {
      * @param originalTime time represented in message file
      * @return String time representation that can be converted to timestamp in Java
      */
-    private static String getConvertedTime(String originalTime) {
+    private String getConvertedTime(String originalTime) {
         // original time: Monday, 21 December 2015 at 16:37 EST
         // converted to time like: 1985-04-12T23:20:50.52
         String[] weekDay = originalTime.split(", ");
@@ -146,32 +157,51 @@ public class Parser {
 
     /**
      * getMonth is used to convert month expression into integer.
+     *
      * @param month month represented in string
      * @return int month represented in integer
      */
-    private static int getMonth(String month) {
+    private int getMonth(String month) {
         switch (month) {
-            case "January": return 1;
-            case "February": return 2;
-            case "March": return 3;
-            case "April": return 4;
-            case "May": return 5;
-            case "June": return 6;
-            case "July": return 7;
-            case "August": return 8;
-            case "September": return 9;
-            case "October": return 10;
-            case "November": return 11;
-            case "December": return 12;
-            default: return 0;
+            case "January":
+                return 1;
+            case "February":
+                return 2;
+            case "March":
+                return 3;
+            case "April":
+                return 4;
+            case "May":
+                return 5;
+            case "June":
+                return 6;
+            case "July":
+                return 7;
+            case "August":
+                return 8;
+            case "September":
+                return 9;
+            case "October":
+                return 10;
+            case "November":
+                return 11;
+            case "December":
+                return 12;
+            default:
+                return 0;
         }
     }
 
     public static void main(String[] args) {
         // for testing
         String path = "src/main/resources/SomeonesData/messages/297.html";
+        String directory = "src/main/resources/SomeonesData/messages";
+        Parser parser = new Parser();
+        /*
         File file = new File(path);
         // test parseOneMessageFile
         parseOneMessageFile(file);
+        */
+        parser.parseMessageFiles(directory);
     }
 }
