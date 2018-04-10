@@ -6,9 +6,11 @@ import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
+import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import edu.cmu.resources.views.GenerateRequestView;
-import edu.cmu.resources.views.ListAllRequestsView;
+import edu.cmu.resources.views.ListAllRequestsForLeoView;
+import edu.cmu.resources.views.ListAllRequestsForSmeView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -122,8 +124,8 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/all")
     @UnitOfWork
-    public View listAllRequests(@Auth User user){
-        return new ListAllRequestsView(requestDAO.findAllForUser(user.getUserID()));
+    public View listAllRequestsForLeo(@Auth User user){
+        return new ListAllRequestsForLeoView(requestDAO.findAllForUser(user.getUserID()));
     }
 }
 

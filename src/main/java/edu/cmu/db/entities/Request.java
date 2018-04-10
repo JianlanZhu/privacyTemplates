@@ -16,7 +16,9 @@ import java.time.Instant;
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
                 query = "select r from Request r"),
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAllForUser",
-                query = "select r from Request r where createdByID = :userId")
+                query = "select r from Request r where createdByID = :userId"),
+        @NamedQuery(name = "edu.cmu.db.entities.Request.findAllWithStatus",
+                query = "select r from Request r where status    = :status")
 })
 public class Request {
 

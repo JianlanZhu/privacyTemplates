@@ -4,8 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
+import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.DataUploadInput;
-import edu.cmu.resources.views.UnansweredRequestsView;
+import edu.cmu.resources.views.ListAllRequestsForSmeView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -27,12 +28,6 @@ public class SocialMediaResource {
         this.requestDAO = requestDAO;
     }
 
-    @GET
-    @Path("/unansweredRequests")
-    public View listAllUnansweredRequests(){
-        return new UnansweredRequestsView();
-    }
-
     @POST
     @Path("DataUploadForm")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -50,8 +45,8 @@ public class SocialMediaResource {
         Optional<Request> requestOptional = requestDAO.findById(parsedInput.getRequestId());
         if(requestOptional.isPresent()){
             Request request = requestOptional.get();
-            if(request.getStatus() == null || request.getStatus().equals("FILED")){
-                boolean success = requestDAO.updateStatus(request.getRequestID(), "ANSWERED");
+            if(request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())){
+                boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
                 if(!success){ throw new NotFoundException(); }
                 // TODO handle uploaded data
             } else{
@@ -61,6 +56,14 @@ public class SocialMediaResource {
             throw new BadRequestException("Request ID invalid");
         }
 
+    }
+
+    @GET
+    @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
+    @Path("/unansweredRequests")
+    @UnitOfWork
+    public View listAllRequestsForSme(@Auth User user){
+        return new ListAllRequestsForSmeView(requestDAO.findAllWithStatus(RequestState.PENDING));
     }
 
 }
