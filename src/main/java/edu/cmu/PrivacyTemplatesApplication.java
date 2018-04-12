@@ -8,6 +8,7 @@ import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.RequestResource;
+import edu.cmu.resources.SocialMediaResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -78,9 +79,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
                     Environment environment) {
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
+        RequestDAO requestDAO = new RequestDAO(sessionFactory);
 
-        environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
+        environment.jersey().register(new RequestResource(requestDAO));
         environment.jersey().register(new LandingPageResource());
+        environment.jersey().register(new SocialMediaResource(requestDAO));
 
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));

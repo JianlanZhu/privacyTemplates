@@ -1,0 +1,2 @@
+INSERT INTO User(userType, userName, password, accountEnabled) VALUES ("LAW_ENFORCEMENT_OFFICER", "SaSm", "SS", 1);
+INSERT INTO User(userType, userName, password, accountEnabled) VALUES ("SOCIAL_MEDIA_EMPLOYEE", "HaHa", "HH", 1);

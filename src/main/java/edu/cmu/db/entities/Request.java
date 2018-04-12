@@ -102,11 +102,9 @@ public class Request {
     @Column(name = "isIPLogRequested")
     private boolean isIPLogRequested;
 
-    // TODO difference to searchDateFrom?
     @Column(name = "filterStartTime")
     private Instant filterStartTime;
 
-    // TODO difference to searchThroughDate?
     @Column(name = "filterEndTime")
     private Instant filterEndTime;
 
@@ -122,6 +120,9 @@ public class Request {
 
     @Column(name = "filterLocation")
     private String filterLocation;
+
+    @Column(name = "status")
+    private String status;
 
     @JsonIgnore
     @Column(name = "warrant")
@@ -461,5 +462,13 @@ public class Request {
 
     public void setWarrant(Blob warrant) {
         this.warrant = warrant;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
