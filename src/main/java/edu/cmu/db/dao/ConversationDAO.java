@@ -24,7 +24,7 @@ public class ConversationDAO extends AbstractDAO<Conversation> {
         return Optional.ofNullable(get(id));
     }
 
-    public Conversation persistNewConveration(Conversation conversation) {
+    public Conversation persistNewConversation(Conversation conversation) {
         persist(conversation);
         return conversation;
     }

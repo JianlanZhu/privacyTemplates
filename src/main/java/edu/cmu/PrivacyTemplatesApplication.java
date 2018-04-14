@@ -2,9 +2,16 @@ package edu.cmu;
 
 import edu.cmu.auth.AppAuthorizer;
 import edu.cmu.auth.UserAuthenticator;
+import edu.cmu.db.dao.ConversationDAO;
+import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.dao.UserDAO;
+import edu.cmu.db.entities.Conversation;
+import edu.cmu.db.entities.Message;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.Result;
+import edu.cmu.db.entities.RetentionType;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.RequestResource;
@@ -33,7 +40,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
             Request.class,
-            User.class
+            User.class,
+            Result.class,
+            Conversation.class,
+            Message.class,
+            RetentionType.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(
@@ -80,10 +91,13 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
         RequestDAO requestDAO = new RequestDAO(sessionFactory);
+        MessageDAO messageDAO = new MessageDAO(sessionFactory);
+        ResultDAO resultDAO = new ResultDAO(sessionFactory);
+        ConversationDAO conversationDao = new ConversationDAO(sessionFactory);
 
         environment.jersey().register(new RequestResource(requestDAO));
         environment.jersey().register(new LandingPageResource());
-        environment.jersey().register(new SocialMediaResource(requestDAO));
+        environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
 
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
@@ -102,6 +116,9 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
+
+        // parsing
+
 
     }
 

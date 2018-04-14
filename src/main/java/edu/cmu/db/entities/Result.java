@@ -20,9 +20,6 @@ public class Result {
     @Column(name = "SMEUserID")
     private int SMEUserID;
 
-    @Column(name = "rawResult")
-    private Blob rawResult;
-
     @Column(name = "retentionID")
     private int retentionID;
 
@@ -31,7 +28,6 @@ public class Result {
 
     public Result(int SMEUserID, Blob rawResult, int retentionID) {
         this.SMEUserID = SMEUserID;
-        this.rawResult = rawResult;
         this.retentionID = retentionID;
     }
 
@@ -49,14 +45,6 @@ public class Result {
 
     public void setSMEUserID(int SMEUserID) {
         this.SMEUserID = SMEUserID;
-    }
-
-    public Blob getRawResult() {
-        return rawResult;
-    }
-
-    public void setRawResult(Blob rawResult) {
-        this.rawResult = rawResult;
     }
 
     public int getRetentionID() {

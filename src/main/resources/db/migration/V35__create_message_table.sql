@@ -1,7 +1,7 @@
 CREATE TABLE message (
-  messageID      LONG NOT NULL AUTO_INCREMENT,
+  messageID     BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (messageID),
-  messageContent VARCHAR(256),
+  messageContent VARCHAR(4096),
   startingTime   DATETIME,
   messageSender  VARCHAR(256),
   conversationID INT,

@@ -1,15 +1,11 @@
 package edu.cmu.db.dao;
 
 import edu.cmu.db.entities.Message;
-import edu.cmu.db.entities.Request;
 import io.dropwizard.hibernate.AbstractDAO;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Responsible for database interaction regarding messages.
