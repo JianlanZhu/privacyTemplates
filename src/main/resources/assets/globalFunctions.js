@@ -1,5 +1,25 @@
 //Global functions that will be used by all js files
 
+function loadHeader(getFolderLevelToAssets) {
+
+    var header = getElement('header');
+    header.innerHTML =
+        '<div class="row" style="height:10px;"></div>' +
+        '<div class="container-fluid">\n' +
+        '  <div class="row">\n' +
+        '    <div class="col-sm-2">\n' +
+        '      <img src="'+getFolderLevelToAssets+'/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
+        '    </div>' +
+        '    <div class="col-sm-8">\n' +
+        '      <h1 class="text-primary text-center">PEP for LESM</h1>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div class="row" style="height:50px;>\n' +
+        '    </div>' +
+        '</div>' +
+        '<div class="col-xs-12" style="height:40px;"></div>';
+}
+
 //Returns true if data is an empty string, else false
 function isStringEmpty(data) {
     if (data.value.trim() === "") {
@@ -8,6 +28,10 @@ function isStringEmpty(data) {
     else {
         return false;
     }
+}
+
+function getElement(elementId) {
+ return document.getElementById(elementId);
 }
 
 //Shows the alert corresponding to element with id: orgitemId

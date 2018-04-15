@@ -1,0 +1,10 @@
+h1 {
+    font-family: verdana;
+    text-shadow: 2px 2px 5px black;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
