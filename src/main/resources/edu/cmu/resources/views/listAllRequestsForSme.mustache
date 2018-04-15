@@ -8,8 +8,24 @@
 <body>
     <h1>Social Media Request Portal</h1>
     <p>In the future, all existing requests will be listed here.</p>
+    <h3>Pending Requests:</h3>
     <ul>
-        {{#requests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/requests}}
+        {{#pendingRequests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/pendingRequests}}
+    </ul>
+
+    <h3>Rejected Requests:</h3>
+    <ul>
+        {{#rejectedRequests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/rejectedRequests}}
+    </ul>
+
+    <h3>Answered Requests:</h3>
+    <ul>
+        {{#answeredRequests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/answeredRequests}}
+    </ul>
+
+    <h3>Closed Requests:</h3>
+    <ul>
+        {{#closedRequests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/closedRequests}}
     </ul>
 </body>
 </html>
