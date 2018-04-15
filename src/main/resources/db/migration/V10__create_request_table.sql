@@ -37,6 +37,7 @@ CREATE TABLE request (
   filterCommunicantsUserName    VARCHAR(256),
   filterKeywords                VARCHAR(256),
   filterKeywordsCategory        INT,
+  FOREIGN KEY (filterKeywordsCategory) REFERENCES keywordcategory (categoryId),
   filterLocation                VARCHAR(256),
   requestState                  VARCHAR(256) CHECK (
     requestState = 'FILED' OR requestState = 'REJECTED' OR requestState = 'ANSWERED'
