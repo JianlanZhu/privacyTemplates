@@ -8,7 +8,7 @@ function loadHeader(getFolderLevelToAssets) {
         '<div class="container-fluid">\n' +
         '  <div class="row">\n' +
         '    <div class="col-sm-2">\n' +
-        '      <img src="'+getFolderLevelToAssets+'/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
+        '      <img src="../../../../assets/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
         '    </div>' +
         '    <div class="col-sm-8">\n' +
         '      <h1 class="text-primary text-center">PEP for LESM</h1>' +
