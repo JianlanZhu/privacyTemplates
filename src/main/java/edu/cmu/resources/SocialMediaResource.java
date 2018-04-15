@@ -101,7 +101,7 @@ public class SocialMediaResource {
                 if (!success) {
                     throw new NotFoundException();
                 }
-                // TODO handle uploaded data
+                // TODO handle uploaded data participants
                 if (fileField != null) {
                     int SMEUserID = user.getUserID();
                     // find a result ID
