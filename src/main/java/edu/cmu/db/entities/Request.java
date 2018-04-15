@@ -2,6 +2,7 @@ package edu.cmu.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.Instant;
@@ -13,7 +14,11 @@ import java.time.Instant;
 @Table(name = "request")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
-                query = "select r from Request r")
+                query = "select r from Request r"),
+        @NamedQuery(name = "edu.cmu.db.entities.Request.findAllForUser",
+                query = "select r from Request r where createdByID = :userId"),
+        @NamedQuery(name = "edu.cmu.db.entities.Request.findAllWithStatus",
+                query = "select r from Request r where status    = :status")
 })
 public class Request {
 

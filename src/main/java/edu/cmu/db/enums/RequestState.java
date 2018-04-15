@@ -1,5 +1,5 @@
 package edu.cmu.db.enums;
 
 public enum RequestState {
-    FILED, REJECTED, ANSWERED
+    PENDING, REJECTED, ANSWERED, CLOSED
 }
