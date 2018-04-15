@@ -22,9 +22,9 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
     public Optional<User> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
         Optional<User> userOptional = userDAO.findByUsername(basicCredentials.getUsername());
         // FIXME store hashed password instead of plain
-        if(userOptional.isPresent() && userOptional.get().getPassword().equals(basicCredentials.getPassword())){
+        if (userOptional.isPresent() && userOptional.get().getPassword().equals(basicCredentials.getPassword())) {
             return userOptional;
-        } else{
+        } else {
             return Optional.empty();
         }
     }

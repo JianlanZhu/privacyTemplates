@@ -1,7 +1,5 @@
 package edu.cmu.db.entities;
 
-import edu.cmu.db.enums.UserType;
-
 import javax.persistence.*;
 import java.security.Principal;
 import java.time.Instant;
@@ -14,7 +12,7 @@ import java.time.Instant;
         @NamedQuery(name = "edu.cmu.db.entities.User.findByUsername",
                 query = "select u from User u where u.userName = :userName")
 })
-public class User implements Principal{
+public class User implements Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

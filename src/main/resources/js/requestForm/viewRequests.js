@@ -1,4 +1,4 @@
-function addRow(){
+function addRow() {
     // Find a <table> element with id="myTable":
     var table = document.getElementById("requestsTable");
 
