@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../../css/globalstyling.css">
+
+    <!--Other internal js files for validation and posting-->
+    <script src="../../../../js/requestForm/requestFormFunctions.js"></script>
+    <script src="../../../../js/requestForm/commonLEOfunctions.js"></script>
+    <script src="../../../../js/globalFunctions.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            loadLEONav();
+        });
+    </script>
 
     <!-- cdn source for date picker-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
@@ -21,11 +32,14 @@
             $('.datepicker').datepicker({
                 startDate: '0d',
                 autoclose: true
-            });
+            })
+                .on('changeDate', function(e) {
+                    $('#basicTimeError').hide();
+                });
             $('#timePickerStartTime').timepicker({});
             $('#timePickerEndTime').timepicker({});
-        });
 
+        });
     </script>
 
     <!--Other internal js files for validation and posting-->
@@ -33,7 +47,8 @@
     <script src="/js/globalFunctions.js"></script>
 </head>
 <body>
-
+<div id="header"></div>
+<nav class="navbar navbar-default" id="navLEO"></nav>
 <div class="container">
     <div class="page-header">
         <h2>Request Form</h2>
@@ -41,7 +56,7 @@
     <p>Please fill the below Form and click Submit to request information from social media.</p>
 
     <div class="row">
-        <div class="col-sm-3" >
+        <div class="col-sm-3">
             <ul class="nav nav-pills nav-stacked" id="categoryList">
                 <li class="active" id="liCaseDet"><a data-toggle="pill" href="#caseDet">Case Details</a></li>
                 <li id="liBasicInfo"><a data-toggle="pill" href="#basicInfo">Basic Information</a></li>
@@ -92,32 +107,33 @@
                         <div class="col-sm-4" >
                             <div class="form-group">
                                 <label for="inputFirstName">First Name</label>
-                                <input type="text" class="form-control" id="inputFirstName" placeholder="Enter First Name of the suspect" />
+                                <input type="text" class="form-control" id="inputFirstName" placeholder="Enter First Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                         <div class="col-sm-4" >
                             <div class="form-group">
                                 <label for="inputMiddleName">Middle Name</label>
-                                <input type="text" class="form-control" id="inputMiddleName" placeholder="Enter Middle Name of the suspect" />
+                                <input type="text" class="form-control" id="inputMiddleName" placeholder="Enter Middle Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                         <div class="col-sm-4" >
                             <div class="form-group">
                                 <label for="inputLastName">Last Name</label>
-                                <input type="text" class="form-control" id="inputLastName" placeholder="Enter Last Name of the suspect" />
+                                <input type="text" class="form-control" id="inputLastName" placeholder="Enter Last Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmailAddress">Registered email address</label>
-                        <input type="email" id="inputEmailAddress" class="form-control"/>
+                        <input type="email" id="inputEmailAddress" class="form-control" onfocus="hideError()"/>
                     </div>
                     <div class="form-group">
                         <label for="inputPhoneNo">Registered Phone No</label>
-                        <input type="number" id="inputPhoneNo" class="form-control"/>
+                        <input type="number" id="inputPhoneNo" class="form-control" onfocus="hideError()"/>
                     </div>
                     <hr size="30">
                     <h4>Time Frame</h4>
+                    <div class="row alert alert-danger collapse" id="basicTimeError" ></div>
                     <div class="row">
                         <div class='col-sm-6'>
                             <div class="form-group">
