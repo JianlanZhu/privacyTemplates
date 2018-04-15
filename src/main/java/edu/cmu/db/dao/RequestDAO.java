@@ -1,6 +1,5 @@
 package edu.cmu.db.dao;
 
-import edu.cmu.db.entities.Employee;
 import edu.cmu.db.entities.Request;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
@@ -18,7 +17,7 @@ public class RequestDAO extends AbstractDAO<Request> {
     }
 
     public List<Request> findAll() {
-        return list(namedQuery("cedu.cmu.db.entities.Request.findAll"));
+        return list(namedQuery("edu.cmu.db.entities.Request.findAll"));
     }
 
     public Optional<Request> findById(long id) {
@@ -28,5 +27,17 @@ public class RequestDAO extends AbstractDAO<Request> {
     public Request persistNewRequest(Request request) {
         persist(request);
         return request;
+    }
+
+    public boolean updateStatus(long requestID, String status) {
+        Optional<Request> requestOptional = findById(requestID);
+        if(!requestOptional.isPresent()){
+            return false;
+        } else{
+            Request request = requestOptional.get();
+            request.setStatus(status);
+            persist(request);
+            return true;
+        }
     }
 }

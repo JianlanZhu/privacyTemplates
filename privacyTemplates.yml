@@ -1,9 +1,5 @@
-template: Hello, %s!
-defaultName: Stranger
-
 server:
   adminContextPath: /admin
-  rootPath: /api/
 
 # Database settings.
 database:
