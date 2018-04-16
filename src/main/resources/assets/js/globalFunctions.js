@@ -1,14 +1,13 @@
 //Global functions that will be used by all js files
 
 function loadHeader(getFolderLevelToAssets) {
-
     var header = getElement('header');
     header.innerHTML =
         '<div class="row" style="height:10px;"></div>' +
         '<div class="container-fluid">\n' +
         '  <div class="row">\n' +
         '    <div class="col-sm-2">\n' +
-        '      <img src="../../../../assets/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
+        '      <img src="/assets/images/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
         '    </div>' +
         '    <div class="col-sm-8">\n' +
         '      <h1 class="text-primary text-center">PEP for LESM</h1>' +
