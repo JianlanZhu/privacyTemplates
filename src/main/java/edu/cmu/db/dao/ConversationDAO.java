@@ -16,7 +16,7 @@ public class ConversationDAO extends AbstractDAO<Conversation> {
         super(sessionFactory);
     }
 
-    public List<Message> findAll() {
+    public List<Conversation> findAll() {
         return list(namedQuery("edu.cmu.db.entities.Conversation.findAll"));
     }
 
