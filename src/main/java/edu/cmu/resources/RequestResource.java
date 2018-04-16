@@ -8,6 +8,7 @@ import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
+import edu.cmu.resources.interaction.GetRequestsOutput;
 import edu.cmu.resources.views.GenerateRequestView;
 import edu.cmu.resources.views.ListAllRequestsForLeoView;
 import edu.cmu.resources.views.ListAllRequestsForSmeView;
@@ -107,12 +108,21 @@ public class RequestResource {
         }
 
         try {
-            Request request = new Request(user.getUserID(), parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
+            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Malformed Request");
         }
+    }
+
+    @GET
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    @Path("/all")
+    public GetRequestsOutput getRequests(@Auth User user){
+        return new GetRequestsOutput(requestDAO.findAllForUser(user.getUserID()));
     }
 
     @GET
@@ -124,6 +134,7 @@ public class RequestResource {
 
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @Produces(MediaType.TEXT_HTML)
     @Path("/all")
     @UnitOfWork
     public View listAllRequestsForLeo(@Auth User user){

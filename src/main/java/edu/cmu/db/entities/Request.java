@@ -29,8 +29,9 @@ public class Request {
     @Column(name = "requestCreatedDate")
     private Instant requestCreatedDate;
 
-    @Column(name = "createdByID")
-    private long createdByID;
+    @ManyToOne
+    @JoinColumn(name = "createdByID")
+    private User createdBy;
 
     @Column(name = "caseID")
     private long caseID;
@@ -136,9 +137,9 @@ public class Request {
     public Request() {
     }
 
-    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
+    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
         this.requestCreatedDate = Instant.now();
-        this.createdByID = createdByID;
+        this.createdBy = createdBy;
         this.caseID = caseID;
         this.caseType = caseType;
         this.suspectUserName = suspectUserName;
@@ -189,12 +190,12 @@ public class Request {
         this.requestCreatedDate = requestCreatedDate;
     }
 
-    public long getCreatedByID() {
-        return createdByID;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreatedByID(long createdByID) {
-        this.createdByID = createdByID;
+    public void setCreatedByID(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public long getCaseID() {
