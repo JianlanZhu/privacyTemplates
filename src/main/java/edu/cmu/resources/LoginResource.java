@@ -10,12 +10,13 @@ import edu.cmu.resources.interaction.LoginInput;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Optional;
 
 @Path("/login")
@@ -33,7 +34,7 @@ public class LoginResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public Token getAuthenticationToken(LoginInput loginInput){
+    public Response getAuthenticationToken(LoginInput loginInput) {
         Optional<User> userOptional = userDAO.findByUsername(loginInput.getUsername());
 
         if(!userOptional.isPresent()){
@@ -58,7 +59,11 @@ public class LoginResource {
         Token token = new Token(user, tokenString, instant);
 
         token = tokenDAO.persistToken(token);
-        return token;
+
+        Cookie cookie = new Cookie("pepToken", tokenString);
+        NewCookie newCookie = new NewCookie(cookie);
+
+        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(token).cookie(newCookie).build();
     }
 
 }

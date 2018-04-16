@@ -119,7 +119,7 @@ public class RequestResource {
     }
 
     @GET
-    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    //@RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/all")
     @UnitOfWork
     public View listAllRequests(@Auth User user){
