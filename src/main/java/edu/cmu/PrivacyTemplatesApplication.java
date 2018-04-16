@@ -17,6 +17,7 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -94,14 +95,14 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(new SocialMediaResource(requestDAO));
 
         UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
-                .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
+                .create(UserAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
 
         environment.jersey().register(
                 new AuthDynamicFeature(
-                        new BasicCredentialAuthFilter.Builder<User>()
+                        new OAuthCredentialAuthFilter.Builder<User>()
                                 .setAuthenticator(userAuthenticator)
                                 .setAuthorizer(new AppAuthorizer())
-                                .setRealm("Basic Auth Realm")
+                                .setPrefix("Bearer")
                                 .buildAuthFilter()
                 )
         );
