@@ -21,6 +21,7 @@
 
     <!-- cdn source for date picker-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
 
     <!-- cdn source for time picker-->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.css">
@@ -29,14 +30,21 @@
     <!-- Configuring date pickers and time pickers in the form-->
     <script type="text/javascript">
         $(function () {
-            $('.datepicker').datepicker({
-                startDate: '0d',
-                autoclose: true
-            })
-                .on('changeDate', function(e) {
-                    $('#basicTimeError').hide();
-                });
-            $('#timePickerStartTime').timepicker({});
+            $("#"+sDate).datepicker({
+                todayBtn:  1,
+                autoclose: true,
+            }).on('changeDate', function (selected) {
+                var minDate = new Date(selected.date.valueOf());
+                $('#'+eDate).datepicker('setStartDate', minDate);
+            });
+
+            $("#"+eDate).datepicker()
+                    .on('changeDate', function (selected) {
+                        var maxDate = new Date(selected.date.valueOf());
+                        $('#'+sDate).datepicker('setEndDate', maxDate);
+                    });
+
+            $('#timePickerStartTime').timepicker({}).on('changeTime', function (selected){alert(selected.time.valueOf())});
             $('#timePickerEndTime').timepicker({});
 
         });

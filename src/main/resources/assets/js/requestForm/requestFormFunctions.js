@@ -1,13 +1,15 @@
 //All functions related to request form
 
 //Global variable pertaining to reuestForm
-var caseNo = "caseNumber";
+var caseNo = "caseID";
 var suspectUsrName = "suspectUserName";
 var profileLink = "inputProfileLink";
 var fName = "inputFirstName";
 var lName = "inputLastName";
 var emailID = "inputEmailAddress";
 var phNo = "inputPhoneNo";
+var sDate = "dtPickerStartDate";
+var eDate = "dtPickerEndDate";
 
 //Function validates all the form elements
 function validate() {
@@ -49,8 +51,8 @@ function validateBasicInfo() {
         return false;
     }
 
-    var startDate = $("#dtPickerStartDate").datepicker('getFormattedDate');
-    var endDate = $("#dtPickerEndDate").datepicker('getFormattedDate');
+    var startDate = $("#"+sDate).datepicker('getFormattedDate');
+    var endDate = $("#"+eDate).datepicker('getFormattedDate');
     if (startDate == "" || endDate == "") {
         $('[href="#basicInfo"]').tab('show');
         showAlert("basicTime", "Enter start time and end time");
