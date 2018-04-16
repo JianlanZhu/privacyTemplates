@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Path("/login")
+@Path("/")
 public class LoginResource {
 
     private TokenDAO tokenDAO;
@@ -37,6 +37,7 @@ public class LoginResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
+    @Path("/login")
     public Response getAuthenticationToken(LoginInput loginInput) {
         Optional<User> userOptional = userDAO.findByUsername(loginInput.getUsername());
 
