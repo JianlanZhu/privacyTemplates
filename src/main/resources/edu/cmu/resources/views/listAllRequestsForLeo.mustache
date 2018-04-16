@@ -7,7 +7,9 @@
 </head>
 <body>
     <h1>Social Media Request Portal</h1>
-    <a href="/request/all"><button class="btn btn-primary">LEO View</button></a>
-    <a href="/socialMedia/requests"><button class="btn btn-primary">SME View</button></a>
+    <p>In the future, all existing requests will be listed here.</p>
+    <ul>
+        {{#requests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/requests}}
+    </ul>
 </body>
 </html>

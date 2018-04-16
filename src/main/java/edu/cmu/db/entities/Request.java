@@ -2,6 +2,7 @@ package edu.cmu.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.Instant;
@@ -13,7 +14,11 @@ import java.time.Instant;
 @Table(name = "request")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Request.findAll",
-                query = "select r from Request r")
+                query = "select r from Request r"),
+        @NamedQuery(name = "edu.cmu.db.entities.Request.findAllForUser",
+                query = "select r from Request r where createdByID = :userId"),
+        @NamedQuery(name = "edu.cmu.db.entities.Request.findAllWithStatus",
+                query = "select r from Request r where status    = :status")
 })
 public class Request {
 
@@ -58,55 +63,53 @@ public class Request {
     private Instant requestedDataEndDate;
 
     @Column(name = "isContactInformationRequested")
-    private boolean isContactInformationRequested;
+    private Boolean isContactInformationRequested;
 
     @Column(name = "isMiniFeedRequested")
-    private boolean isMiniFeedRequested;
+    private Boolean isMiniFeedRequested;
 
     @Column(name = "isStatusHistoryRequested")
-    private boolean isStatusHistoryRequested;
+    private Boolean isStatusHistoryRequested;
 
     @Column(name = "isSharesRequested")
-    private boolean isSharesRequested;
+    private Boolean isSharesRequested;
 
     @Column(name = "isNotesRequested")
-    private boolean isNotesRequested;
+    private Boolean isNotesRequested;
 
     @Column(name = "isWallPostingsRequested")
-    private boolean isWallPostingsRequested;
+    private Boolean isWallPostingsRequested;
 
     @Column(name = "isFriendListRequested")
-    private boolean isFriendListRequested;
+    private Boolean isFriendListRequested;
 
     @Column(name = "isVideosRequested")
-    private boolean isVideosRequested;
+    private Boolean isVideosRequested;
 
     @Column(name = "isGroupsRequested")
-    private boolean isGroupsRequested;
+    private Boolean isGroupsRequested;
 
     @Column(name = "isPastEventsRquested")
-    private boolean isPastEventsRquested;
+    private Boolean isPastEventsRquested;
 
     @Column(name = "isFutureEventsRequested")
-    private boolean isFutureEventsRequested;
+    private Boolean isFutureEventsRequested;
 
     @Column(name = "isPhotosRequested")
-    private boolean isPhotosRequested;
+    private Boolean isPhotosRequested;
 
     @Column(name = "isPrivateMessagesRequested")
-    private boolean isPrivateMessagesRequested;
+    private Boolean isPrivateMessagesRequested;
 
     @Column(name = "isGroupInfoRequested")
-    private boolean isGroupInfoRequested;
+    private Boolean isGroupInfoRequested;
 
     @Column(name = "isIPLogRequested")
-    private boolean isIPLogRequested;
+    private Boolean isIPLogRequested;
 
-    // TODO difference to searchDateFrom?
     @Column(name = "filterStartTime")
     private Instant filterStartTime;
 
-    // TODO difference to searchThroughDate?
     @Column(name = "filterEndTime")
     private Instant filterEndTime;
 
@@ -123,6 +126,9 @@ public class Request {
     @Column(name = "filterLocation")
     private String filterLocation;
 
+    @Column(name = "status")
+    private String status;
+
     @JsonIgnore
     @Column(name = "warrant")
     private Blob warrant;
@@ -130,7 +136,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryRequested, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRquested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isPrivateMessagesRequested, boolean isGroupInfoRequested, boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
+    public Request(long createdByID, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
         this.requestCreatedDate = Instant.now();
         this.createdByID = createdByID;
         this.caseID = caseID;
@@ -271,123 +277,123 @@ public class Request {
         this.requestedDataEndDate = requestedDataEndDate;
     }
 
-    public boolean isContactInformationRequested() {
+    public Boolean isContactInformationRequested() {
         return isContactInformationRequested;
     }
 
-    public void setContactInformationRequested(boolean contactInformationRequested) {
+    public void setContactInformationRequested(Boolean contactInformationRequested) {
         this.isContactInformationRequested = contactInformationRequested;
     }
 
-    public boolean isMiniFeedRequested() {
+    public Boolean isMiniFeedRequested() {
         return isMiniFeedRequested;
     }
 
-    public void setMiniFeedRequested(boolean miniFeedRequested) {
+    public void setMiniFeedRequested(Boolean miniFeedRequested) {
         this.isMiniFeedRequested = miniFeedRequested;
     }
 
-    public boolean isStatusHistoryRequested() {
+    public Boolean isStatusHistoryRequested() {
         return isStatusHistoryRequested;
     }
 
-    public void setStatusHistoryRequested(boolean statusHistoryRequested) {
+    public void setStatusHistoryRequested(Boolean statusHistoryRequested) {
         this.isStatusHistoryRequested = statusHistoryRequested;
     }
 
-    public boolean isSharesRequested() {
+    public Boolean isSharesRequested() {
         return isSharesRequested;
     }
 
-    public void setSharesRequested(boolean sharesRequested) {
+    public void setSharesRequested(Boolean sharesRequested) {
         this.isSharesRequested = sharesRequested;
     }
 
-    public boolean isNotesRequested() {
+    public Boolean isNotesRequested() {
         return isNotesRequested;
     }
 
-    public void setNotesRequested(boolean notesRequested) {
+    public void setNotesRequested(Boolean notesRequested) {
         this.isNotesRequested = notesRequested;
     }
 
-    public boolean isWallPostingsRequested() {
+    public Boolean isWallPostingsRequested() {
         return isWallPostingsRequested;
     }
 
-    public void setWallPostingsRequested(boolean wallPostingsRequested) {
+    public void setWallPostingsRequested(Boolean wallPostingsRequested) {
         this.isWallPostingsRequested = wallPostingsRequested;
     }
 
-    public boolean isFriendListRequested() {
+    public Boolean isFriendListRequested() {
         return isFriendListRequested;
     }
 
-    public void setFriendListRequested(boolean friendListRequested) {
+    public void setFriendListRequested(Boolean friendListRequested) {
         this.isFriendListRequested = friendListRequested;
     }
 
-    public boolean isVideosRequested() {
+    public Boolean isVideosRequested() {
         return isVideosRequested;
     }
 
-    public void setVideosRequested(boolean videosRequested) {
+    public void setVideosRequested(Boolean videosRequested) {
         this.isVideosRequested = videosRequested;
     }
 
-    public boolean isGroupsRequested() {
+    public Boolean isGroupsRequested() {
         return isGroupsRequested;
     }
 
-    public void setGroupsRequested(boolean groupsRequested) {
+    public void setGroupsRequested(Boolean groupsRequested) {
         this.isGroupsRequested = groupsRequested;
     }
 
-    public boolean isPastEventsRquested() {
+    public Boolean isPastEventsRquested() {
         return isPastEventsRquested;
     }
 
-    public void setPastEventsRquested(boolean pastEventsRquested) {
+    public void setPastEventsRquested(Boolean pastEventsRquested) {
         this.isPastEventsRquested = pastEventsRquested;
     }
 
-    public boolean isFutureEventsRequested() {
+    public Boolean isFutureEventsRequested() {
         return isFutureEventsRequested;
     }
 
-    public void setFutureEventsRequested(boolean futureEventsRequested) {
+    public void setFutureEventsRequested(Boolean futureEventsRequested) {
         this.isFutureEventsRequested = futureEventsRequested;
     }
 
-    public boolean isPhotosRequested() {
+    public Boolean isPhotosRequested() {
         return isPhotosRequested;
     }
 
-    public void setPhotosRequested(boolean photosRequested) {
+    public void setPhotosRequested(Boolean photosRequested) {
         this.isPhotosRequested = photosRequested;
     }
 
-    public boolean isPrivateMessagesRequested() {
+    public Boolean isPrivateMessagesRequested() {
         return isPrivateMessagesRequested;
     }
 
-    public void setPrivateMessagesRequested(boolean privateMessagesRequested) {
+    public void setPrivateMessagesRequested(Boolean privateMessagesRequested) {
         this.isPrivateMessagesRequested = privateMessagesRequested;
     }
 
-    public boolean isGroupInfoRequested() {
+    public Boolean isGroupInfoRequested() {
         return isGroupInfoRequested;
     }
 
-    public void setGroupInfoRequested(boolean groupInfoRequested) {
+    public void setGroupInfoRequested(Boolean groupInfoRequested) {
         this.isGroupInfoRequested = groupInfoRequested;
     }
 
-    public boolean isIPLogRequested() {
+    public Boolean isIPLogRequested() {
         return isIPLogRequested;
     }
 
-    public void setIPLogRequested(boolean IPLogRequested) {
+    public void setIPLogRequested(Boolean IPLogRequested) {
         this.isIPLogRequested = IPLogRequested;
     }
 
@@ -461,5 +467,13 @@ public class Request {
 
     public void setWarrant(Blob warrant) {
         this.warrant = warrant;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

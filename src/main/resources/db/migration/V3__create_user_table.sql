@@ -10,9 +10,7 @@ CREATE TABLE user (
   firstName       VARCHAR(256),
   userName        VARCHAR(256) UNIQUE,
   password        VARCHAR(256),
+  salt            VARCHAR(256),
   accountEnabled  BIT,
   userCreatedDate TIMESTAMP
 );
-
-INSERT INTO user (userId, userType, lastName, firstName, username, password, accountEnabled, userCreatedDate)
-VALUES (1, "LAW_ENFORCEMENT_OFFICER", "Smalltown", "Sam", "SaSm", "pw", TRUE, CURDATE());

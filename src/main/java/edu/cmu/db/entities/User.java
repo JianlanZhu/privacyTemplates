@@ -33,6 +33,9 @@ public class User implements Principal {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "salt")
+    private String salt;
+
     @Column(name = "accountEnabled")
     private boolean accountEnabled;
 
@@ -102,6 +105,14 @@ public class User implements Principal {
 
     public void setUserCreatedDate(Instant userCreatedDate) {
         this.userCreatedDate = userCreatedDate;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override
