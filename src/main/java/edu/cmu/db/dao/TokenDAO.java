@@ -1,11 +1,9 @@
 package edu.cmu.db.dao;
 
 import edu.cmu.db.entities.Token;
-import edu.cmu.db.entities.User;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

@@ -9,7 +9,7 @@ public class ListAllRequestsView extends View {
 
     private List<Request> requests;
 
-    public ListAllRequestsView(List<Request> requests){
+    public ListAllRequestsView(List<Request> requests) {
         super("listAllRequests.mustache");
         this.requests = requests;
     }

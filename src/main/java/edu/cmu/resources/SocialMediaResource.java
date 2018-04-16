@@ -23,13 +23,13 @@ public class SocialMediaResource {
 
     private RequestDAO requestDAO;
 
-    public SocialMediaResource(RequestDAO requestDAO){
+    public SocialMediaResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
     }
 
     @GET
     @Path("/unansweredRequests")
-    public View listAllUnansweredRequests(){
+    public View listAllUnansweredRequests() {
         return new UnansweredRequestsView();
     }
 
@@ -48,16 +48,18 @@ public class SocialMediaResource {
         DataUploadInput parsedInput = generateRequestInput.getValueAs(DataUploadInput.class);
 
         Optional<Request> requestOptional = requestDAO.findById(parsedInput.getRequestId());
-        if(requestOptional.isPresent()){
+        if (requestOptional.isPresent()) {
             Request request = requestOptional.get();
-            if(request.getStatus() == null || request.getStatus().equals("FILED")){
+            if (request.getStatus() == null || request.getStatus().equals("FILED")) {
                 boolean success = requestDAO.updateStatus(request.getRequestID(), "ANSWERED");
-                if(!success){ throw new NotFoundException(); }
+                if (!success) {
+                    throw new NotFoundException();
+                }
                 // TODO handle uploaded data
-            } else{
+            } else {
                 throw new BadRequestException("Request has already been answered or rejected.");
             }
-        } else{
+        } else {
             throw new BadRequestException("Request ID invalid");
         }
 

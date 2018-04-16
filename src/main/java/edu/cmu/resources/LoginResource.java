@@ -37,7 +37,7 @@ public class LoginResource {
     public Response getAuthenticationToken(LoginInput loginInput) {
         Optional<User> userOptional = userDAO.findByUsername(loginInput.getUsername());
 
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             throw new NotAuthorizedException("Invalid username / password");
         }
 
@@ -48,7 +48,7 @@ public class LoginResource {
                 .hashString(salt + loginInput.getPassword(), StandardCharsets.UTF_8)
                 .toString().toUpperCase();
 
-        if(!userOptional.get().getPassword().equals(hashedPassword)){
+        if (!userOptional.get().getPassword().equals(hashedPassword)) {
             throw new NotAuthorizedException("Invalid username / password");
         }
 

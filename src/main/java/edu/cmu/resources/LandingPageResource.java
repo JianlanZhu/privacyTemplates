@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 public class LandingPageResource {
 
     @GET
-    public View showLandingPage(){
+    public View showLandingPage() {
         return new LandingPageView();
     }
 

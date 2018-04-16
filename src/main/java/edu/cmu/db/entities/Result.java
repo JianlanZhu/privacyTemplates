@@ -1,7 +1,6 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.sql.Blob;
 
 @Entity
