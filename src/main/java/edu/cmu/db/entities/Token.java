@@ -10,7 +10,9 @@ import java.time.Instant;
 @Table(name = "token")
 @NamedQueries({
         @NamedQuery(name = "edu.cmu.db.entities.Token.findUserByToken",
-                query = "select t from Token t where t.token = :token")
+                query = "select t from Token t where t.token = :token"),
+        @NamedQuery(name = "edu.cmu.db.entities.Token.deleteToken",
+                query = "delete from Token t where t.token = :token")
 })
 public class Token {
 

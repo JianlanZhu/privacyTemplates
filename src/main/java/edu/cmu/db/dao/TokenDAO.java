@@ -23,4 +23,9 @@ public class TokenDAO extends AbstractDAO<Token> {
     public Optional<Token> findUserByToken(String token) {
         return namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
     }
+
+    public void deleteToken(String token) {
+        Optional<Token> tokenOptional = namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
+        tokenOptional.ifPresent(t -> currentSession().delete(t));
+    }
 }

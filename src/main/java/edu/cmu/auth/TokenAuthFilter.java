@@ -8,6 +8,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Cookie;
 
 @PreMatching
 @Priority(Priorities.AUTHENTICATION)
@@ -20,10 +21,12 @@ public class TokenAuthFilter extends AuthFilter<String, User> {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        String token = requestContext.getCookies().get("pepToken").getValue();
-        if (token == null) {
+        Cookie cookie = requestContext.getCookies().get("pepToken");
+        if (cookie == null) {
             throw new NotAuthorizedException("No token present.");
         }
+
+        String token = cookie.getValue();
         super.authenticate(requestContext, token, "Bearer");
     }
 }

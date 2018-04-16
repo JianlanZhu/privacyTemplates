@@ -9,15 +9,19 @@ import edu.cmu.db.entities.User;
 import edu.cmu.resources.interaction.LoginInput;
 import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("/login")
 public class LoginResource {
@@ -31,7 +35,6 @@ public class LoginResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public Response getAuthenticationToken(LoginInput loginInput) {
@@ -64,6 +67,21 @@ public class LoginResource {
         NewCookie newCookie = new NewCookie(cookie);
 
         return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(token).cookie(newCookie).build();
+    }
+
+    @POST
+    @Path("/logout")
+    @UnitOfWork
+    public Response logout(@Context HttpServletRequest requestContext) {
+        javax.servlet.http.Cookie[] cookies = requestContext.getCookies();
+        if (cookies != null) {
+            List<String> tokens = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("pepToken")).map(javax.servlet.http.Cookie::getValue).collect(Collectors.toList());
+            tokens.forEach(token -> {
+                System.out.println("" + token);
+                tokenDAO.deleteToken(token);
+            });
+        }
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
 }
