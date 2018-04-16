@@ -100,7 +100,7 @@
         <configuration>
           <url>jdbc:mysql://localhost:3306/privacyTemplates</url>
           <user>root</user>
-          <password>root</password>
+          <password>Epsproject18;</password>
         </configuration>
       </plugin>
     </plugins>
@@ -112,12 +112,6 @@
       <version>1.2.4</version>
       <type>pom</type>
       <scope>import</scope>
-    </dependency>
-    <dependency>
-      <!-- jsoup HTML parser library @ https://jsoup.org/ -->
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.11.2</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>

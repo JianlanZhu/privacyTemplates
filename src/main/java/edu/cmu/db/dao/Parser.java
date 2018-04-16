@@ -29,8 +29,8 @@ public class Parser {
     private static final String HTML = "html";
     private static final int BUFFER_SIZE = 4096;
     private static final String DESTINATION_PATH = "src/main/resources/data";
-    private Random conversationIDGen = new Random();
-    private Random messageIDGen = new Random();
+//    private Random conversationIDGen = new Random();
+//    private Random messageIDGen = new Random();
 
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
@@ -107,6 +107,12 @@ public class Parser {
             Timestamp sentTime = null; // message sent time
             String content = null; // message content
             String participants = null; // message participants
+            // get participants
+            String[] strs = conv.first().ownText().split(":");
+            participants = strs[1].trim();
+            conversation.setParticipants(participants);
+            // update participants information
+            conversation = conversationDAO.persistNewConversation(conversation);
             int count = 0; // count the number of valid tags
 
             // find all participants
@@ -168,9 +174,9 @@ public class Parser {
                 }
             }
             // get all participants
-            participants = String.join(",", par);
-            conversation.setParticipants(participants);
-            conversation = conversationDAO.persistNewConversation(conversation);
+//            participants = String.join(",", par);
+//            conversation.setParticipants(participants);
+
             // store conversation to database
 //            System.out.println("participants: " + conversation.getParticipants());
 //            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
