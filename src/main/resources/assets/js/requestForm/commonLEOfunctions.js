@@ -1,7 +1,6 @@
 function loadLEONav() {
     loadHeader();
     var navBar = getElement('navLEO');
-    alert("Hi!");
     navBar.innerHTML =
         '<div id="navDiv">' +
         '<ul class="nav navbar-nav">\n' +
