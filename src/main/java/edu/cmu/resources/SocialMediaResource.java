@@ -10,8 +10,9 @@ import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
-import edu.cmu.resources.interaction.DataUploadInput;
-import edu.cmu.resources.views.UnansweredRequestsView;
+import edu.cmu.db.enums.RequestState;
+import edu.cmu.resources.views.ListAllRequestsForSmeView;
+import edu.cmu.resources.views.UploadDataFormView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -27,9 +28,14 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 @Path("/socialMedia")
 @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
@@ -39,7 +45,6 @@ public class SocialMediaResource {
     private ResultDAO resultDAO;
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
-    private Random resultIDGen = new Random();
 
     public SocialMediaResource(RequestDAO requestDAO, ResultDAO resultDAO,
                                ConversationDAO conversationDAO, MessageDAO messageDAO) {
@@ -50,35 +55,52 @@ public class SocialMediaResource {
     }
 
     @GET
-    @Path("/unansweredRequests")
+    @Path("/requests")
+    @UnitOfWork
     public View listAllUnansweredRequests() {
-        return new UnansweredRequestsView();
+        List<Request> pendingRequests = requestDAO.findAllWithStatus(RequestState.PENDING);
+        List<Request> rejectedRequests = requestDAO.findAllWithStatus(RequestState.REJECTED);
+        List<Request> answeredRequests = requestDAO.findAllWithStatus(RequestState.ANSWERED);
+        List<Request> closedRequests = requestDAO.findAllWithStatus(RequestState.CLOSED);
+        return new ListAllRequestsForSmeView(pendingRequests, rejectedRequests, answeredRequests, closedRequests);
     }
 
     @POST
     @Path("DataUploadForm")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
     @UnitOfWork
     @Timed
     public void uploadData(@Auth User user,
                            @FormDataParam("data") final FormDataBodyPart fileField,
-                           @FormDataParam("information") FormDataBodyPart generateRequestInput) {
+                           @FormDataParam("caseID") FormDataBodyPart requestId,
+                           @FormDataParam("comment") FormDataBodyPart comment) {
 
-        System.out.println("Hi Jay!");
-        generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        DataUploadInput parsedInput = generateRequestInput.getValueAs(DataUploadInput.class);
+        if (fileField != null) {
+            InputStream warrantFileInputStream = new BufferedInputStream(fileField.getValueAs(InputStream.class));
+            try {
+                // getNextEntry returns null if the InputStream is not a zip file
+                if (new ZipInputStream(warrantFileInputStream).getNextEntry() == null) {
+                    throw new BadRequestException("Uploaded file was not a zip file!");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-        Optional<Request> requestOptional = requestDAO.findById(parsedInput.getRequestId());
+        requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
+        int requestIdNumber = Integer.parseInt(requestId.getValue());
+        comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
+
+
+        Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
         if (requestOptional.isPresent()) {
             Request request = requestOptional.get();
-            if (request.getStatus() == null || request.getStatus().equals("FILED")) {
-                boolean success = requestDAO.updateStatus(request.getRequestID(), "ANSWERED");
+            if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
+                boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
                 if (!success) {
                     throw new NotFoundException();
                 }
-                // TODO handle uploaded data
+                // TODO handle uploaded data participants
                 if (fileField != null) {
                     int SMEUserID = user.getUserID();
                     // find a result ID
@@ -120,6 +142,14 @@ public class SocialMediaResource {
             throw new BadRequestException("Request ID invalid");
         }
         System.out.println("upload over");
+    }
+
+    @GET
+    @Path("DataUploadForm")
+    @UnitOfWork
+    @Timed
+    public UploadDataFormView getUploadForm() {
+        return new UploadDataFormView();
     }
 
 }

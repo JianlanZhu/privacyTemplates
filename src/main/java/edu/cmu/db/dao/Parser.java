@@ -25,20 +25,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Parser {
-    private static final String MESSAGE_PATH = "src/main/resources/SomeonesData";
     private static final String HTML = "html";
     private static final int BUFFER_SIZE = 4096;
     private static final String DESTINATION_PATH = "src/main/resources/data";
-    private Random conversationIDGen = new Random();
-    private Random messageIDGen = new Random();
 
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
     private String topDirectory;
     private int resultId;
-
-//    private int conversationid = 1; // just for testing
-//    private int messageid = 1; // just for testing
 
     public Parser() {
     }
@@ -61,7 +55,7 @@ public class Parser {
     /**
      * parseMessageFiles is used to parse all message files under message directory.
      */
-    private void parseMessageFiles(String path) throws IOException {
+    private void parseMessageFiles(String path) {
         // store in conversation table
         File directory = new File(path);
         File[] messageFiles = directory.listFiles();
@@ -71,7 +65,6 @@ public class Parser {
                 Conversation conversation = new Conversation();
                 conversation.setResultID(resultId);
                 conversation = conversationDAO.persistNewConversation(conversation);
-//                System.out.println("*****************************" + file.getName() + "******************************");
                 // parse each message file
                 parseOneMessageFile(file, conversation);
             }
@@ -86,8 +79,6 @@ public class Parser {
      */
     private void parseOneMessageFile(File file, Conversation conversation) {
         if (file != null && Files.getFileExtension(file.getName()).equals(HTML)) {
-//            conversationid++;
-
             // parse html file
             Document doc;
             try {
@@ -103,10 +94,16 @@ public class Parser {
             // message class stored to db
             Message thisMessage = new Message();
             // elements
-            String sender = null; // message sender
-            Timestamp sentTime = null; // message sent time
-            String content = null; // message content
-            String participants = null; // message participants
+            String sender; // message sender
+            Timestamp sentTime; // message sent time
+            String content; // message content
+            String participants; // message participants
+            // get participants
+            String[] strs = conv.first().ownText().split(":");
+            participants = strs[1].trim();
+            conversation.setParticipants(participants);
+            // update participants information
+            conversation = conversationDAO.persistNewConversation(conversation);
             int count = 0; // count the number of valid tags
 
             // find all participants
@@ -130,8 +127,6 @@ public class Parser {
                     thisMessage.setMessageSender(sender);
                     thisMessage.setStartingTime(sentTime);
                     thisMessage.setConversationID(conversation.getConversationID());
-//                    thisMessage.setConversationID(conversationid); // just for testing
-//                    thisMessage.setMessageID(messageid++);
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
@@ -148,13 +143,6 @@ public class Parser {
                             System.out.println("Error long text: " + thisMessage.getMessageContent());
                             ee.printStackTrace();
                         }
-                        // print the result for checking
-//                        System.out.println("conversationId: " + thisMessage.getConversationID());
-//                        System.out.println("messageId: " + thisMessage.getMessageID());
-//                        System.out.println(thisMessage.getMessageSender());
-//                        System.out.println(thisMessage.getStartingTime());
-//                        System.out.println(thisMessage.getMessageContent() + "\n");
-                        // store the new record to db
                     } else if (count == 1) {
                         count++;
                     } else if (count == 2) {
@@ -167,13 +155,6 @@ public class Parser {
                     }
                 }
             }
-            // get all participants
-            participants = String.join(",", par);
-            conversation.setParticipants(participants);
-            conversation = conversationDAO.persistNewConversation(conversation);
-            // store conversation to database
-//            System.out.println("participants: " + conversation.getParticipants());
-//            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
         }
     }
 
@@ -181,9 +162,9 @@ public class Parser {
      * unzip is used to unzip a zip file.
      *
      * @param in zip file input stream
-     * @throws IOException
+     * @throws IOException io exception
      */
-    public void unzip(InputStream in) throws IOException {
+    private void unzip(InputStream in) throws IOException {
         boolean isTopLevel = true;
         File destDir = new File(DESTINATION_PATH);
         if (!destDir.exists()) {
@@ -215,9 +196,9 @@ public class Parser {
     /**
      * extractFile is used to unzip a single file.
      *
-     * @param zipIn
-     * @param filePath
-     * @throws IOException
+     * @param zipIn input stream of zip file
+     * @param filePath path of file needed to be unzipped
+     * @throws IOException io exception
      */
     private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
@@ -287,6 +268,11 @@ public class Parser {
         return DESTINATION_PATH;
     }
 
+    /**
+     * deleteFileOrFolder is used to delte a file or an empty folder.
+     * @param path file path
+     * @throws IOException io exception
+     */
     public static void deleteFileOrFolder(Path path) throws IOException {
         java.nio.file.Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
             @Override public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
@@ -312,21 +298,4 @@ public class Parser {
             }
         });
     }
-
-    //    public static void main(String[] args) {
-//        // for testing
-//        String path = "src/main/resources/SomeonesData/messages/297.html";
-//        String directory = "/Users/jlzhu/Desktop/SomeonesData/messages";
-//        Parser parser = new Parser();
-//        /*
-//        File file = new File(path);
-//        // test parseOneMessageFile
-//        parseOneMessageFile(file);
-//        */
-//        try {
-//            parser.parseMessageFiles(directory);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
