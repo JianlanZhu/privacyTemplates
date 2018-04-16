@@ -45,7 +45,6 @@ public class SocialMediaResource {
     private ResultDAO resultDAO;
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
-//    private Random resultIDGen = new Random();
 
     public SocialMediaResource(RequestDAO requestDAO, ResultDAO resultDAO,
                                ConversationDAO conversationDAO, MessageDAO messageDAO) {

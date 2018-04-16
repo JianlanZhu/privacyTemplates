@@ -117,9 +117,6 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
-        // parsing
-
-
     }
 
 }
