@@ -1,9 +1,8 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.sql.Blob;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "video")

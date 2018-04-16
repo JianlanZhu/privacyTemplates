@@ -1,7 +1,6 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Table(name = "keywordcategory")
@@ -40,7 +39,6 @@ public class KeywordCategory {
     public String getCategory() {
         return category;
     }
-
 
 
     public void setCategory(String category) {

@@ -42,9 +42,39 @@ public class RequestResource {
     }
 
     /**
+     * Respsonsible for backend mediation. Should check fo data formats etc.. NOT for business logic!
+     *
+     * @param input the incoming request.
+     * @return true if data format is valid, false otherwise.
+     */
+    private static void checkInputValidity(GenerateRequestInput input) {
+        if (input.getSuspectUserName() == null) {
+            throw new BadRequestException("Invalid user name.");
+        }
+
+        if (input.getCaseID() <= 0) {
+            // TODO maybe replace with actual check whether case is present in data base?
+            throw new BadRequestException("Invalid case ID.");
+        }
+
+        try {
+            // for now, case type can either be null, or oe of the values specified in the enum
+            if (input.getCaseType() != null) {
+                // will throw exception if case type is invalid
+                CaseType.valueOf(input.getCaseType());
+            }
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid Case Type.");
+        }
+
+        //TODO additional checks
+    }
+
+    /**
      * Endpoint for creating a new request.
+     *
      * @param generateRequestInput Parameters for the generated request
-     * @param fileField The warrant file
+     * @param fileField            The warrant file
      * @return the generated request including generated fields like ID.
      */
     @POST
@@ -63,7 +93,7 @@ public class RequestResource {
         checkInputValidity(parsedInput);
 
         Blob warrantBlob = null;
-        if(fileField != null) {
+        if (fileField != null) {
             InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
 
             try {
@@ -80,43 +110,15 @@ public class RequestResource {
             Request request = new Request(user.getUserID(), parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new BadRequestException("Malformed Request");
         }
-    }
-
-    /**
-     * Respsonsible for backend mediation. Should check fo data formats etc.. NOT for business logic!
-     * @param input the incoming request.
-     * @return true if data format is valid, false otherwise.
-     */
-    private static void checkInputValidity(GenerateRequestInput input) {
-        if(input.getSuspectUserName() == null){
-            throw new BadRequestException("Invalid user name.");
-        }
-
-        if(input.getCaseID() <= 0){
-            // TODO maybe replace with actual check whether case is present in data base?
-            throw new BadRequestException("Invalid case ID.");
-        }
-
-        try{
-            // for now, case type can either be null, or oe of the values specified in the enum
-            if(input.getCaseType() != null){
-                // will throw exception if case type is invalid
-                CaseType.valueOf(input.getCaseType());
-            }
-        } catch (IllegalArgumentException e){
-            throw new BadRequestException("Invalid Case Type.");
-        }
-
-        //TODO additional checks
     }
 
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/requestForm")
-    public View showGenerateRequestView(){
+    public View showGenerateRequestView() {
         return new GenerateRequestView();
     }
 

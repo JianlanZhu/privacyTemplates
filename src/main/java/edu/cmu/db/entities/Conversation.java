@@ -2,7 +2,6 @@ package edu.cmu.db.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.Instant;
 
 @Entity
 @Table(name = "conversation")
