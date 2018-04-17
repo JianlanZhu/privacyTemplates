@@ -14,9 +14,10 @@
     <script type="text/javascript">
         $(function () {
             loadLEONav();
-            addRow();
+            //addRow();
         });
     </script>
+
 </head>
 <body>
     <div id="header"></div>
@@ -27,11 +28,16 @@
             <thead>
             <tr>
                 <th>Case ID</th>
-                <th>Case Descriptions</th>
-                <th>See Links</th>
+                <th>User Name</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>
+                {{#requests}}<tr>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/requests}}
             </tbody>
         </table>
     </div>
