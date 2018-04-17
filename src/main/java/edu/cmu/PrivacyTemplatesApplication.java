@@ -3,20 +3,8 @@ package edu.cmu;
 import edu.cmu.auth.AppAuthorizer;
 import edu.cmu.auth.TokenAuthFilter;
 import edu.cmu.auth.TokenAuthenticator;
-import edu.cmu.auth.UserAuthenticator;
-import edu.cmu.db.dao.ConversationDAO;
-import edu.cmu.db.dao.MessageDAO;
-import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.dao.ResultDAO;
-import edu.cmu.db.dao.TokenDAO;
-import edu.cmu.db.dao.UserDAO;
-import edu.cmu.db.entities.Conversation;
-import edu.cmu.db.entities.Message;
-import edu.cmu.db.entities.Request;
-import edu.cmu.db.entities.Token;
-import edu.cmu.db.entities.Result;
-import edu.cmu.db.entities.RetentionType;
-import edu.cmu.db.entities.User;
+import edu.cmu.db.dao.*;
+import edu.cmu.db.entities.*;
 import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.LoginResource;
 import edu.cmu.resources.RequestResource;
@@ -48,7 +36,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
             Result.class,
             Conversation.class,
             Message.class,
-            RetentionType.class
+            RetentionType.class,
             User.class,
             Token.class
     ) {
