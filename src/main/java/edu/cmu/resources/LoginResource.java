@@ -102,7 +102,7 @@ public class LoginResource {
                 tokenDAO.deleteToken(token);
             });
         }
-        return Response.status(Response.Status.NO_CONTENT).build();
+        return Response.status(Response.Status.OK).entity("http://localhost:8080/login").build();
     }
 
 }

@@ -2,7 +2,9 @@
 
 function logout(){
     var url = "/logout";
-    postData(url, null, "", null);
+    postData(url, null, "", function (url){
+        window.location.assign(url);
+    });
 }
 
 function loadHeader(showLogout) {
