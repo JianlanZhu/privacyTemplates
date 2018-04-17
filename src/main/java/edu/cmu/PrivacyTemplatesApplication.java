@@ -92,7 +92,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         ConversationDAO conversationDao = new ConversationDAO(sessionFactory);
 
         environment.jersey().register(new RequestResource(requestDAO));
-        environment.jersey().register(new LoginResource(tokenDAO, userDAO));
+        environment.jersey().register(new LoginResource(tokenDAO, userDAO, requestDAO));
         environment.jersey().register(new LandingPageResource());
         environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
 

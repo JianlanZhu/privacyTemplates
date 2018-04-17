@@ -2,18 +2,21 @@ package edu.cmu.resources;
 
 import com.google.common.hash.Hashing;
 import edu.cmu.core.util.SecureTokenGenerator;
+import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.TokenDAO;
 import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Token;
 import edu.cmu.db.entities.User;
+import edu.cmu.db.enums.UserType;
 import edu.cmu.resources.interaction.LoginInput;
+import edu.cmu.resources.views.LeoHomeView;
+import edu.cmu.resources.views.LoginView;
+import edu.cmu.resources.views.SmeHomeView;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.dropwizard.views.View;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -28,10 +31,18 @@ public class LoginResource {
 
     private TokenDAO tokenDAO;
     private UserDAO userDAO;
+    private RequestDAO requestDAO;
 
-    public LoginResource(TokenDAO tokenDAO, UserDAO userDAO) {
+    public LoginResource(TokenDAO tokenDAO, UserDAO userDAO, RequestDAO requestDAO) {
         this.tokenDAO = tokenDAO;
         this.userDAO = userDAO;
+        this.requestDAO = requestDAO;
+    }
+
+    @GET
+    @Path("/login")
+    public LoginView login(){
+        return new LoginView();
     }
 
     @POST
@@ -56,6 +67,15 @@ public class LoginResource {
             throw new NotAuthorizedException("Invalid username / password");
         }
 
+        View nextView = null;
+        if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
+            nextView = new LeoHomeView();
+        } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
+            nextView = new SmeHomeView();
+        } else {
+            throw new BadRequestException("unknown role");
+        }
+
         String tokenString = SecureTokenGenerator.nextToken();
         Instant instant = Instant.now();
         instant.plus(Duration.ofMinutes(60));
@@ -67,7 +87,7 @@ public class LoginResource {
         Cookie cookie = new Cookie("pepToken", tokenString);
         NewCookie newCookie = new NewCookie(cookie);
 
-        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(token).cookie(newCookie).build();
+        return Response.status(Response.Status.OK).type(MediaType.TEXT_HTML_TYPE).entity(nextView).cookie(newCookie).build();
     }
 
     @POST

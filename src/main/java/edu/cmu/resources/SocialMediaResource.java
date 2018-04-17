@@ -1,12 +1,7 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import edu.cmu.db.dao.ConversationDAO;
-import edu.cmu.db.dao.MessageDAO;
-import edu.cmu.db.dao.Parser;
-import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.dao.ResultDAO;
-import edu.cmu.db.entities.Conversation;
+import edu.cmu.db.dao.*;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
@@ -22,19 +17,12 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 @Path("/socialMedia")

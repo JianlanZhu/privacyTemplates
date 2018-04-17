@@ -128,7 +128,6 @@ public class RequestResource {
 
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @Produces(MediaType.TEXT_HTML)
     @Path("/all")
     @UnitOfWork
     public View listAllRequestsForLeo(@Auth User user) {

@@ -1,22 +1,24 @@
 //All functions related to request form
 
 //Global variable pertaining to reuestForm
-var caseNo = "caseNumber";
+var caseNo = "caseID";
 var suspectUsrName = "suspectUserName";
-var profileLink = "inputProfileLink";
-var fName = "inputFirstName";
-var lName = "inputLastName";
-var emailID = "inputEmailAddress";
-var phNo = "inputPhoneNo";
+var profileLink = "profileLink";
+var fName = "firstName";
+var lName = "lastName";
+var emailID = "email";
+var phNo = "phoneNumber";
+var sDate = "dtPickerStartDate";
+var eDate = "dtPickerEndDate";
 
 //Function validates all the form elements
 function validate() {
     if (validateCaseDetails()) {
         if (validateBasicInfo()) {
-            var form = getElement("RegForm");
+            var form = getElement("ReqForm");
             var url = "/request/requestForm";
             var inputData = generateFormData(form);
-            postData(url, inputData, showResponseFromServer);
+            postData(url, inputData, "multipart/form-data", showResponseFromServer);
             return true;
         }
     }
@@ -49,8 +51,8 @@ function validateBasicInfo() {
         return false;
     }
 
-    var startDate = $("#dtPickerStartDate").datepicker('getFormattedDate');
-    var endDate = $("#dtPickerEndDate").datepicker('getFormattedDate');
+    var startDate = $("#"+sDate).datepicker('getFormattedDate');
+    var endDate = $("#"+eDate).datepicker('getFormattedDate');
     if (startDate == "" || endDate == "") {
         $('[href="#basicInfo"]').tab('show');
         showAlert("basicTime", "Enter start time and end time");

@@ -1,9 +1,22 @@
 //Global functions that will be used by all js files
 
-function loadHeader(getFolderLevelToAssets) {
+function logout(){
+    alert("logout");
+}
+
+function loadHeader(showLogout) {
+    if(showLogout === undefined)
+        showLogout = true;
     var header = getElement('header');
-    header.innerHTML =
-        '<div class="row" style="height:10px;"></div>' +
+    header.innerHTML = '';
+    if(showLogout){
+        header.innerHTML =
+            '<div class="row">' +
+            '<button type="button" class="btn btn-default btn-space btn-sm pull-right" onclick=logout()>\n' +
+            '    <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
+            '</button>';
+    }
+    header.innerHTML +=
         '<div class="container-fluid">\n' +
         '  <div class="row">\n' +
         '    <div class="col-sm-2">\n' +
@@ -54,17 +67,32 @@ function hideError(itemId) {
 //Generates all the form data and returns the JSON object
 //The input is the form element
 //Currently only text type data has been parsed.
-//ToDo: Checkbox and multi-select must be parsed correctly
 function generateFormData(form) {
     var formData = {};
+    try{
     for (var i = 0; i < form.elements.length; i++) {
         //Temporarily adding this until everything is setup in server!!!
-        if (i == 3)
-            break;
+
         var element = form.elements[i];
-        if (element.type === "text" || element.type === "email" || element.type === "number") {
-            formData[form.elements[i].id] = form.elements[i].value;
+        if (element.type === "text" || element.type === "email" || element.type === "number" || element.type == "select-one") {
+            formData[element.id] = element.value;
+        }else if (element.type === "checkbox") {
+            formData[element.id] = element.checked;
         }
+        else if (element.type === "select-multiple") {
+            var value = element.chosen;
+            if (value === undefined)
+                value = "";
+            formData[element.id] = value;
+        }
+        else {
+            alert(element.type);
+        }
+        }
+        alert(JSON.stringify(formData));
+    }
+    catch(e){
+        alert(e);
     }
     return formData;
 }
@@ -74,10 +102,10 @@ function generateFormData(form) {
 //data: data to be posted
 //onResponse: the function that must be executed when server responds
 //Return the response text
-function postData(url, data, onResponse) {
+function postData(url, data, requestHeader, onResponse) {
     var XHR = new XMLHttpRequest();
     XHR.open("POST", url);
-    XHR.setRequestHeader("content-type", "application/json");
+    XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
             if (XHR.status == 200) {
