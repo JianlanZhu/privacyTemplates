@@ -71,7 +71,7 @@ public class LoginResource {
         if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
             nextView = "http://localhost:8080/leoHome";//new LeoHomeView();
         } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
-            nextView = "http://localhost:8080/smeHome";//new SmeHomeView();
+            nextView = "http://localhost:8080/socialMedia/smeHome";//new SmeHomeView();
         } else {
             throw new BadRequestException("unknown role");
         }

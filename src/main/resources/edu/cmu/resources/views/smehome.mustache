@@ -28,15 +28,15 @@
             </tr>
             </thead>
             <tbody>
-                {{#pendingRequests}}
+                {{#allRequests}}
+                <tr>
                 <td>{{requestID}}</td>
                 <td>{{caseID}}</td>
                 <td>{{status}}</td>
-                {{/pendingRequests}}
+                </tr>
+                {{/allRequests}}
             </tbody>
         </table>
-        </div>
     </div>
-</body>
 </body>
 </html>

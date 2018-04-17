@@ -7,6 +7,7 @@ import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.views.ListAllRequestsForSmeView;
+import edu.cmu.resources.views.SmeHomeView;
 import edu.cmu.resources.views.UploadDataFormView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -40,6 +41,14 @@ public class SocialMediaResource {
         this.resultDAO = resultDAO;
         this.conversationDAO = conversationDAO;
         this.messageDAO = messageDAO;
+    }
+
+    @GET
+    @Path("/smeHome")
+    @UnitOfWork
+    public View smeHome() {
+        List<Request> allRequestsToUser = requestDAO.findAll();
+        return new SmeHomeView(allRequestsToUser);
     }
 
     @GET
