@@ -4,7 +4,7 @@ function loadSmeNav() {
     navBar.innerHTML =
         '<div id="navDiv">' +
         '<ul class="nav navbar-nav">\n' +
-        '  <li id="smeHome"><a href="/socialMedia/smeHome" >' +
+        '  <li id="smeHome"><a href="/smeHome" >' +
         '\<span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home - View Requests</a></li>\n' +
         '</ul>' +
         '</div>';

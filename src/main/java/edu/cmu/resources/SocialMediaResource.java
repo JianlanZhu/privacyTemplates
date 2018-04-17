@@ -44,14 +44,6 @@ public class SocialMediaResource {
     }
 
     @GET
-    @Path("/smeHome")
-    @UnitOfWork
-    public View smeHome() {
-        List<Request> allRequestsToUser = requestDAO.findAll();
-        return new SmeHomeView(allRequestsToUser);
-    }
-
-    @GET
     @Path("/requests")
     @UnitOfWork
     public View listAllUnansweredRequests() {

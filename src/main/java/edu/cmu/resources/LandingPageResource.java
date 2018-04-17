@@ -1,6 +1,7 @@
 package edu.cmu.resources;
 
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.views.LeoHomeView;
 import edu.cmu.resources.views.LoginView;
@@ -12,6 +13,7 @@ import io.dropwizard.views.View;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("/")
@@ -36,7 +38,8 @@ public class LandingPageResource {
     @UnitOfWork
     @Path("smeHome")
     public View smeHome(@Auth User user) {
-        return new SmeHomeView();
+        List<Request> allRequestsToUser = requestDAO.findAll();
+        return new SmeHomeView(allRequestsToUser);
     }
 
     @GET
