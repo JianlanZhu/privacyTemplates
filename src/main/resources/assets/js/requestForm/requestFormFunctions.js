@@ -18,7 +18,7 @@ function validate() {
             var form = getElement("ReqForm");
             var url = "/request/requestForm";
             var inputData = generateFormData(form);
-            postData(url, inputData, "multipart/form-data", showResponseFromServer);
+            postData(url, inputData, "application/json", showResponseFromServer);
             return true;
         }
     }

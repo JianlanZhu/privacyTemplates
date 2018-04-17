@@ -121,7 +121,7 @@ public class Request {
     private String filterKeywords;
 
     @Column(name = "filterKeywordsCategory")
-    private String filterKeywordsCategory;
+    private Integer filterKeywordsCategory;
 
     @Column(name = "filterLocation")
     private String filterLocation;
@@ -140,7 +140,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, String filterKeywordsCategory, String filterLocation, Blob warrant) {
+    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant) {
         this.requestCreatedDate = Instant.now();
         this.createdBy = createdBy;
         this.caseID = caseID;
@@ -433,11 +433,11 @@ public class Request {
         this.filterKeywords = filterKeywords;
     }
 
-    public String getFilterKeywordsCategory() {
+    public Integer getFilterKeywordsCategory() {
         return filterKeywordsCategory;
     }
 
-    public void setFilterKeywordsCategory(String filterKeywordsCategory) {
+    public void setFilterKeywordsCategory(Integer filterKeywordsCategory) {
         this.filterKeywordsCategory = filterKeywordsCategory;
     }
 

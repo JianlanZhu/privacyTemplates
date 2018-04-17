@@ -67,11 +67,11 @@ public class LoginResource {
             throw new NotAuthorizedException("Invalid username / password");
         }
 
-        View nextView = null;
+        String nextView = null;
         if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
-            nextView = new LeoHomeView();
+            nextView = "http://localhost:8080/leoHome";//new LeoHomeView();
         } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
-            nextView = new SmeHomeView();
+            nextView = "http://localhost:8080/smeHome";//new SmeHomeView();
         } else {
             throw new BadRequestException("unknown role");
         }
@@ -87,7 +87,7 @@ public class LoginResource {
         Cookie cookie = new Cookie("pepToken", tokenString);
         NewCookie newCookie = new NewCookie(cookie);
 
-        return Response.status(Response.Status.OK).type(MediaType.TEXT_HTML_TYPE).entity(nextView).cookie(newCookie).build();
+        return Response.status(Response.Status.OK).entity(nextView).cookie(newCookie).build();
     }
 
     @POST
@@ -102,7 +102,7 @@ public class LoginResource {
                 tokenDAO.deleteToken(token);
             });
         }
-        return Response.status(Response.Status.NO_CONTENT).build();
+        return Response.status(Response.Status.OK).entity("http://localhost:8080/login").build();
     }
 
 }

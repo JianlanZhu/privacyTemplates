@@ -1,7 +1,6 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Request;
@@ -16,16 +15,12 @@ import edu.cmu.resources.views.ListAllRequestsForLeoView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
-import javax.sql.rowset.serial.SerialBlob;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Blob;
+import java.time.Instant;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +60,7 @@ public class RequestResource {
             // for now, case type can either be null, or oe of the values specified in the enum
             if (input.getCaseType() != null) {
                 // will throw exception if case type is invalid
-                CaseType.valueOf(input.getCaseType());
+                CaseType.valueOf(input.getCaseType().toUpperCase());
             }
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid Case Type.");
@@ -83,21 +78,18 @@ public class RequestResource {
      */
     @POST
     @Path("/requestForm")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Timed
     public Request generateRequest(@Auth User user,
-                                   @FormDataParam("warrantFile") final FormDataBodyPart fileField,
-                                   @FormDataParam("requestInformation") FormDataBodyPart generateRequestInput) {
-        generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        GenerateRequestInput parsedInput = generateRequestInput.getValueAs(GenerateRequestInput.class);
+                                   GenerateRequestInput parsedInput) {
 
         checkInputValidity(parsedInput);
 
         Blob warrantBlob = null;
-        if (fileField != null) {
+       /* if (fileField != null) {
             InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
 
             try {
@@ -109,14 +101,15 @@ public class RequestResource {
                 throw new InternalServerErrorException("Failed to handle uploaded warrant.");
             }
         }
-
+        */
         try {
-            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
+            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), Instant.EPOCH, Instant.EPOCH, parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Malformed Request");
         }
+
     }
 
     @GET

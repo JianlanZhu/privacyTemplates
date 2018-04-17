@@ -1,7 +1,10 @@
 //Global functions that will be used by all js files
 
 function logout(){
-    alert("logout");
+    var url = "/logout";
+    postData(url, null, "", function (url){
+        window.location.assign(url);
+    });
 }
 
 function loadHeader(showLogout) {
@@ -12,9 +15,9 @@ function loadHeader(showLogout) {
     if(showLogout){
         header.innerHTML =
             '<div class="row">' +
-            '<button type="button" class="btn btn-default btn-space btn-sm pull-right" onclick=logout()>\n' +
+            '<button type="button" class="btn btn-info btn-space btn-sm pull-right" onclick=logout()>\n' +
             '    <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
-            '</button>';
+            '</button></div>';
     }
     header.innerHTML +=
         '<div class="container-fluid">\n' +
@@ -105,7 +108,8 @@ function generateFormData(form) {
 function postData(url, data, requestHeader, onResponse) {
     var XHR = new XMLHttpRequest();
     XHR.open("POST", url);
-    XHR.setRequestHeader("content-type", requestHeader);
+    if(requestHeader !== "")
+        XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
             if (XHR.status == 200) {
@@ -117,4 +121,20 @@ function postData(url, data, requestHeader, onResponse) {
         }
     };
     XHR.send(JSON.stringify(data));
+}
+
+function postDataSync(url, data, requestHeader){
+    jQuery.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+            request.setRequestHeader("content-type", requestHeader);
+        },
+        url: url,
+        data: data,
+        success: function(result) {
+            if(result.isOk == false)
+                alert(result.message);
+        },
+        async:   false
+    });
 }
