@@ -191,7 +191,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/privacyTemplates</url>
                     <user>root</user>
-                    <password>asdf3ASDF</password>
+                    <password>root</password>
                 </configuration>
                 <!--
                 <dependencies>
