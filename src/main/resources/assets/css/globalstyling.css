@@ -14,5 +14,6 @@ multiselect{
 }
 
 button.btn-space {
-    margin-right: 10px;
+    margin-right: 20px;
+    padding-right: 10px;
 }

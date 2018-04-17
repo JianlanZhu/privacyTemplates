@@ -12,9 +12,9 @@ function loadHeader(showLogout) {
     if(showLogout){
         header.innerHTML =
             '<div class="row">' +
-            '<button type="button" class="btn btn-default btn-space btn-sm pull-right" onclick=logout()>\n' +
+            '<button type="button" class="btn btn-info btn-space btn-sm pull-right" onclick=logout()>\n' +
             '    <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
-            '</button>';
+            '</button></div>';
     }
     header.innerHTML +=
         '<div class="container-fluid">\n' +
