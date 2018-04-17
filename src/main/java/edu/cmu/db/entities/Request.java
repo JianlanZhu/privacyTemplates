@@ -2,7 +2,6 @@ package edu.cmu.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.Instant;

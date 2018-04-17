@@ -34,14 +34,9 @@ public class SocialMediaResource {
     }
 
     @GET
-    @Path("/requests")
-    @UnitOfWork
+    @Path("/unansweredRequests")
     public View listAllUnansweredRequests() {
-        List<Request> pendingRequests = requestDAO.findAllWithStatus(RequestState.PENDING);
-        List<Request> rejectedRequests = requestDAO.findAllWithStatus(RequestState.REJECTED);
-        List<Request> answeredRequests = requestDAO.findAllWithStatus(RequestState.ANSWERED);
-        List<Request> closedRequests = requestDAO.findAllWithStatus(RequestState.CLOSED);
-        return new ListAllRequestsForSmeView(pendingRequests, rejectedRequests, answeredRequests, closedRequests);
+        return new UnansweredRequestsView();
     }
 
     @POST

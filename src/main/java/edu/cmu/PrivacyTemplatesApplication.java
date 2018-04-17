@@ -1,19 +1,22 @@
 package edu.cmu;
 
 import edu.cmu.auth.AppAuthorizer;
-import edu.cmu.auth.UserAuthenticator;
+import edu.cmu.auth.TokenAuthFilter;
+import edu.cmu.auth.TokenAuthenticator;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.dao.TokenDAO;
 import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.Token;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.LandingPageResource;
+import edu.cmu.resources.LoginResource;
 import edu.cmu.resources.RequestResource;
 import edu.cmu.resources.SocialMediaResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -33,7 +36,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
             Request.class,
-            User.class
+            User.class,
+            Token.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(
@@ -80,22 +84,19 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
         RequestDAO requestDAO = new RequestDAO(sessionFactory);
+        TokenDAO tokenDAO = new TokenDAO(sessionFactory);
+        UserDAO userDAO = new UserDAO(sessionFactory);
 
         environment.jersey().register(new RequestResource(requestDAO));
+        environment.jersey().register(new LoginResource(tokenDAO, userDAO));
         environment.jersey().register(new LandingPageResource());
         environment.jersey().register(new SocialMediaResource(requestDAO));
 
-        UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
-                .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
+        TokenAuthenticator tokenAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+                .create(TokenAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
 
         environment.jersey().register(
-                new AuthDynamicFeature(
-                        new BasicCredentialAuthFilter.Builder<User>()
-                                .setAuthenticator(userAuthenticator)
-                                .setAuthorizer(new AppAuthorizer())
-                                .setRealm("Basic Auth Realm")
-                                .buildAuthFilter()
-                )
+                new AuthDynamicFeature(new TokenAuthFilter(tokenAuthenticator, new AppAuthorizer()))
         );
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);

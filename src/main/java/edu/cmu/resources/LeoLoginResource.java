@@ -1,9 +1,5 @@
 package edu.cmu.resources;
 
-import io.dropwizard.views.View;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 @Path("/LeoLogin")

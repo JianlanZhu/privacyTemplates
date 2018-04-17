@@ -118,15 +118,6 @@ public class RequestResource {
 
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @Produces(MediaType.APPLICATION_JSON)
-    @UnitOfWork
-    @Path("/all")
-    public GetRequestsOutput getRequests(@Auth User user){
-        return new GetRequestsOutput(requestDAO.findAllForUser(user.getUserID()));
-    }
-
-    @GET
-    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/requestForm")
     public View showGenerateRequestView() {
         return new GenerateRequestView();
@@ -134,7 +125,6 @@ public class RequestResource {
 
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @Produces(MediaType.TEXT_HTML)
     @Path("/all")
     @UnitOfWork
     public View listAllRequestsForLeo(@Auth User user){
