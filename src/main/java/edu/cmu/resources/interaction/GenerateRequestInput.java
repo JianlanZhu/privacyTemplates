@@ -1,11 +1,8 @@
 package edu.cmu.resources.interaction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.Instant;
 
 /**
  * POJO representing the input we receive from the frontend when a request is generated from the form.
@@ -42,7 +39,7 @@ public class GenerateRequestInput {
     private boolean isStatusHistoryReuested;
     private String communicantsUserNames;
     private String keywords;
-    private String keywordCategories;
+    private Integer keywordCategories;
     private String locationZipCode;
     private String startTime;
     private String endTime;
@@ -51,7 +48,7 @@ public class GenerateRequestInput {
         // Jackson deserialization
     }
 
-    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, String requestedDataStartDate, String requestedDataEndDate, boolean isSharesRequested, Boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, String keywordCategories, String locationZipCode, String startTime, String endTime) {
+    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, String requestedDataStartDate, String requestedDataEndDate, boolean isSharesRequested, Boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, Integer keywordCategories, String locationZipCode, String startTime, String endTime) {
         this.caseID = caseID;
         //this.userID = userID;
         this.suspectUserName = suspectUserName;
@@ -228,7 +225,7 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public String getKeywordCategories() {
+    public Integer getKeywordCategories() {
         return keywordCategories;
     }
 

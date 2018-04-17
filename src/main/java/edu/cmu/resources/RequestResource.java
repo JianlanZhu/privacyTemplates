@@ -1,31 +1,21 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
-import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
-import edu.cmu.resources.interaction.GetRequestsOutput;
 import edu.cmu.resources.views.GenerateRequestView;
 import edu.cmu.resources.views.ListAllRequestsForLeoView;
-import edu.cmu.resources.views.ListAllRequestsForSmeView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
-import javax.sql.rowset.serial.SerialBlob;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Blob;
-import java.sql.SQLException;
 import java.time.Instant;
 
 /**
@@ -63,7 +53,7 @@ public class RequestResource {
             // for now, case type can either be null, or oe of the values specified in the enum
             if (input.getCaseType() != null) {
                 // will throw exception if case type is invalid
-                CaseType.valueOf(input.getCaseType());
+                CaseType.valueOf(input.getCaseType().toUpperCase());
             }
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid Case Type.");
