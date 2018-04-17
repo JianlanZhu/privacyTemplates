@@ -11,28 +11,30 @@ function loadHeader(showLogout) {
     if(showLogout === undefined)
         showLogout = true;
     var header = getElement('header');
-    header.innerHTML = '';
-    if(showLogout){
-        header.innerHTML =
-            '<div class="row">' +
-            '<button type="button" class="btn btn-info btn-space btn-sm pull-right" onclick=logout()>\n' +
-            '    <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
-            '</button></div>';
-    }
-    header.innerHTML +=
+
+    var str =
         '<div class="container-fluid">\n' +
         '  <div class="row">\n' +
         '    <div class="col-sm-2">\n' +
         '      <img src="/assets/images/PEPLogo.JPG" class="img-responsive" width="304" height="236">' +
         '    </div>' +
-        '    <div class="col-sm-8">\n' +
-        '      <h1 class="text-primary text-center">PEP for LESM</h1>' +
+        '    <div class="col-sm-10">\n';
+    if(showLogout) {
+        str +=
+            '      <div class="row">\n' +
+            '       <button type="button" class="btn btn-info btn-space btn-sm pull-right" onclick=logout()>\n' +
+            '         <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
+            '      </button>' +
+            '      </div>';
+    }
+    str +=
+        '      <div class="row">' +
+        '      <h1 class="text-primary col-sm-offset-3">PEP for LESM</h1>' +
+        '      </div>' +
         '    </div>' +
-        '  </div>' +
-        '  <div class="row" style="height:50px;>\n' +
-        '    </div>' +
-        '</div>' +
-        '<div class="col-xs-12" style="height:40px;"></div>';
+        '  </div>'
+        '</div>';
+    header.innerHTML = str;
 }
 
 //Returns true if data is an empty string, else false
