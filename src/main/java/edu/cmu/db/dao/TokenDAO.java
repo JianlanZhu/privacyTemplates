@@ -1,11 +1,9 @@
 package edu.cmu.db.dao;
 
 import edu.cmu.db.entities.Token;
-import edu.cmu.db.entities.User;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,5 +22,10 @@ public class TokenDAO extends AbstractDAO<Token> {
 
     public Optional<Token> findUserByToken(String token) {
         return namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
+    }
+
+    public void deleteToken(String token) {
+        Optional<Token> tokenOptional = namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
+        tokenOptional.ifPresent(t -> currentSession().delete(t));
     }
 }

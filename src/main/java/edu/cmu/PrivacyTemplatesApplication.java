@@ -1,7 +1,8 @@
 package edu.cmu;
 
 import edu.cmu.auth.AppAuthorizer;
-import edu.cmu.auth.UserAuthenticator;
+import edu.cmu.auth.TokenAuthFilter;
+import edu.cmu.auth.TokenAuthenticator;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.TokenDAO;
 import edu.cmu.db.dao.UserDAO;
@@ -16,8 +17,6 @@ import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -26,7 +25,6 @@ import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import org.eclipse.jetty.server.session.SessionHandler;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.hibernate.SessionFactory;
 
@@ -94,17 +92,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(new LandingPageResource());
         environment.jersey().register(new SocialMediaResource(requestDAO));
 
-        UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
-                .create(UserAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
+        TokenAuthenticator tokenAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+                .create(TokenAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
 
         environment.jersey().register(
-                new AuthDynamicFeature(
-                        new OAuthCredentialAuthFilter.Builder<User>()
-                                .setAuthenticator(userAuthenticator)
-                                .setAuthorizer(new AppAuthorizer())
-                                .setPrefix("Bearer")
-                                .buildAuthFilter()
-                )
+                new AuthDynamicFeature(new TokenAuthFilter(tokenAuthenticator, new AppAuthorizer()))
         );
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);

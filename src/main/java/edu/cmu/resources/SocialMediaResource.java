@@ -5,7 +5,7 @@ import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
-import edu.cmu.resources.views.ListAllRequestsForSmeView;
+import edu.cmu.resources.views.UnansweredRequestsView;
 import edu.cmu.resources.views.UploadDataFormView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
 
@@ -34,14 +33,9 @@ public class SocialMediaResource {
     }
 
     @GET
-    @Path("/requests")
-    @UnitOfWork
+    @Path("/unansweredRequests")
     public View listAllUnansweredRequests() {
-        List<Request> pendingRequests = requestDAO.findAllWithStatus(RequestState.PENDING);
-        List<Request> rejectedRequests = requestDAO.findAllWithStatus(RequestState.REJECTED);
-        List<Request> answeredRequests = requestDAO.findAllWithStatus(RequestState.ANSWERED);
-        List<Request> closedRequests = requestDAO.findAllWithStatus(RequestState.CLOSED);
-        return new ListAllRequestsForSmeView(pendingRequests, rejectedRequests, answeredRequests, closedRequests);
+        return new UnansweredRequestsView();
     }
 
     @POST

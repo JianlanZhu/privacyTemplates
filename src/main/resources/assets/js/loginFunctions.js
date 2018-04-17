@@ -6,7 +6,8 @@ function login(){
     inputData = {};
     inputData.username = uName.value;
     inputData.password = pwd.value;
-    postData(url, inputData, "application/json", showResponseFromServer);
+    //postData(url, inputData, "application/json", showResponseFromServer);
+    postDataSync(url, inputData, "application/json");
 }
 
 //Temporarily adding this function for prototype 1

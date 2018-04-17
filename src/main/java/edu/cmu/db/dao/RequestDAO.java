@@ -32,9 +32,9 @@ public class RequestDAO extends AbstractDAO<Request> {
 
     public boolean updateStatus(long requestID, RequestState status) {
         Optional<Request> requestOptional = findById(requestID);
-        if(!requestOptional.isPresent()){
+        if (!requestOptional.isPresent()) {
             return false;
-        } else{
+        } else {
             Request request = requestOptional.get();
             request.setStatus(status.name());
             persist(request);

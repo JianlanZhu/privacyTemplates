@@ -8,17 +8,19 @@ import io.dropwizard.hibernate.UnitOfWork;
 
 import java.util.Optional;
 
-public class UserAuthenticator implements Authenticator<String, User> {
+public class TokenAuthenticator implements Authenticator<String, User> {
 
     private TokenDAO tokenDAO;
 
-    public UserAuthenticator(TokenDAO tokenDAO) {
+    public TokenAuthenticator(TokenDAO tokenDAO) {
         this.tokenDAO = tokenDAO;
     }
 
     @UnitOfWork
     @Override
     public Optional<User> authenticate(String token) {
-        return tokenDAO.findUserByToken(token).map(Token::getUser);
+        Optional<Token> tokenOptional = tokenDAO.findUserByToken(token);
+        Optional<User> userOptional = tokenOptional.map(Token::getUser);
+        return userOptional;
     }
 }
