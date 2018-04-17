@@ -100,7 +100,7 @@ public class SocialMediaResource {
                 if (!success) {
                     throw new NotFoundException();
                 }
-                // TODO handle uploaded data participants
+                // handle uploaded data participants
                 if (fileField != null) {
                     int SMEUserID = user.getUserID();
                     // find a result ID
@@ -108,11 +108,8 @@ public class SocialMediaResource {
                     result.setSMEUserID(SMEUserID);
                     // hard code, just for testing
                     result.setRetentionID(1);
-//                    result.setResultID(1); // just for testing
                     // store to db
                     result = resultDAO.persistNewResult(result);
-
-//                    int resultID = result.getResultID();
                     // begin parsing
                     InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
                     Parser parser = new Parser(conversationDAO, messageDAO, result.getResultID());
@@ -125,7 +122,6 @@ public class SocialMediaResource {
                         resultDAO.deleteResultByID(result.getResultID());
                     }
                     // delete files under data folder
-
                     java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
                     try {
                         Parser.deleteFileOrFolder(path);
