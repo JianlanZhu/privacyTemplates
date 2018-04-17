@@ -1,7 +1,11 @@
 package edu.cmu.db.entities;
 
+import org.hibernate.mapping.ToOne;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "conversation")
@@ -13,16 +17,22 @@ import java.sql.Timestamp;
 public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @ManyToOne
     private int conversationID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "resultID")
     private Result result;
 
     @Column(name = "participants")
     private String participants;
 
+    @OneToMany
+    @JoinColumn(name = "conversationID")
+    private List<Message> messages;
+
     public Conversation() {
+        this.messages = new ArrayList<>();
     }
 
     public int getConversationID() {
@@ -47,5 +57,13 @@ public class Conversation {
 
     public void setParticipants(String participants) {
         this.participants = participants;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

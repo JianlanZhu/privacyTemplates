@@ -67,6 +67,7 @@ public class Parser {
                 conversation = conversationDAO.persistNewConversation(conversation);
                 // parse each message file
                 parseOneMessageFile(file, conversation);
+
             }
         }
     }
@@ -102,8 +103,7 @@ public class Parser {
             String[] strs = conv.first().ownText().split(":");
             participants = strs[1].trim();
             conversation.setParticipants(participants);
-            // update participants information
-            conversation = conversationDAO.persistNewConversation(conversation);
+
             int count = 0; // count the number of valid tags
 
             // find all participants
@@ -127,6 +127,7 @@ public class Parser {
                     thisMessage.setMessageSender(sender);
                     thisMessage.setStartingTime(sentTime);
                     thisMessage.setConversation(conversation);
+//                    thisMessage.getConversation().getMessages().add(thisMessage);
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
@@ -139,6 +140,8 @@ public class Parser {
                         // store this message
                         try {
                             thisMessage = messageDAO.persistNewMessage(thisMessage);
+                            thisMessage.getConversation().getMessages().add(thisMessage);
+
                         } catch (Exception ee) {
                             System.out.println("Error long text: " + thisMessage.getMessageContent());
                             ee.printStackTrace();
@@ -155,6 +158,9 @@ public class Parser {
                     }
                 }
             }
+            // update participants information
+            conversation = conversationDAO.persistNewConversation(conversation);
+            conversation.getResult().getConversations().add(conversation);
         }
     }
 
