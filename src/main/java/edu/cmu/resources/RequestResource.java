@@ -20,8 +20,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Blob;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -129,16 +129,8 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Path("/{id}")
-    public View getConversationInfo(@PathParam("id") int id) {
-        Optional<Request> requestOptional = requestDAO.findById(id);
-        Optional<Result> resultOptional = requestOptional.map(r -> r.getResult());
-
-        if (!resultOptional.isPresent() || resultOptional.get() == null) {
-            throw new NotFoundException("No results found");
-        }
-
-        List<Conversation> conversations = resultOptional.get().getConversations();
-
+    public View getRequestDetails(@PathParam("id") int id) {
+        List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
         return new ConversationInfoView(conversations);
     }
 }
