@@ -16,7 +16,7 @@ public class User implements Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userID;
+    private int userID;
 
     @Column(name = "userType")
     private String userType;
@@ -42,11 +42,11 @@ public class User implements Principal {
     @Column(name = "userCreatedDate")
     private Instant userCreatedDate;
 
-    public long getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 

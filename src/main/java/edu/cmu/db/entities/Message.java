@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int messageID;
+    private long messageID;
 
     @Column(name = "messageContent")
     private String messageContent;
@@ -37,11 +37,11 @@ public class Message {
         this.conversationID = conversationID;
     }
 
-    public int getMessageID() {
+    public long getMessageID() {
         return messageID;
     }
 
-    public void setMessageID(int messageID) {
+    public void setMessageID(long messageID) {
         this.messageID = messageID;
     }
 

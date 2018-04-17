@@ -15,17 +15,16 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int conversationID;
 
-    @Column(name = "startingTime")
-    private Timestamp startingTime;
-
     @Column(name = "resultID")
     private int resultID;
+
+    @Column(name = "participants")
+    private String participants;
 
     public Conversation() {
     }
 
-    public Conversation(Timestamp startingTime, int resultID) {
-        this.startingTime = startingTime;
+    public Conversation(int resultID) {
         this.resultID = resultID;
     }
 
@@ -37,19 +36,19 @@ public class Conversation {
         this.conversationID = conversationID;
     }
 
-    public Timestamp getStartingTime() {
-        return startingTime;
-    }
-
-    public void setStartingTime(Timestamp startingTime) {
-        this.startingTime = startingTime;
-    }
-
     public int getResultID() {
         return resultID;
     }
 
     public void setResultID(int resultID) {
         this.resultID = resultID;
+    }
+
+    public String getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(String participants) {
+        this.participants = participants;
     }
 }

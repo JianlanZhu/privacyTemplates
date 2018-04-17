@@ -2,6 +2,8 @@ package edu.cmu.db.entities;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "result")
@@ -19,18 +21,18 @@ public class Result {
     @Column(name = "SMEUserID")
     private int SMEUserID;
 
-    @Column(name = "rawResult")
-    private Blob rawResult;
-
     @Column(name = "retentionID")
     private int retentionID;
+
+    @OneToMany
+    @JoinColumn(name = "resultID")
+    private List<Conversation> conversations;
 
     public Result() {
     }
 
     public Result(int SMEUserID, Blob rawResult, int retentionID) {
         this.SMEUserID = SMEUserID;
-        this.rawResult = rawResult;
         this.retentionID = retentionID;
     }
 
@@ -50,19 +52,19 @@ public class Result {
         this.SMEUserID = SMEUserID;
     }
 
-    public Blob getRawResult() {
-        return rawResult;
-    }
-
-    public void setRawResult(Blob rawResult) {
-        this.rawResult = rawResult;
-    }
-
     public int getRetentionID() {
         return retentionID;
     }
 
     public void setRetentionID(int retentionID) {
         this.retentionID = retentionID;
+    }
+
+    public List<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations;
     }
 }
