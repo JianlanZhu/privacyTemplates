@@ -172,17 +172,18 @@ public class RequestResource {
         return new ConversationInfoView(conversations);
     }
 
-//    @GET
-//    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-//    @UnitOfWork
-//    @Path("/{id}/conversations")
-//    @Timed
-//    public View getfilteredConversationInfo(@PathParam("id") int id,
-//                                            @FormDataParam("sender") FormDataBodyPart senderName) {
-//        if (senderName != null) {
-//            String name = senderName.getValueAs(String.class);
-//        }
-//        List<Conversation> conversations =
-//    }
+    @POST
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @UnitOfWork
+    @Path("/{id}/conversations")
+    public View getfilteredConversationInfo(@PathParam("id") int id,
+                                            @FormDataParam("sender") FormDataBodyPart senderName) {
+        String name = null;
+        if (senderName != null) {
+            name = senderName.getValueAs(String.class);
+        }
+        List<Conversation> conversations = conversationDAO.findByParticipant(id, name);
+        return new ConversationInfoView(conversations);
+    }
 }
 

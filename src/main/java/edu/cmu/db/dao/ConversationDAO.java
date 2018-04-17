@@ -35,12 +35,12 @@ public class ConversationDAO extends AbstractDAO<Conversation> {
         return conversation;
     }
 
-    public Optional<Conversation> findByParticipant(int resultID, String participantName) {
-//        CriteriaBuilder builder = currentSession().getCriteriaBuilder();
-//        Query query = builder.createQuery("select * from conversation where resultID =" + resultID + " and participants like \'%" + participantName + "\'%");
-//        query.setP
+    public List<Conversation> findByParticipant(int resultID, String participantName) {
+        CriteriaBuilder builder = currentSession().getCriteriaBuilder();
+        Session session = currentSession().getSessionFactory().openSession();
+        Query query = session.createQuery("select * from conversation where resultID =" + resultID + " and participants like \'%" + participantName + "%\'");
+        List<Conversation> conversations = query.getResultList();
 
-//        Criteria criteria =
-        return null;
+        return conversations;
     }
 }
