@@ -1,7 +1,7 @@
 CREATE TABLE keywordcategory (
-  categoryId          INT NOT NULL AUTO_INCREMENT,
+  categoryId INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (categoryId),
-  category        VARCHAR(256),
-  keywords        VARCHAR(256)
-  );
+  category   VARCHAR(256),
+  keywords   VARCHAR(256)
+);
 

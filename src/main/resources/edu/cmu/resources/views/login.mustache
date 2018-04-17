@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Law Enforcement Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/globalstyling.css">
+    <script src="/assets/js/globalFunctions.js"></script>
+    <script src="/assets/js/loginFunctions.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            loadHeader();
+        });
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <div class="row" style="height:60px;"></div>
+        <div class="row">
+            <div class="col-sm-6" >
+                <label class="pull-right" for="uname"><b>Enter Username: </b></label>
+            </div>
+            <div class="col-sm-6" >
+                <input type="text" placeholder="Enter Username" id="uname" required>
+            </div>
+        </div>
+        <div class="row" style="height:30px;"></div>
+        <div class="row">
+            <div class="col-sm-6" >
+                <label class="pull-right" for="psw"><b>Enter Password: </b></label>
+            </div>
+            <div class="col-sm-6" >
+                <input type="password" placeholder="Enter Password" id="psw" required>
+            </div>
+        </div>
+        <div class="row" style="height:60px;"></div>
+    </div>
+    <div class="container text-center">
+        <button class="btn btn-primary" style="width:300px" type="submit">Login</button>
+    </div>
+</body>
+</html>

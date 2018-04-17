@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    tbody {
+        overflow-y: scroll;
+    }
+</style>
+<head>
+    <title>Law Enforcement Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- cdn source for date picker-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+
+    <!-- cdn source for time picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.js"></script>
+
+    <!--JS files for filtering and displaying final results-->
+    <script src="filterResultFunctions.js"></script>
+    <script src="../globalFunctions.js"></script>
+
+</head>
+<body>
+
+<!--Different Tabs-->
+<div class="container">
+    <div class="page-header">
+        <h2>Results</h2>
+    </div>
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#info" data-toggle="tab">
+                Profile Contact Information
+            </a>
+        </li>
+        <li>
+            <a href="#status" data-toggle="tab">
+                Status Update History
+            </a>
+        </li>
+        <li>
+            <a href="#shares" data-toggle="tab">
+                Shares
+            </a>
+        </li>
+        <li>
+            <a href="#notes" data-toggle="tab">
+                Notes
+            </a>
+        </li>
+        <li>
+            <a href="#posting" data-toggle="tab">
+                Wall Postings
+            </a>
+        </li>
+        <li class="dropdown">
+            <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown"> Friends Listing
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                <li><a href="#friend" tabindex="-1" data-toggle="tab">Friends Listing</a></li>
+                <li><a href="#group" tabindex="-1" data-toggle="tab">Group Listing</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#video" data-toggle="tab">
+                Video Listing
+            </a>
+        </li>
+        <li class="dropdown">
+            <a href="#event" id="myTabDrop2" class="dropdown-toggle" data-toggle="dropdown">Event
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop2">
+                <li><a href="#past" tabindex="-1" data-toggle="tab">Past Event</a></li>
+                <li><a href="#future" tabindex="-1" data-toggle="tab">Future Event</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#photo" data-toggle="tab">
+                User Photos
+            </a>
+        </li>
+        <li>
+            <a href="#msg" data-toggle="tab">
+                Private Messages
+            </a>
+        </li>
+        <li>
+            <a href="#log" data-toggle="tab">
+                IP Logs
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!--Content for different tabs-->
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade container active" id="info">
+        <h4>Contact information!</h4>
+    </div>
+    <div class="tab-pane fade container" id="status">
+        <h4>Status update history!</h4>
+    </div>
+    <div class="tab-pane fade container" id="shares">
+        <h4>Shares!</h4>
+    </div>
+    <div class="tab-pane fade container" id="notes">
+        <h4>Notes!</h4>
+    </div>
+    <div class="tab-pane fade container" id="posting">
+        <h4>Wall posting!</h4>
+    </div>
+    <div class="tab-pane fade container" id="video">
+        <h4>Video listing!</h4>
+    </div>
+    <div class="tab-pane fade container" id="photo">
+        <h4>User photos!</h4>
+    </div>
+    <div class="tab-pane fade container" id="friend">
+        <h4>Friend listing!</h4>
+    </div>
+    <div class="tab-pane fade container" id="group">
+        <h4>Group listing!</h4>
+    </div>
+    <div class="tab-pane fade container" id="future">
+        <h4>Future event!</h4>
+    </div>
+    <div class="tab-pane fade conatiner" id="past">
+        <h4>Past event!</h4>
+    </div>
+    <div class="tab-pane fade container" id="log">
+        <h4>IP logs!</h4>
+    </div>
+    <div class="tab-pane fade container" id="msg">
+        <div class="row">
+            <div class="col-sm-9 container" id="msg_detail">
+                <h4>Hint: click to see the detail of messages!</h4>
+                <table id="myMessageTable"
+                       width="100%"
+                       class="table table-hover table-bordered"
+                       data-show-refresh="true"
+                       data-show-toggle="true"
+                       style="float: right"
+                       clickToSelect="true">
+                    <thead style="background-color: aliceblue">
+                    <tr>
+                        <th style="text-align: center">COMMUNICATIONS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    <tr>
+                        <th>monday</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--current version is kinda ugly, may modify that in the future-->
+            <div class="col-sm-3" id="msg_filter">
+                <div style="position: fixed">
+                    <h4>More Filters:</h4>
+                    <div class="form-group">
+                        <label for="sender">From:</label>
+                        <input type="text"  class="form-control" id="sender" placeholder="Enter sender name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="receiver">To:</label>
+                        <input type="text" class="form-control" id="receiver" placeholder="Enter receiver name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="text" class="form-control" id="date" placeholder="Enter date" onfocus="hideError()"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="keyword">Keyword:</label>
+                        <input type="text" class="form-control" id="keyword" placeholder="Enter keyword" onfocus="hideError()"/>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary" onclick="validFilters()">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

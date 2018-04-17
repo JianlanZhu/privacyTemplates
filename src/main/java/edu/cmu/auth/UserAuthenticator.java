@@ -39,7 +39,7 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
 
         if(userOptional.get().getPassword().equals(hashedPassword)){
             return userOptional;
-        } else{
+        } else {
             return Optional.empty();
         }
     }

@@ -57,7 +57,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     /**
      * Enables serving static assets.
      */
-    private final AssetsBundle viewAssets = new AssetsBundle("/js", "/js");
+    private final AssetsBundle viewAssets = new AssetsBundle("/assets", "/assets");
 
     /**
      * Main entry point.

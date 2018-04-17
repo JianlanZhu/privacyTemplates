@@ -42,5 +42,7 @@ CREATE TABLE request (
   status                        VARCHAR(256) CHECK (
     status = 'PENDING' OR status = 'REJECTED' OR status = 'ANSWERED' OR status = 'CLOSED'
   ),
+  resultID                      INT,
+  FOREIGN KEY (resultID) REFERENCES result (resultID),
   warrant                       LONGBLOB
 );

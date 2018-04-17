@@ -1,5 +1,5 @@
 CREATE TABLE contenttype (
-  contentTypeID          INT NOT NULL AUTO_INCREMENT,
+  contentTypeID   INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (contentTypeID),
-  contentTypeName        VARCHAR(256)
+  contentTypeName VARCHAR(256)
 );

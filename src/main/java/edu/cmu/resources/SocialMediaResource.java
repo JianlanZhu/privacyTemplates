@@ -110,6 +110,8 @@ public class SocialMediaResource {
                     result.setRetentionID(1);
                     // store to db
                     result = resultDAO.persistNewResult(result);
+                    request.setResult(result);
+//                    int resultID = result.getResultID();
                     // begin parsing
                     InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
                     Parser parser = new Parser(conversationDAO, messageDAO, result);
