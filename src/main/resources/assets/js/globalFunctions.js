@@ -62,7 +62,6 @@ function generateFormData(form) {
 
         var element = form.elements[i];
         if (element.type === "text" || element.type === "email" || element.type === "number" || element.type == "select-one") {
-            //alert(form.elements[i].id + " " + form.elements[i].value);
             formData[element.id] = element.value;
         }else if (element.type === "checkbox") {
             formData[element.id] = element.checked;
@@ -90,10 +89,10 @@ function generateFormData(form) {
 //data: data to be posted
 //onResponse: the function that must be executed when server responds
 //Return the response text
-function postData(url, data, onResponse) {
+function postData(url, data, requestHeader, onResponse) {
     var XHR = new XMLHttpRequest();
     XHR.open("POST", url);
-    XHR.setRequestHeader("content-type", "multipart/form-data");
+    XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
             if (XHR.status == 200) {

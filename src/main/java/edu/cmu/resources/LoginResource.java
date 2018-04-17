@@ -7,6 +7,7 @@ import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Token;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.interaction.LoginInput;
+import edu.cmu.resources.views.LoginView;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.*;
@@ -29,8 +30,12 @@ public class LoginResource {
         this.userDAO = userDAO;
     }
 
+    @GET
+    public LoginView login(){
+        return new LoginView();
+    }
+
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public Token getAuthenticationToken(LoginInput loginInput){
