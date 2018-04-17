@@ -54,17 +54,33 @@ function hideError(itemId) {
 //Generates all the form data and returns the JSON object
 //The input is the form element
 //Currently only text type data has been parsed.
-//ToDo: Checkbox and multi-select must be parsed correctly
 function generateFormData(form) {
     var formData = {};
+    try{
     for (var i = 0; i < form.elements.length; i++) {
         //Temporarily adding this until everything is setup in server!!!
-        if (i == 3)
-            break;
+
         var element = form.elements[i];
-        if (element.type === "text" || element.type === "email" || element.type === "number") {
-            formData[form.elements[i].id] = form.elements[i].value;
+        if (element.type === "text" || element.type === "email" || element.type === "number" || element.type == "select-one") {
+            //alert(form.elements[i].id + " " + form.elements[i].value);
+            formData[element.id] = element.value;
+        }else if (element.type === "checkbox") {
+            formData[element.id] = element.checked;
         }
+        else if (element.type === "select-multiple") {
+            var value = element.chosen;
+            if (value === undefined)
+                value = "";
+            formData[element.id] = value;
+        }
+        else {
+            alert(element.type);
+        }
+        }
+        alert(JSON.stringify(formData));
+    }
+    catch(e){
+        alert(e);
     }
     return formData;
 }
@@ -77,7 +93,7 @@ function generateFormData(form) {
 function postData(url, data, onResponse) {
     var XHR = new XMLHttpRequest();
     XHR.open("POST", url);
-    XHR.setRequestHeader("content-type", "application/json");
+    XHR.setRequestHeader("content-type", "multipart/form-data");
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
             if (XHR.status == 200) {

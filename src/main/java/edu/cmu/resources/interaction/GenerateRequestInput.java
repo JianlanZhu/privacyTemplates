@@ -9,7 +9,7 @@ import java.time.Instant;
  */
 public class GenerateRequestInput {
     private long caseID;
-    private long userID;
+    //private long userID;
     private String suspectUserName;
     private String caseType;
     private String profileLink;
@@ -39,14 +39,16 @@ public class GenerateRequestInput {
     private String keywords;
     private String keywordCategories;
     private String locationZipCode;
+    private String startTime;
+    private String endTime;
 
     public GenerateRequestInput() {
         // Jackson deserialization
     }
 
-    public GenerateRequestInput(long caseID, long userID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, String keywordCategories, String locationZipCode) {
+    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, String keywordCategories, String locationZipCode, String startTime, String endTime) {
         this.caseID = caseID;
-        this.userID = userID;
+        //this.userID = userID;
         this.suspectUserName = suspectUserName;
         this.caseType = caseType;
         this.profileLink = profileLink;
@@ -76,6 +78,8 @@ public class GenerateRequestInput {
         this.keywords = keywords;
         this.keywordCategories = keywordCategories;
         this.locationZipCode = locationZipCode;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @JsonProperty
@@ -83,14 +87,24 @@ public class GenerateRequestInput {
         return caseID;
     }
 
-    @JsonProperty
+    /*@JsonProperty
     public long getUserID() {
         return userID;
-    }
+    }*/
 
     @JsonProperty
     public String getSuspectUserName() {
         return suspectUserName;
+    }
+
+    @JsonProperty
+    public String getStartTime() {
+        return startTime;
+    }
+
+    @JsonProperty
+    public String getEndTime() {
+        return endTime;
     }
 
     @JsonProperty
