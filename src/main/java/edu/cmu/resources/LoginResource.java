@@ -11,10 +11,7 @@ import edu.cmu.resources.views.LoginView;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -36,6 +33,7 @@ public class LoginResource {
     }
 
     @GET
+    @Path("/login")
     public LoginView login(){
         return new LoginView();
     }
