@@ -24,7 +24,7 @@ public class Message {
     @Column(name = "messageSender")
     private String messageSender;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "conversationID")
     private Conversation conversation;
 

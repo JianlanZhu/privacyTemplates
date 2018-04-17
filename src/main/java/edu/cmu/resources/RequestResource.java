@@ -1,8 +1,12 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.io.ByteStreams;
+import edu.cmu.db.dao.ConversationDAO;
+import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Conversation;
+import edu.cmu.db.entities.Message;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
@@ -15,6 +19,8 @@ import edu.cmu.resources.views.ListAllRequestsForLeoView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -34,9 +40,17 @@ public class RequestResource {
      * Responsible for accessing the database.
      */
     private RequestDAO requestDAO;
+    private ConversationDAO conversationDAO;
+    private MessageDAO messageDAO;
 
-    public RequestResource(RequestDAO requestDAO) {
+//    public RequestResource(RequestDAO requestDAO) {
+//        this.requestDAO = requestDAO;
+//    }
+
+    public RequestResource(RequestDAO requestDAO, ConversationDAO conversationDAO, MessageDAO messageDAO) {
         this.requestDAO = requestDAO;
+        this.conversationDAO = conversationDAO;
+        this.messageDAO = messageDAO;
     }
 
     /**
@@ -132,6 +146,20 @@ public class RequestResource {
     @Path("/{id}")
     public View getRequestDetails(@PathParam("id") int id) {
         List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
+        return new ConversationInfoView(conversations);
+    }
+
+    @POST
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @UnitOfWork
+    @Path("/{id}/conversations")
+    public View getfilteredConversationInfo(@PathParam("id") int id,
+                                            @FormDataParam("sender") FormDataBodyPart senderName) {
+        String name = null;
+        if (senderName != null) {
+            name = senderName.getValueAs(String.class);
+        }
+        List<Conversation> conversations = conversationDAO.findByParticipant(id, name);
         return new ConversationInfoView(conversations);
     }
 }

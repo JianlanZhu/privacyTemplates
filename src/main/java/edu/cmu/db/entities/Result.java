@@ -2,6 +2,7 @@ package edu.cmu.db.entities;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ public class Result {
     private List<Conversation> conversations;
 
     public Result() {
+        this.conversations = new ArrayList<>();
     }
 
     public int getResultID() {
