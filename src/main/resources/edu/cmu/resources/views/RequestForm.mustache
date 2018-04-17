@@ -19,6 +19,10 @@
         });
     </script>
 
+    <!-- Include Bootstrap Multiselect CSS, JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.css">
+
     <!-- cdn source for date picker-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
@@ -36,17 +40,25 @@
             }).on('changeDate', function (selected) {
                 var minDate = new Date(selected.date.valueOf());
                 $('#'+eDate).datepicker('setStartDate', minDate);
+                hideError(getElement('basicTimeError'));
             });
 
-            $("#"+eDate).datepicker()
-                    .on('changeDate', function (selected) {
+            $("#"+eDate).datepicker({
+                todayBtn:  1,
+                autoclose: true,
+            }).on('changeDate', function (selected) {
                         var maxDate = new Date(selected.date.valueOf());
                         $('#'+sDate).datepicker('setEndDate', maxDate);
+                        hideError(getElement('basicTimeError'));
                     });
 
-            $('#timePickerStartTime').timepicker({}).on('changeTime', function (selected){alert(selected.time.valueOf())});
-            $('#timePickerEndTime').timepicker({});
+            $('#startTime').timepicker();
+            $('#endTime').timepicker({
+            });
 
+            $('#multiselect').multiselect({
+                buttonWidth: '400px'
+            });
         });
     </script>
 
@@ -88,8 +100,8 @@
                         <div class="row alert alert-danger collapse" id="caseIDError" ></div>
                         <div class="row">
                             <div class="form-group col-sm-4">
-                                <label for="singleSelectCaseType">Case Type</label>
-                                <select class="form-control" id="singleSelectCaseType">
+                                <label for="caseType">Case Type</label>
+                                <select class="form-control" id="caseType">
                                     <option>Felony</option>
                                     <option>Assault</option>
                                 </select>
@@ -108,36 +120,36 @@
                         <div class="row alert alert-danger collapse" id="suspectUserNameError" ></div>
                     </div>
                     <div class="form-group">
-                        <label for="inputProfileLink">Profile Link:</label>
-                        <input type="text" class="form-control" id="inputProfileLink" placeholder="Enter URL of suspect's profile page" onfocus="hideError()"/>
+                        <label for="profileLink">Profile Link:</label>
+                        <input type="text" class="form-control" id="profileLink" placeholder="Enter URL of suspect's profile page" onfocus="hideError()"/>
                     </div>
                     <div class="row">
                         <div class="col-sm-4" >
                             <div class="form-group">
-                                <label for="inputFirstName">First Name</label>
-                                <input type="text" class="form-control" id="inputFirstName" placeholder="Enter First Name of the suspect" onfocus="hideError()"/>
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="Enter First Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                         <div class="col-sm-4" >
                             <div class="form-group">
-                                <label for="inputMiddleName">Middle Name</label>
-                                <input type="text" class="form-control" id="inputMiddleName" placeholder="Enter Middle Name of the suspect" onfocus="hideError()"/>
+                                <label for="middleName">Middle Name</label>
+                                <input type="text" class="form-control" id="middleName" placeholder="Enter Middle Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                         <div class="col-sm-4" >
                             <div class="form-group">
-                                <label for="inputLastName">Last Name</label>
-                                <input type="text" class="form-control" id="inputLastName" placeholder="Enter Last Name of the suspect" onfocus="hideError()"/>
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name of the suspect" onfocus="hideError()"/>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputEmailAddress">Registered email address</label>
-                        <input type="email" id="inputEmailAddress" class="form-control" onfocus="hideError()"/>
+                        <label for="email">Registered email address</label>
+                        <input type="email" id="email" class="form-control" onfocus="hideError()"/>
                     </div>
                     <div class="form-group">
-                        <label for="inputPhoneNo">Registered Phone No</label>
-                        <input type="number" id="inputPhoneNo" class="form-control" onfocus="hideError()"/>
+                        <label for="phoneNumber">Registered Phone No</label>
+                        <input type="number" id="phoneNumber" class="form-control" onfocus="hideError()"/>
                     </div>
                     <hr size="30">
                     <h4>Time Frame</h4>
@@ -147,7 +159,7 @@
                             <div class="form-group">
                                 <label for="dtPickerStartDate">Start Date</label>
                                 <div class='input-group date datepicker' id='dtPickerStartDate'>
-                                    <input type='text' class="form-control" />
+                                    <input type='text' class="form-control" id="requestedDataStartDate" />
                                     <span class="input-group-addon btn">
 									<span class="glyphicon glyphicon-calendar"></span>
 								</span>
@@ -158,7 +170,7 @@
                             <div class="form-group">
                                 <label for="dtPickerEndDate">End Date</label>
                                 <div class='input-group date datepicker' id='dtPickerEndDate'>
-                                    <input type='text' class="form-control" />
+                                    <input type='text' class="form-control" id="requestedDataEndDate" />
                                     <span class="input-group-addon btn">
 									<span class="glyphicon glyphicon-calendar"></span>
 								</span>
@@ -173,24 +185,24 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoShares" id="subscriberInfoShares">
-                                <label class="form-check-label" for="subscriberInfoShares">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoShares" id="isSharesRequested">
+                                <label class="form-check-label" for="isSharesRequested">
                                     Shares
                                 </label>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoNotes" id="subscriberInfoNotes">
-                                <label class="form-check-label" for="subscriberInfoNotes">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoNotes" id="isNotesRequested">
+                                <label class="form-check-label" for="isNotesRequested">
                                     Notes
                                 </label>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoWallPostings" id="subscriberInfoWallPostings">
-                                <label class="form-check-label" for="subscriberInfoWallPostings">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoWallPostings" id="isWallPostingsRequested">
+                                <label class="form-check-label" for="isWallPostingsRequested">
                                     Wall Postings
                                 </label>
                             </div>
@@ -199,24 +211,24 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoFriendList" id="subscriberInfoFriendList">
-                                <label class="form-check-label" for="subscriberInfoFriendList">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoFriendList" id="isFriendListRequested">
+                                <label class="form-check-label" for="isFriendListRequested">
                                     Friend Listing
                                 </label>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoGroupList" id="subscriberInfoGroupList">
-                                <label class="form-check-label" for="subscriberInfoGroupList">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoGroupList" id="isGroupsRequested">
+                                <label class="form-check-label" for="isGroupsRequested">
                                     Group Listing
                                 </label>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="subscriberInfoVideoList" id="subscriberInfoVideoList">
-                                <label class="form-check-label" for="subscriberInfoVideoList">
+                                <input class="form-check-input" type="checkbox" value="subscriberInfoVideoList" id="isVideosRequested">
+                                <label class="form-check-label" for="isVideosRequested">
                                     Video Listing
                                 </label>
                             </div>
@@ -227,35 +239,53 @@
                 <div id="addInfo" class="tab-pane fade">
                     <h3>Additional information</h3>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="chkBoxEventTypePast" value="PastEvent">
-                        <label class="form-check-label" for="chkBoxEventTypePast">Past Events</label>
+                        <input class="form-check-input" type="checkbox" id="isPastEventsRequested" value="PastEvent">
+                        <label class="form-check-label" for="isPastEventsRequested">Past Events</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="chkBoxEventTypeFuture" value="FutureEvent">
-                        <label class="form-check-label" for="chkBoxEventTypeFuture">Future Events</label>
+                        <input class="form-check-input" type="checkbox" id="isFutureEventsRequested" value="FutureEvent">
+                        <label class="form-check-label" for="isFutureEventsRequested">Future Events</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="UserPhotos" id="chkBoxUsrPhotos">
-                        <label class="form-check-label" for="chkBoxUsrPhotos">
+                        <input class="form-check-input" type="checkbox" value="UserPhotos" id="isPhotosRequested">
+                        <label class="form-check-label" for="isPhotosRequested">
                             User Photos
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="GroupInfo" id="chkBoxGroupInfo">
-                        <label class="form-check-label" for="chkBoxGroupInfo">
+                        <input class="form-check-input" type="checkbox" value="GroupInfo" id="isGroupInfoRequested">
+                        <label class="form-check-label" for="isGroupInfoRequested">
                             Group Information
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="PvtMsg" id="chkBoxPvtMsg">
-                        <label class="form-check-label" for="chkBoxPvtMsg">
+                        <input class="form-check-input" type="checkbox" value="PvtMsg" id="isPrivateMessagesRequested">
+                        <label class="form-check-label" for="isPrivateMessagesRequested">
                             Private Messages
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="IpLogs" id="chkBoxIPLogs">
-                        <label class="form-check-label" for="chkBoxIPLogs">
+                        <input class="form-check-input" type="checkbox" value="IpLogs" id="isIPLogRequested">
+                        <label class="form-check-label" for="isIPLogRequested">
                             IP Logs
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="MiniFeed" id="isMiniFeedRequested">
+                        <label class="form-check-label" for="isMiniFeedRequested">
+                            Mini Feeds
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="StatusHistory" id="isStatusHistoryReuested">
+                        <label class="form-check-label" for="isStatusHistoryReuested">
+                            Status History
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="ContactInfo" id="isContactInformationRequested">
+                        <label class="form-check-label" for="isContactInformationRequested">
+                            Contact Information
                         </label>
                     </div>
                 </div>
@@ -263,42 +293,42 @@
                     <h3>Additional filtering</h3>
                     <div class="row">
                         <div class="col-sm-4">
-                            <label for="timePickerStartTime">Start Time</label>
+                            <label for="startTime">Start Time</label>
                             <div class="input-group bootstrap-timepicker timepicker">
-                                <input id="timePickerStartTime" type="text" class="form-control input-small">
+                                <input id="startTime" type="text" class="form-control input-small">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <label for="timePickerEndTime">End Time</label>
+                            <label for="endTime">End Time</label>
                             <div class="input-group bootstrap-timepicker timepicker">
-                                <input id="timePickerEndTime" type="text" class="form-control input-small">
+                                <input id="endTime" type="text" class="form-control input-small">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputCommunicants">Communicants</label>
-                        <input id="inputCommunicants" type="text" class="form-control"/>
+                        <label for="communicantsUserNames">Communicants</label>
+                        <input id="communicantsUserNames" type="text" class="form-control"/>
                     </div>
                     <div class="form-group">
-                        <label for="inputKeywords">Keywords</label>
-                        <input id="inputKeywords" type="text" class="form-control"/>
+                        <label for="keywords">Keywords</label>
+                        <input id="keywords" type="text" class="form-control"/>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-4">
-                            <label for="multiSelectKeywordCat">KeywordCategory</label>
-                            <select multiple class="form-control" id="multiSelectKeywordCat">
-                                <option>Arms Dealing</option>
-                                <option>Cyber-bullying</option>
-                                <option>Terrorism</option>
+                            <label for="keywordCategories">KeywordCategory</label>
+                            <select class="form-control" id="keywordCategories" multiple>
+                                <option value="armsdealing">Arms Dealing</option>
+                                <option value="cyberbullying">Cyber-bullying</option>
+                                <option value="terrorism">Terrorism</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-4">
-                            <label for="inputLoc">Enter location Zipcode (to get activities in 5 mile radius)</label>
-                            <input id="inputLoc" type="text" class="form-control"/>
+                            <label for="locationZipCode">Enter location Zipcode (to get activities in 5 mile radius)</label>
+                            <input id="locationZipCode" type="text" class="form-control"/>
                         </div>
                     </div>
                 </div>

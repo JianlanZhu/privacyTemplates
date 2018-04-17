@@ -3,11 +3,11 @@
 //Global variable pertaining to reuestForm
 var caseNo = "caseID";
 var suspectUsrName = "suspectUserName";
-var profileLink = "inputProfileLink";
-var fName = "inputFirstName";
-var lName = "inputLastName";
-var emailID = "inputEmailAddress";
-var phNo = "inputPhoneNo";
+var profileLink = "profileLink";
+var fName = "firstName";
+var lName = "lastName";
+var emailID = "email";
+var phNo = "phoneNumber";
 var sDate = "dtPickerStartDate";
 var eDate = "dtPickerEndDate";
 
@@ -15,7 +15,7 @@ var eDate = "dtPickerEndDate";
 function validate() {
     if (validateCaseDetails()) {
         if (validateBasicInfo()) {
-            var form = getElement("RegForm");
+            var form = getElement("ReqForm");
             var url = "/request/requestForm";
             var inputData = generateFormData(form);
             postData(url, inputData, showResponseFromServer);
