@@ -23,24 +23,7 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
 
     @UnitOfWork
     @Override
-    public Optional<User> authenticate(BasicCredentials basicCredentials) throws AuthenticationException {
-        Optional<User> userOptional = userDAO.findByUsername(basicCredentials.getUsername());
-
-        if(!userOptional.isPresent()){
-            return Optional.empty();
-        }
-
-        User user = userOptional.get();
-        String salt = user.getSalt();
-
-        String hashedPassword = Hashing.sha256()
-                .hashString(salt + basicCredentials.getPassword(), StandardCharsets.UTF_8)
-                .toString().toUpperCase();
-
-        if(userOptional.get().getPassword().equals(hashedPassword)){
-            return userOptional;
-        } else {
-            return Optional.empty();
-        }
+    public Optional<User> authenticate(String token) {
+        return tokenDAO.findUserByToken(token).map(Token::getUser);
     }
 }

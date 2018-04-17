@@ -7,6 +7,7 @@ import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Token;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.interaction.LoginInput;
+import edu.cmu.resources.views.LoginView;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,11 @@ public class LoginResource {
     public LoginResource(TokenDAO tokenDAO, UserDAO userDAO) {
         this.tokenDAO = tokenDAO;
         this.userDAO = userDAO;
+    }
+
+    @GET
+    public LoginView login(){
+        return new LoginView();
     }
 
     @POST
