@@ -3,6 +3,6 @@ CREATE TABLE result (
   PRIMARY KEY (resultID),
   SMEUserID   INT,
 #   rawResult  BLOB,
-  retentionID INT,
-  FOREIGN KEY (retentionID) REFERENCES retentiontype (retentionID)
+  retentionID INT
+  #FOREIGN KEY (retentionID) REFERENCES retentiontype (retentionID)
 );

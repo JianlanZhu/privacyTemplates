@@ -1,6 +1,7 @@
 package edu.cmu.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.cmu.db.enums.RequestState;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -140,7 +141,8 @@ public class Request {
     public Request() {
     }
 
-    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant) {
+    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
+        this.status = status.name();
         this.requestCreatedDate = Instant.now();
         this.createdBy = createdBy;
         this.caseID = caseID;
