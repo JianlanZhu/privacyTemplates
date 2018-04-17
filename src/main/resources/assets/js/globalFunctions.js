@@ -1,9 +1,22 @@
 //Global functions that will be used by all js files
 
-function loadHeader(getFolderLevelToAssets) {
+function logout(){
+    alert("logout");
+}
+
+function loadHeader(showLogout) {
+    if(showLogout === undefined)
+        showLogout = true;
     var header = getElement('header');
-    header.innerHTML =
-        '<div class="row" style="height:10px;"></div>' +
+    header.innerHTML = '';
+    if(showLogout){
+        header.innerHTML =
+            '<div class="row">' +
+            '<button type="button" class="btn btn-default btn-space btn-sm pull-right" onclick=logout()>\n' +
+            '    <span class="glyphicon glyphicon-log-out"></span> Log out\n' +
+            '</button>';
+    }
+    header.innerHTML +=
         '<div class="container-fluid">\n' +
         '  <div class="row">\n' +
         '    <div class="col-sm-2">\n' +

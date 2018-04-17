@@ -13,3 +13,6 @@ multiselect{
     includeSelectAllOption: true
 }
 
+button.btn-space {
+    margin-right: 10px;
+}
