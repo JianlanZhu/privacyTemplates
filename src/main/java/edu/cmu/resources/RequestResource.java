@@ -3,11 +3,14 @@ package edu.cmu.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
+import edu.cmu.resources.views.ConversationInfoView;
 import edu.cmu.resources.views.GenerateRequestView;
 import edu.cmu.resources.views.ListAllRequestsForLeoView;
 import edu.cmu.resources.views.ListAllRequestsForSmeView;
@@ -25,6 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -128,6 +134,23 @@ public class RequestResource {
     @UnitOfWork
     public View listAllRequestsForLeo(@Auth User user){
         return new ListAllRequestsForLeoView(requestDAO.findAllForUser(user.getUserID()));
+    }
+
+    @GET
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @UnitOfWork
+    @Path("/{id}/conversations")
+    public View getConversationInfo(@PathParam("id") int id){
+        Optional<Request> requestOptional = requestDAO.findById(id);
+        Optional<Result> resultOptional = requestOptional.map(r -> r.getResult());
+
+        if(!resultOptional.isPresent() || resultOptional.get() == null){
+            throw new NotFoundException("No results found");
+        }
+
+        List<Conversation> conversations = resultOptional.get().getConversations();
+
+        return new ConversationInfoView(conversations);
     }
 }
 

@@ -3,6 +3,8 @@ package edu.cmu.db.entities;
 import javax.persistence.*;
 import java.time.Instant;
 import java.sql.Blob;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "result")
@@ -22,6 +24,10 @@ public class Result {
 
     @Column(name = "retentionID")
     private int retentionID;
+
+    @OneToMany
+    @JoinColumn(name = "resultID")
+    private List<Conversation> conversations;
 
     public Result() {
     }
@@ -53,5 +59,13 @@ public class Result {
 
     public void setRetentionID(int retentionID) {
         this.retentionID = retentionID;
+    }
+
+    public List<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations;
     }
 }

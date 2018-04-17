@@ -111,7 +111,7 @@ public class SocialMediaResource {
 //                    result.setResultID(1); // just for testing
                     // store to db
                     result = resultDAO.persistNewResult(result);
-
+                    request.setResult(result);
 //                    int resultID = result.getResultID();
                     // begin parsing
                     InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);

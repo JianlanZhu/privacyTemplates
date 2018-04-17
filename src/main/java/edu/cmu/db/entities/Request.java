@@ -133,6 +133,10 @@ public class Request {
     @Column(name = "warrant")
     private Blob warrant;
 
+    @OneToOne
+    @JoinColumn(name = "resultID")
+    Result result;
+
     public Request() {
     }
 
@@ -475,5 +479,13 @@ public class Request {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
     }
 }

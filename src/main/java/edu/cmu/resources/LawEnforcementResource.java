@@ -9,10 +9,14 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
 import jdk.nashorn.internal.objects.annotations.Getter;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import java.util.List;
+import java.util.Set;
 
+@Path("/request/all/results")
+@RolesAllowed("LAW_ENFORCEMENT_OFFICER")
 public class LawEnforcementResource {
     private ResultDAO resultDAO;
     private ConversationDAO conversationDAO;
@@ -25,7 +29,7 @@ public class LawEnforcementResource {
     }
 
     @GET
-    @Path("/filter")
+//    @Path("/filter")
     @UnitOfWork
     public View listAllConversation() {
         List<Conversation> allConversations = conversationDAO.findAll();
