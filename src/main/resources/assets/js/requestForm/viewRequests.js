@@ -1,3 +1,4 @@
+//function that adds rows into a table on loading
 function addRow() {
     // Find a <table> element with id="myTable":
     var table = document.getElementById("requestsTable");

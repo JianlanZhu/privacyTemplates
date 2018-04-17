@@ -1,5 +1,5 @@
 //Global functions that will be used by all js files
-
+//Function that adding a header
 function loadHeader(getFolderLevelToAssets) {
     var header = getElement('header');
     header.innerHTML =
@@ -29,6 +29,7 @@ function isStringEmpty(data) {
     }
 }
 
+//a function returns the component of the mustache by the given ID
 function getElement(elementId) {
     return document.getElementById(elementId);
 }

@@ -1,3 +1,4 @@
+//function that adds a navigation bar
 function loadLEONav() {
     loadHeader();
     var navBar = getElement('navLEO');
