@@ -1,6 +1,7 @@
 package edu.cmu.db.dao;
 
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.enums.RequestState;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
@@ -29,13 +30,13 @@ public class RequestDAO extends AbstractDAO<Request> {
         return request;
     }
 
-    public boolean updateStatus(long requestID, String status) {
+    public boolean updateStatus(long requestID, RequestState status) {
         Optional<Request> requestOptional = findById(requestID);
         if (!requestOptional.isPresent()) {
             return false;
         } else {
             Request request = requestOptional.get();
-            request.setStatus(status);
+            request.setStatus(status.name());
             persist(request);
             return true;
         }
@@ -43,5 +44,9 @@ public class RequestDAO extends AbstractDAO<Request> {
 
     public List<Request> findAllForUser(long userID) {
         return list(namedQuery("edu.cmu.db.entities.Request.findAllForUser").setParameter("userId", userID));
+    }
+
+    public List<Request> findAllWithStatus(RequestState status) {
+        return list(namedQuery("edu.cmu.db.entities.Request.findAllWithStatus").setParameter("status", status.name()));
     }
 }

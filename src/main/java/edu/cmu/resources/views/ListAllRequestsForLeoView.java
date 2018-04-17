@@ -5,12 +5,12 @@ import io.dropwizard.views.View;
 
 import java.util.List;
 
-public class ListAllRequestsView extends View {
+public class ListAllRequestsForLeoView extends View {
 
     private List<Request> requests;
 
-    public ListAllRequestsView(List<Request> requests) {
-        super("listAllRequests.mustache");
+    public ListAllRequestsForLeoView(List<Request> requests){
+        super("listAllRequestsForLeo.mustache");
         this.requests = requests;
     }
 

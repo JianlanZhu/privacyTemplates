@@ -15,18 +15,14 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int conversationID;
 
-    @Column(name = "startingTime")
-    private Timestamp startingTime;
+    @OneToOne
+    @JoinColumn(name = "resultID")
+    private Result result;
 
-    @Column(name = "resultID")
-    private int resultID;
+    @Column(name = "participants")
+    private String participants;
 
     public Conversation() {
-    }
-
-    public Conversation(Timestamp startingTime, int resultID) {
-        this.startingTime = startingTime;
-        this.resultID = resultID;
     }
 
     public int getConversationID() {
@@ -37,19 +33,19 @@ public class Conversation {
         this.conversationID = conversationID;
     }
 
-    public Timestamp getStartingTime() {
-        return startingTime;
+    public Result getResult() {
+        return result;
     }
 
-    public void setStartingTime(Timestamp startingTime) {
-        this.startingTime = startingTime;
+    public void setResult(Result result) {
+        this.result = result;
     }
 
-    public int getResultID() {
-        return resultID;
+    public String getParticipants() {
+        return participants;
     }
 
-    public void setResultID(int resultID) {
-        this.resultID = resultID;
+    public void setParticipants(String participants) {
+        this.participants = participants;
     }
 }

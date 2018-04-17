@@ -2,6 +2,8 @@ package edu.cmu.db.entities;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "result")
@@ -16,22 +18,18 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int resultID;
 
-    @Column(name = "SMEUserID")
-    private int SMEUserID;
-
-    @Column(name = "rawResult")
-    private Blob rawResult;
+    @OneToOne
+    @JoinColumn(name = "SMEUserID")
+    private User SMEUser;
 
     @Column(name = "retentionID")
     private int retentionID;
 
-    public Result() {
-    }
+    @OneToMany
+    @JoinColumn(name = "resultID")
+    private List<Conversation> conversations;
 
-    public Result(int SMEUserID, Blob rawResult, int retentionID) {
-        this.SMEUserID = SMEUserID;
-        this.rawResult = rawResult;
-        this.retentionID = retentionID;
+    public Result() {
     }
 
     public int getResultID() {
@@ -42,20 +40,12 @@ public class Result {
         this.resultID = resultID;
     }
 
-    public int getSMEUserID() {
-        return SMEUserID;
+    public User getSMEUser() {
+        return SMEUser;
     }
 
-    public void setSMEUserID(int SMEUserID) {
-        this.SMEUserID = SMEUserID;
-    }
-
-    public Blob getRawResult() {
-        return rawResult;
-    }
-
-    public void setRawResult(Blob rawResult) {
-        this.rawResult = rawResult;
+    public void setSMEUser(User SMEUser) {
+        this.SMEUser = SMEUser;
     }
 
     public int getRetentionID() {
@@ -64,5 +54,13 @@ public class Result {
 
     public void setRetentionID(int retentionID) {
         this.retentionID = retentionID;
+    }
+
+    public List<Conversation> getConversations() {
+        return conversations;
+    }
+
+    public void setConversations(List<Conversation> conversations) {
+        this.conversations = conversations;
     }
 }

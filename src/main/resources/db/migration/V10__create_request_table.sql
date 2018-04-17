@@ -40,7 +40,9 @@ CREATE TABLE request (
   FOREIGN KEY (filterKeywordsCategory) REFERENCES keywordcategory (categoryId),
   filterLocation                VARCHAR(256),
   status                        VARCHAR(256) CHECK (
-    status = 'FILED' OR status = 'REJECTED' OR status = 'ANSWERED'
+    status = 'PENDING' OR status = 'REJECTED' OR status = 'ANSWERED' OR status = 'CLOSED'
   ),
+  resultID                      INT,
+  FOREIGN KEY (resultID) REFERENCES result (resultID),
   warrant                       LONGBLOB
 );

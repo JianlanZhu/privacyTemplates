@@ -100,7 +100,7 @@
         <configuration>
           <url>jdbc:mysql://localhost:3306/privacyTemplates</url>
           <user>root</user>
-          <password>root</password>
+          <password>Epsproject18;</password>
         </configuration>
       </plugin>
     </plugins>
@@ -112,6 +112,18 @@
       <version>1.2.4</version>
       <type>pom</type>
       <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.9.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <reporting>

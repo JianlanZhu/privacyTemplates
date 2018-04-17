@@ -3,11 +3,19 @@ package edu.cmu;
 import edu.cmu.auth.AppAuthorizer;
 import edu.cmu.auth.TokenAuthFilter;
 import edu.cmu.auth.TokenAuthenticator;
+import edu.cmu.auth.UserAuthenticator;
+import edu.cmu.db.dao.ConversationDAO;
+import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.dao.TokenDAO;
 import edu.cmu.db.dao.UserDAO;
+import edu.cmu.db.entities.Conversation;
+import edu.cmu.db.entities.Message;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Token;
+import edu.cmu.db.entities.Result;
+import edu.cmu.db.entities.RetentionType;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.LoginResource;
@@ -37,6 +45,11 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
             Request.class,
             User.class,
+            Result.class,
+            Conversation.class,
+            Message.class,
+            RetentionType.class
+            User.class,
             Token.class
     ) {
         @Override
@@ -50,7 +63,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     /**
      * Enables serving static assets.
      */
-    private final AssetsBundle viewAssets = new AssetsBundle("/js", "/js");
+    private final AssetsBundle viewAssets = new AssetsBundle("/assets", "/assets");
 
     /**
      * Main entry point.
@@ -86,11 +99,14 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         RequestDAO requestDAO = new RequestDAO(sessionFactory);
         TokenDAO tokenDAO = new TokenDAO(sessionFactory);
         UserDAO userDAO = new UserDAO(sessionFactory);
+        MessageDAO messageDAO = new MessageDAO(sessionFactory);
+        ResultDAO resultDAO = new ResultDAO(sessionFactory);
+        ConversationDAO conversationDao = new ConversationDAO(sessionFactory);
 
         environment.jersey().register(new RequestResource(requestDAO));
         environment.jersey().register(new LoginResource(tokenDAO, userDAO));
         environment.jersey().register(new LandingPageResource());
-        environment.jersey().register(new SocialMediaResource(requestDAO));
+        environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
 
         TokenAuthenticator tokenAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(TokenAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));

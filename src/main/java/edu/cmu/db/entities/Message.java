@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int messageID;
+    private long messageID;
 
     @Column(name = "messageContent")
     private String messageContent;
@@ -24,24 +24,18 @@ public class Message {
     @Column(name = "messageSender")
     private String messageSender;
 
-    @Column(name = "conversationID")
-    private int conversationID;
+    @OneToOne
+    @JoinColumn(name = "conversationID")
+    private Conversation conversation;
 
     public Message() {
     }
 
-    public Message(String messageContent, Timestamp startingTime, String messageSender, int conversationID) {
-        this.messageContent = messageContent;
-        this.startingTime = startingTime;
-        this.messageSender = messageSender;
-        this.conversationID = conversationID;
-    }
-
-    public int getMessageID() {
+    public long getMessageID() {
         return messageID;
     }
 
-    public void setMessageID(int messageID) {
+    public void setMessageID(long messageID) {
         this.messageID = messageID;
     }
 
@@ -69,11 +63,11 @@ public class Message {
         this.messageSender = messageSender;
     }
 
-    public int getConversationID() {
-        return conversationID;
+    public Conversation getConversation() {
+        return conversation;
     }
 
-    public void setConversationID(int conversationID) {
-        this.conversationID = conversationID;
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 }

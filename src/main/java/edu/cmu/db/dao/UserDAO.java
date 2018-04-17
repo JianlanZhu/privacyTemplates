@@ -17,7 +17,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public List<User> findAll() {
-        return list(namedQuery("cedu.cmu.db.entities.User.findAll"));
+        return list(namedQuery("edu.cmu.db.entities.User.findAll"));
     }
 
     public Optional<User> findById(long id) {
