@@ -17,6 +17,13 @@
             //addRow();
         });
     </script>
+    <script>
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
 
 </head>
 <body>
@@ -33,7 +40,7 @@
             </tr>
             </thead>
             <tbody>
-                {{#requests}}<tr>
+                {{#requests}}<tr class='clickable-row' data-href='/request/{{requestID}}'>
                     <td>{{caseID}}</td>
                     <td>{{suspectUserName}}</td>
                     <td>{{status}}</td>
@@ -41,5 +48,12 @@
             </tbody>
         </table>
     </div>
+
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+
 </body>
 </html>

@@ -147,7 +147,7 @@ public class RequestResource {
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
-    @Path("/{id}/conversations")
+    @Path("/{id}")
     public View getConversationInfo(@PathParam("id") int id) {
         Optional<Request> requestOptional = requestDAO.findById(id);
         Optional<Result> resultOptional = requestOptional.map(r -> r.getResult());
