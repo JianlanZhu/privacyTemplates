@@ -28,8 +28,4 @@ public class MessageDAO extends AbstractDAO<Message> {
         return message;
     }
 
-    public void saveMessage(Message message) {
-
-    }
-
 }

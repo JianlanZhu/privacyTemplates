@@ -3,6 +3,7 @@ package edu.cmu.db.dao;
 import com.google.common.io.Files;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Message;
+import edu.cmu.db.entities.Result;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,20 +33,19 @@ public class Parser {
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
     private String topDirectory;
-    private int resultId;
+    private Result result;
 
     public Parser() {
     }
 
-    public Parser(ConversationDAO conversationDAO, MessageDAO messageDAO, int resultId) {
+    public Parser(ConversationDAO conversationDAO, MessageDAO messageDAO, Result result) {
         this.conversationDAO = conversationDAO;
         this.messageDAO = messageDAO;
-        this.resultId = resultId;
+        this.result = result;
     }
 
     /**
      * parseProfile is used to parse message files under a certain directory.
-     *
      */
     public void parseProfile(InputStream inputStream) throws IOException {
         unzip(inputStream);
@@ -63,7 +63,7 @@ public class Parser {
             for (File file : messageFiles) {
                 // find a conversation ID
                 Conversation conversation = new Conversation();
-                conversation.setResultID(resultId);
+                conversation.setResult(result);
                 conversation = conversationDAO.persistNewConversation(conversation);
                 // parse each message file
                 parseOneMessageFile(file, conversation);
@@ -74,7 +74,7 @@ public class Parser {
     /**
      * parseOneMessageFile is used to parse a single message html file.
      *
-     * @param file file to parse
+     * @param file         file to parse
      * @param conversation which conversation the message belongs to
      */
     private void parseOneMessageFile(File file, Conversation conversation) {
@@ -126,7 +126,7 @@ public class Parser {
                     }
                     thisMessage.setMessageSender(sender);
                     thisMessage.setStartingTime(sentTime);
-                    thisMessage.setConversationID(conversation.getConversationID());
+                    thisMessage.setConversation(conversation);
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
@@ -196,7 +196,7 @@ public class Parser {
     /**
      * extractFile is used to unzip a single file.
      *
-     * @param zipIn input stream of zip file
+     * @param zipIn    input stream of zip file
      * @param filePath path of file needed to be unzipped
      * @throws IOException io exception
      */
@@ -270,18 +270,21 @@ public class Parser {
 
     /**
      * deleteFileOrFolder is used to delte a file or an empty folder.
+     *
      * @param path file path
      * @throws IOException io exception
      */
     public static void deleteFileOrFolder(Path path) throws IOException {
-        java.nio.file.Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
-            @Override public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+        java.nio.file.Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
                     throws IOException {
                 java.nio.file.Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
 
-            @Override public FileVisitResult visitFileFailed(final Path file, final IOException e) {
+            @Override
+            public FileVisitResult visitFileFailed(final Path file, final IOException e) {
                 return handleException(e);
             }
 
@@ -290,9 +293,10 @@ public class Parser {
                 return FileVisitResult.TERMINATE;
             }
 
-            @Override public FileVisitResult postVisitDirectory(final Path dir, final IOException e)
+            @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException e)
                     throws IOException {
-                if(e!=null)return handleException(e);
+                if (e != null) return handleException(e);
                 java.nio.file.Files.delete(dir);
                 return FileVisitResult.CONTINUE;
             }

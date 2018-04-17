@@ -17,18 +17,14 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int resultID;
 
-    @Column(name = "SMEUserID")
-    private int SMEUserID;
+    @OneToOne
+    @JoinColumn(name = "SMEUserID")
+    private User SMEUser;
 
     @Column(name = "retentionID")
     private int retentionID;
 
     public Result() {
-    }
-
-    public Result(int SMEUserID, Blob rawResult, int retentionID) {
-        this.SMEUserID = SMEUserID;
-        this.retentionID = retentionID;
     }
 
     public int getResultID() {
@@ -39,12 +35,12 @@ public class Result {
         this.resultID = resultID;
     }
 
-    public int getSMEUserID() {
-        return SMEUserID;
+    public User getSMEUser() {
+        return SMEUser;
     }
 
-    public void setSMEUserID(int SMEUserID) {
-        this.SMEUserID = SMEUserID;
+    public void setSMEUser(User SMEUser) {
+        this.SMEUser = SMEUser;
     }
 
     public int getRetentionID() {

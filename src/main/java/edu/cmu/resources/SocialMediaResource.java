@@ -105,14 +105,14 @@ public class SocialMediaResource {
                     int SMEUserID = user.getUserID();
                     // find a result ID
                     Result result = new Result();
-                    result.setSMEUserID(SMEUserID);
-                    // hard code, just for testing
+                    result.setSMEUser(user);
+                    // TODO hard code, just for testing
                     result.setRetentionID(1);
                     // store to db
                     result = resultDAO.persistNewResult(result);
                     // begin parsing
                     InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-                    Parser parser = new Parser(conversationDAO, messageDAO, result.getResultID());
+                    Parser parser = new Parser(conversationDAO, messageDAO, result);
                     try {
                         // unzip and parse
                         parser.parseProfile(dataZipFileInputStream);
