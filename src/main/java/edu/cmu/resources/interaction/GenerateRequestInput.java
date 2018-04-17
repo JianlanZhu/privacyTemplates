@@ -1,5 +1,8 @@
 package edu.cmu.resources.interaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
@@ -7,6 +10,8 @@ import java.time.Instant;
 /**
  * POJO representing the input we receive from the frontend when a request is generated from the form.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GenerateRequestInput {
     private long caseID;
     //private long userID;
@@ -18,10 +23,10 @@ public class GenerateRequestInput {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private Instant requestedDataStartDate;
-    private Instant requestedDataEndDate;
+    private String requestedDataStartDate;
+    private String requestedDataEndDate;
     private boolean isSharesRequested;
-    private boolean isNotesRequested;
+    private Boolean isNotesRequested;
     private boolean isWallPostingsRequested;
     private boolean isFriendListRequested;
     private boolean isVideosRequested;
@@ -46,7 +51,7 @@ public class GenerateRequestInput {
         // Jackson deserialization
     }
 
-    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, boolean isSharesRequested, boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, String keywordCategories, String locationZipCode, String startTime, String endTime) {
+    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, String requestedDataStartDate, String requestedDataEndDate, boolean isSharesRequested, Boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, String keywordCategories, String locationZipCode, String startTime, String endTime) {
         this.caseID = caseID;
         //this.userID = userID;
         this.suspectUserName = suspectUserName;
@@ -59,7 +64,7 @@ public class GenerateRequestInput {
         this.phoneNumber = phoneNumber;
         this.requestedDataStartDate = requestedDataStartDate;
         this.requestedDataEndDate = requestedDataEndDate;
-        this.isSharesRequested = isSharesRequested;
+        this.isSharesRequested = (isSharesRequested);
         this.isNotesRequested = isNotesRequested;
         this.isWallPostingsRequested = isWallPostingsRequested;
         this.isFriendListRequested = isFriendListRequested;
@@ -143,12 +148,12 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public Instant getRequestedDataStartDate() {
+    public String getRequestedDataStartDate() {
         return requestedDataStartDate;
     }
 
     @JsonProperty
-    public Instant getRequestedDataEndDate() {
+    public String getRequestedDataEndDate() {
         return requestedDataEndDate;
     }
 
@@ -158,7 +163,7 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public boolean isNotesRequested() {
+    public Boolean isNotesRequested() {
         return isNotesRequested;
     }
 

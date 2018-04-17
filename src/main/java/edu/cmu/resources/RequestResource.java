@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.Instant;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -80,21 +81,18 @@ public class RequestResource {
      */
     @POST
     @Path("/requestForm")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Timed
     public Request generateRequest(@Auth User user,
-                                   @FormDataParam("warrantFile") final FormDataBodyPart fileField,
-                                   @FormDataParam("requestInformation") FormDataBodyPart generateRequestInput) {
-        generateRequestInput.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        GenerateRequestInput parsedInput = generateRequestInput.getValueAs(GenerateRequestInput.class);
+                                   GenerateRequestInput parsedInput) {
 
         checkInputValidity(parsedInput);
 
         Blob warrantBlob = null;
-        if (fileField != null) {
+       /* if (fileField != null) {
             InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
 
             try {
@@ -106,14 +104,15 @@ public class RequestResource {
                 throw new InternalServerErrorException("Failed to handle uploaded warrant.");
             }
         }
-
+        */
         try {
-            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), parsedInput.getRequestedDataStartDate(), parsedInput.getRequestedDataEndDate(), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
+            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), Instant.EPOCH, Instant.EPOCH, parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Malformed Request");
         }
+
     }
 
     @GET
