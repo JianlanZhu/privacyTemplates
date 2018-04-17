@@ -84,6 +84,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
                     Environment environment) {
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
+
         RequestDAO requestDAO = new RequestDAO(sessionFactory);
         TokenDAO tokenDAO = new TokenDAO(sessionFactory);
         UserDAO userDAO = new UserDAO(sessionFactory);
@@ -95,7 +96,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         environment.jersey().register(new LandingPageResource(requestDAO));
         environment.jersey().register(new RequestResource(requestDAO, conversationDao, messageDAO));
         environment.jersey().register(new LoginResource(tokenDAO, userDAO, requestDAO));
-        environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
+        environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO, sessionFactory));
 
         TokenAuthenticator tokenAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(TokenAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
