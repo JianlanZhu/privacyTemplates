@@ -1,20 +1,28 @@
 package edu.cmu;
 
+import edu.cmu.auth.AppAuthorizer;
+import edu.cmu.auth.UserAuthenticator;
 import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.entities.CaseType;
+import edu.cmu.db.dao.UserDAO;
 import edu.cmu.db.entities.Request;
-import edu.cmu.resources.EmployeesResource;
-import edu.cmu.db.dao.EmployeeDAO;
-import edu.cmu.db.entities.Employee;
-import edu.cmu.health.TemplateHealthCheck;
-import edu.cmu.resources.HelloWorldResource;
+import edu.cmu.db.entities.User;
+import edu.cmu.resources.LandingPageResource;
 import edu.cmu.resources.RequestResource;
+import edu.cmu.resources.SocialMediaResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
+import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.hibernate.SessionFactory;
 
 public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesConfiguration> {
@@ -24,9 +32,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
      */
     private final HibernateBundle<PrivacyTemplatesConfiguration> hibernateBundle
             = new HibernateBundle<PrivacyTemplatesConfiguration>(
-            Employee.class,
             Request.class,
-            CaseType.class
+            User.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(
@@ -39,7 +46,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     /**
      * Enables serving static assets.
      */
-    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/", "index.jsp");
+    private final AssetsBundle viewAssets = new AssetsBundle("/assets", "/assets");
 
     /**
      * Main entry point.
@@ -56,11 +63,14 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     @Override
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
-        bootstrap.addBundle(assetsBundle);
+        bootstrap.addBundle(viewAssets);
+        bootstrap.addBundle(new MultiPartBundle());
+        bootstrap.addBundle(new ViewBundle<>());
     }
 
     /**
      * Starts the whole application. Resources (i.e., endpoints) need to be regstered here.
+     *
      * @param configuration
      * @param environment
      */
@@ -69,17 +79,29 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
                     Environment environment) {
 
         SessionFactory sessionFactory = hibernateBundle.getSessionFactory();
+        RequestDAO requestDAO = new RequestDAO(sessionFactory);
 
-        environment.jersey().register(new EmployeesResource(new EmployeeDAO(sessionFactory)));
-        environment.jersey().register(new RequestResource(new RequestDAO(sessionFactory)));
+        environment.jersey().register(new RequestResource(requestDAO));
+        environment.jersey().register(new LandingPageResource());
+        environment.jersey().register(new SocialMediaResource(requestDAO));
+
+        UserAuthenticator userAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+                .create(UserAuthenticator.class, UserDAO.class, new UserDAO(sessionFactory));
 
         environment.jersey().register(
-                new HelloWorldResource(
-                        configuration.getTemplate(),
-                        configuration.getDefaultName()
-                ));
+                new AuthDynamicFeature(
+                        new BasicCredentialAuthFilter.Builder<User>()
+                                .setAuthenticator(userAuthenticator)
+                                .setAuthorizer(new AppAuthorizer())
+                                .setRealm("Basic Auth Realm")
+                                .buildAuthFilter()
+                )
+        );
 
-        environment.healthChecks().register("template", new TemplateHealthCheck(configuration.getTemplate()));
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+
+        environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
     }
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Upload data for a request</h2>
+
+<form action="/socialMedia/DataUploadForm" method="post" enctype="multipart/form-data">
+  Request ID:<br>
+  <input type="number" name="caseID">
+  <br>
+  Comment:<br>
+  <input type="text" name="comment">
+  <br>
+  <input type="file" name="data" accept="application/zip,application/octet-stream">
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

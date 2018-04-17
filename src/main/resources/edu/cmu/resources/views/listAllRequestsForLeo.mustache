@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>SMRP</title>
+</head>
+<body>
+    <h1>Social Media Request Portal</h1>
+    <p>In the future, all existing requests will be listed here.</p>
+    <ul>
+        {{#requests}}<li>Request ID: {{requestID}}   |   Case ID: {{caseID}}   |   Status: {{status}}</li>{{/requests}}
+    </ul>
+</body>
+</html>
