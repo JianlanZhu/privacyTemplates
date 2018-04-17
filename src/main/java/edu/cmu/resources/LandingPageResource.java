@@ -1,10 +1,9 @@
 package edu.cmu.resources;
 
 import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.entities.User;
-import edu.cmu.resources.views.LandingPageView;
 import edu.cmu.resources.views.LeoHomeView;
+import edu.cmu.resources.views.LoginView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -31,9 +30,10 @@ public class LandingPageResource {
         return new LeoHomeView(requestDAO.findAll().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList()));
     }
 
+
     @GET
     public View showLandingPage() {
-        return new LandingPageView();
+        return new LoginView();
     }
 
 }

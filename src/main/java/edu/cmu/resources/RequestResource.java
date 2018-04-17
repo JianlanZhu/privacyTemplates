@@ -8,7 +8,6 @@ import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.resources.interaction.GenerateRequestInput;
-import edu.cmu.resources.interaction.GetRequestsOutput;
 import edu.cmu.resources.views.ConversationInfoView;
 import edu.cmu.resources.views.GenerateRequestView;
 import edu.cmu.resources.views.ListAllRequestsForLeoView;
@@ -21,7 +20,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Blob;
 import java.time.Instant;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
