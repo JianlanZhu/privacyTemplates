@@ -4,6 +4,7 @@ import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.User;
 import edu.cmu.resources.views.LeoHomeView;
 import edu.cmu.resources.views.LoginView;
+import edu.cmu.resources.views.SmeHomeView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -30,6 +31,13 @@ public class LandingPageResource {
         return new LeoHomeView(requestDAO.findAll().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList()));
     }
 
+    @GET
+    @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
+    @UnitOfWork
+    @Path("smeHome")
+    public View smeHome(@Auth User user) {
+        return new SmeHomeView();
+    }
 
     @GET
     public View showLandingPage() {
