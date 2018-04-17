@@ -13,12 +13,24 @@
         $(function () {
             loadHeader();
         });
+        function nav(e) {
+            try {
+                alert('Row Index: ' + ($(e).index() + 1) +
+                        '\nRequest ID: ' + $(e.cells[0]).text() +
+                        '\nCase ID: ' + $(e.cells[1]).text() +
+                        '\nStatus: ' + $(e.cells[2]).text());
+            }
+            catch(err) {
+                alert(err);
+            }
+        }
     </script>
 </head>
 <body>
     <div id="header"></div>
     <div class="container">
         <h2>Home - View Requests</h2>
+        <h4 class="text-primary">Hint: click on row to upload data for that request</h4>
         <table id="requestsTable" class="table table-striped table-hover table-bordered" clickToSelect="true">
             <thead>
             <tr>
@@ -29,7 +41,7 @@
             </thead>
             <tbody>
                 {{#allRequests}}
-                <tr>
+                <tr onclick=nav(this)>
                 <td>{{requestID}}</td>
                 <td>{{caseID}}</td>
                 <td>{{status}}</td>
