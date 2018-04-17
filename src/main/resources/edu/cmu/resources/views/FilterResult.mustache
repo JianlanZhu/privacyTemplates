@@ -10,6 +10,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/globalstyling.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -23,11 +24,24 @@
 
     <!--JS files for filtering and displaying final results-->
     <script src="filterResultFunctions.js"></script>
-    <script src="../globalFunctions.js"></script>
+    <script src="/assets/js/requestForm/commonLEOfunctions.js"></script>
+    <script src="/assets/js/globalFunctions.js"></script>
+    <script>
+        $(function(){
+            $('#myTab li:eq(13) a').tab('show');
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            loadLEONav();
+            //addRow();
+        });
+    </script>
 
 </head>
 <body>
-
+<div id="header"></div>
+<nav class="navbar navbar-default" id="navLEO"></nav>
 <!--Different Tabs-->
 <div class="container">
     <div class="page-header">
@@ -103,7 +117,7 @@
 
 <!--Content for different tabs-->
 <div id="myTabContent" class="tab-content">
-    <div class="tab-pane fade container active" id="info">
+    <div class="tab-pane fade container in active" id="info">
         <h4>Contact information!</h4>
     </div>
     <div class="tab-pane fade container" id="status">
@@ -133,7 +147,7 @@
     <div class="tab-pane fade container" id="future">
         <h4>Future event!</h4>
     </div>
-    <div class="tab-pane fade conatiner" id="past">
+    <div class="tab-pane fade container" id="past">
         <h4>Past event!</h4>
     </div>
     <div class="tab-pane fade container" id="log">
