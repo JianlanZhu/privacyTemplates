@@ -112,11 +112,11 @@ function postData(url, data, requestHeader, onResponse) {
         XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
-            if (XHR.status == 200) {
+            if (XHR.status == 200 || XHR.status == 204) {
                 onResponse(XHR.responseText);
             } else {
                 //ToDo: correct this
-                onResponse("error");
+                alert("some error occurred");
             }
         }
     };
