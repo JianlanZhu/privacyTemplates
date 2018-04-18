@@ -134,8 +134,8 @@ public class SocialMediaResource {
     @Path("DataUploadForm")
     @UnitOfWork
     @Timed
-    public UploadDataFormView getUploadForm() {
-        return new UploadDataFormView();
+    public UploadDataFormView getUploadForm(@QueryParam("requestId") int requestId) {
+        return new UploadDataFormView(requestId);
     }
 
 }
