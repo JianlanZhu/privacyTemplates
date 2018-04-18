@@ -57,4 +57,3 @@ function validText() {
     return false
 }
 
-//
