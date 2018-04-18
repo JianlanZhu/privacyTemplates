@@ -19,7 +19,6 @@ function validate() {
             var url = "/request/requestForm";
             var inputData = generateFormData(form);
             postData(url, inputData, "application/json", showResponseFromServer);
-            //alert("Success!");
             return true;
         }
     }
@@ -66,7 +65,6 @@ function validateBasicInfo() {
 //Temporarily adding this function for prototype 1
 // The function purpose will be modified later.
 function showResponseFromServer(response) {
-    //alert("Response from server: " + response);
-    alert("Successfully sent the request!");
+    alert("Response from server: " + response);
     window.location.assign("http://localhost:8080/leoHome");
 }
