@@ -7,6 +7,7 @@ function logout(){
     });
 }
 
+//Function that adding a header
 function loadHeader(showLogout) {
     if(showLogout === undefined)
         showLogout = true;
@@ -47,6 +48,7 @@ function isStringEmpty(data) {
     }
 }
 
+//a function returns the component of the mustache by the given ID
 function getElement(elementId) {
     return document.getElementById(elementId);
 }
