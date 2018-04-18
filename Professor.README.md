@@ -1,45 +1,32 @@
 # Professor, Read Me Please!
  
 
-## Structure of our Code
-There are two major parts to our code:
-1. The front-end (html and JavaScript)
-2. The back-end (.java files)
+## Project functionality
+There are three different aspects of our code:
+1. The login functionality
+2. The LEO's view
+3. The SME's view.
  
-### Front-End
+### Login and logout functionality
 #### Description
-For the front-end, we currently have the UI for the Request Generation. We are able to pass a basic request generation request to the backend (including caseNumber and suspectUserName). However, full support for all fields still needs to be implemented. Also, note that this is the first basic thing we came up with. UX has not yet been greatly considered. For example, when you try to generate a request, there is a “Submit” button where you might expect a “Next” button. It immediately performs all currently existing validations instead of taking you to the next part of the request form. To switch between the different parts of the request form, use the links on the left.
-#### Relevant code
-- RequestForm.html
-  - Location: privacyTemplates/src/main/resources/assets/Request/RequestForm.html
-  - Description: This file contains the UI for the request form.
-
-- requestFormFunctions.js
-    - Location: privacyTemplates/src/main/resources/assets/Request/requestFormFunctions.js
-    - Description: This file contains the JavaScript functions specific to request form
-
-- globalFunctions.js
-    - Location: privacyTemplates/src/main/resources/assets/globalFunctions.js
-    - Description: This file contains the JavaScript functions which will be shared by multiple java files.
+The login functionality has been achieved by setting a cookie.
  
-### Back-End
+### LEO's View
 #### Description
-Currently, we have the code written to handle the simple request data as described above. We are also able to persist the generated request in the database. Support for other request parameters and complete mediation still need to be implemented.
+Once the LEO logs in, the LEO will have all the requests displayed. On clicking any of the requests, he can view the requests in detail. However, though all possibilities of responses (video listing, user photos, etc.) are shown, the LEO can currently only view the conversations. The LEO can also create a new request. The changes for this part from prototype 1 is that in prototype the server was accepting only caseId and username. However, the server currently accepts all the paramters.
 
-#### Relevant code
-- GenerateRequestInput.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/resources/interaction/GenerateRequestInput.java
-    - Description: This file represents the request object that the frontend passes to the backend. It contains all the fields which should be there in the request object. Currently, we are only supporting two fields. More fields will be added in the future.
-- RequestResource.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/resources/RequestResource.java
-    - Description: This file is the entry point of the ‘Request calls’ from the UI. This is using the class in the above file to parse incoming JSON into a Java object.
-- Request.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/db/entities/Request.java
-    - Description: This represents the corresponding table in the database. It will be generated from the incoming request data. This entity will be used to filter the input uploaded by the social media.
-- RequestDAO.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/db/dao/RequestDAO.java
-    - Description: An object of this class is used to perform database accesses regarding requests. DAOs are the only classes that can interact with the database.
+#### SME's View
+### Description:
+Once the Social Media Employee logs in, the SME can view all the requests. Currently, when the SME clicks on the row, the SME will be taken to a page where he can upload the results. We aim to enhance this functionality by showing the SME the details that LEO is requesting for. 
 
-### Other things:
-- Other files like EmployeeResource.java or SayingOutput.java etc. are for exemplary purpose only obtained from tutorials. They will be removed as soon as everyone feels fully comfortable with the framework.
-- We've got a sample test running, but in general, there has not been effort put into it so far.
+### Relevant code:
+- Frontend
+	- Location: privacyTemplates/src/main/resources/edu/cmu/resources/views
+	- Description: This folder contains all the moustache files
+- External JavaScript logic
+    - Location: privacyTemplates/src/main/resources/assets/js/
+    - Description: This folder contains all the external JavaScript files.
+- Styling files
+	- Location: privacyTemplates/src/main/resources/assets/css
+	- Description: This folder contains the external styling files shared by the moustache files
+	
