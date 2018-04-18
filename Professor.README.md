@@ -20,8 +20,11 @@ Once the Social Media Employee logs in, the SME can view all the requests. Curre
 - Backend
     - Authentication 
         - package `auth`: Contains code for authenticating users via tokens
-        - class LoginResource: Contains endpoints for retrieving / deleting tokens
-    -     
+        - class LoginResource: Contains endpoints for retrieving and deleting tokens
+    - Parsing
+        - file: description
+    - Filtering
+        - file: description
 - Frontend
 	- Location: privacyTemplates/src/main/resources/edu/cmu/resources/views
 	- Description: This folder contains all the moustache files
@@ -44,7 +47,7 @@ Once the Social Media Employee logs in, the SME can view all the requests. Curre
 1. Finally, click on the request and notice the data that is now listed here.  	
 
 ## Limitations
-- We do not yet discard data that lies outside of the selected range date. We are working on it and this will be done in the final version.
+- When uploading data as a SME, we do not yet discard data that lies outside of the selected range date. We are working on it and this will be done in the final version.
 - So far, only have messages parsed and stored in the database. We are now familiar with the structure, so one or two more categories should be included in the final version.
 - The filtering is working but unstable. We decided not to include it in the prototype in order not to break functionality.
 

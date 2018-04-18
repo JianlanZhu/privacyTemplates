@@ -13,7 +13,6 @@ import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
 import edu.cmu.resources.views.ConversationInfoView;
 import edu.cmu.resources.views.GenerateRequestView;
-import edu.cmu.resources.views.ListAllRequestsForLeoView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
@@ -100,7 +99,8 @@ public class RequestResource {
         checkInputValidity(parsedInput);
 
         Blob warrantBlob = null;
-       /* if (fileField != null) {
+        /* This will be used for file upload!
+       if (fileField != null) {
             InputStream warrantFileInputStream = fileField.getValueAs(InputStream.class);
 
             try {
@@ -128,14 +128,6 @@ public class RequestResource {
     @Path("/requestForm")
     public View showGenerateRequestView() {
         return new GenerateRequestView();
-    }
-
-    @GET
-    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @Path("/all")
-    @UnitOfWork
-    public View listAllRequestsForLeo(@Auth User user) {
-        return new ListAllRequestsForLeoView(requestDAO.findAllForUser(user.getUserID()));
     }
 
     @GET

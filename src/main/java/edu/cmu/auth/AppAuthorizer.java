@@ -3,6 +3,9 @@ package edu.cmu.auth;
 import edu.cmu.db.entities.User;
 import io.dropwizard.auth.Authorizer;
 
+/**
+ * Simple privilege checking.
+ */
 public class AppAuthorizer implements Authorizer<User> {
     @Override
     public boolean authorize(User user, String role) {

@@ -2,6 +2,9 @@ package edu.cmu.core.util;
 
 import java.security.SecureRandom;
 
+/**
+ * Util class for generating secure alphanumeric tokens.
+ */
 public class SecureTokenGenerator {
     public static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
