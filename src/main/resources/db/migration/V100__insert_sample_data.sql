@@ -7,8 +7,8 @@ INSERT INTO User (userType, userName, password, accountEnabled, salt) VALUES
 INSERT INTO User (userType, userName, password, accountEnabled, salt) VALUES
   ("SOCIAL_MEDIA_EMPLOYEE", "HaHa", "43E12EE3BAF37F13892364B0D4F9623124F2BB937D997944FFFEABCF0D902E86", 1, "HalysSalt");
 
-INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status)
-VALUES (1, "Suspect 1", "MISDEMEANEOR", 2, "PENDING");
+INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status, requestedDataStartDate, requestedDataEndDate)
+VALUES (1, "Suspect 1", "MISDEMEANEOR", 2, "PENDING", "2013-10-1", "2017-12-20");
 INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status)
 VALUES (112, "Suspect 2", "FELONY", 2, "ANSWERED");
 INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status)

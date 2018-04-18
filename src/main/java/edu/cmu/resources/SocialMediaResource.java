@@ -99,6 +99,7 @@ public class SocialMediaResource {
                     result.setRetentionID(1);
                     // store to db
                     result = resultDAO.persistNewResult(result);
+                    result.setRequest(request);
                     request.setResult(result);
 //                    int resultID = result.getResultID();
                     // begin parsing

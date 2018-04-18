@@ -1,7 +1,8 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "message")
@@ -19,7 +20,7 @@ public class Message {
     private String messageContent;
 
     @Column(name = "startingTime")
-    private Timestamp startingTime;
+    private Date startingTime;
 
     @Column(name = "messageSender")
     private String messageSender;
@@ -47,11 +48,11 @@ public class Message {
         this.messageContent = messageContent;
     }
 
-    public Timestamp getStartingTime() {
+    public Date getStartingTime() {
         return startingTime;
     }
 
-    public void setStartingTime(Timestamp startingTime) {
+    public void setStartingTime(Date startingTime) {
         this.startingTime = startingTime;
     }
 
