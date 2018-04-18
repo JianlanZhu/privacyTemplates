@@ -13,9 +13,6 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.context.internal.ManagedSessionContext;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -24,7 +21,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
@@ -37,15 +33,13 @@ public class SocialMediaResource {
     private ResultDAO resultDAO;
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
-    private SessionFactory sessionFactory;
 
     public SocialMediaResource(RequestDAO requestDAO, ResultDAO resultDAO,
-                               ConversationDAO conversationDAO, MessageDAO messageDAO, SessionFactory sessionFactory) {
+                               ConversationDAO conversationDAO, MessageDAO messageDAO) {
         this.requestDAO = requestDAO;
         this.resultDAO = resultDAO;
         this.conversationDAO = conversationDAO;
         this.messageDAO = messageDAO;
-        this.sessionFactory = sessionFactory;
     }
 
     @GET
@@ -62,86 +56,78 @@ public class SocialMediaResource {
     @POST
     @Path("DataUploadForm")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @UnitOfWork
     @Timed
     public void uploadData(@Auth User user,
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
-        try (Session session = sessionFactory.openSession()) {
-            ManagedSessionContext.bind(session);
-            session.doReturningWork(conn -> {
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.executeQuery("SET NAMES utf8mb4");
-                }
 
-                return null;
-            });
-            if (fileField != null) {
-                InputStream warrantFileInputStream = new BufferedInputStream(fileField.getValueAs(InputStream.class));
-                try {
-                    // getNextEntry returns null if the InputStream is not a zip file
-                    if (new ZipInputStream(warrantFileInputStream).getNextEntry() == null) {
-                        throw new BadRequestException("Uploaded file was not a zip file!");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (fileField != null) {
+            InputStream warrantFileInputStream = new BufferedInputStream(fileField.getValueAs(InputStream.class));
+            try {
+                // getNextEntry returns null if the InputStream is not a zip file
+                if (new ZipInputStream(warrantFileInputStream).getNextEntry() == null) {
+                    throw new BadRequestException("Uploaded file was not a zip file!");
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
 
-            requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
-            int requestIdNumber = Integer.parseInt(requestId.getValue());
-            comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
+        requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
+        int requestIdNumber = Integer.parseInt(requestId.getValue());
+        comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
 
 
-            Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
-            if (requestOptional.isPresent()) {
-                Request request = requestOptional.get();
-                if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
-                    boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
-                    if (!success) {
-                        throw new NotFoundException();
-                    }
-                    // handle uploaded data participants
-                    if (fileField != null) {
-                        int SMEUserID = user.getUserID();
-                        // find a result ID
-                        Result result = new Result();
-                        result.setSMEUser(user);
-                        // TODO hard code, just for testing
-                        result.setRetentionID(1);
-                        // store to db
-                        result = resultDAO.persistNewResult(result);
-                        request.setResult(result);
+        Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
+        if (requestOptional.isPresent()) {
+            Request request = requestOptional.get();
+            if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
+                boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
+                if (!success) {
+                    throw new NotFoundException();
+                }
+                // handle uploaded data participants
+                if (fileField != null) {
+                    int SMEUserID = user.getUserID();
+                    // find a result ID
+                    Result result = new Result();
+                    result.setSMEUser(user);
+                    // TODO hard code, just for testing
+                    result.setRetentionID(1);
+                    // store to db
+                    result = resultDAO.persistNewResult(result);
+                    request.setResult(result);
 //                    int resultID = result.getResultID();
-                        // begin parsing
-                        InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-                        Parser parser = new Parser(conversationDAO, messageDAO, result);
-                        try {
-                            // unzip and parse
-                            parser.parseProfile(dataZipFileInputStream);
-                        } catch (IOException e) {
-                            // if parse failed
-                            e.printStackTrace();
-                            resultDAO.deleteResultByID(result.getResultID());
-                        }
-                        // delete files under data folder
-                        java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
-                        try {
-                            Parser.deleteFileOrFolder(path);
-                        } catch (IOException e) {
-                            System.out.println("delete file error!");
-                            e.printStackTrace();
-                        }
-                        System.out.println("parse successfully!");
+                    // begin parsing
+                    InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
+                    Parser parser = new Parser(conversationDAO, messageDAO, result);
+                    try {
+                        // unzip and parse
+                        parser.parseProfile(dataZipFileInputStream);
+                    } catch (IOException e) {
+                        // if parse failed
+                        e.printStackTrace();
+                        resultDAO.deleteResultByID(result.getResultID());
                     }
-                } else {
-                    throw new BadRequestException("Request has already been answered or rejected.");
+                    // delete files under data folder
+                    java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
+                    try {
+                        Parser.deleteFileOrFolder(path);
+                    } catch (IOException e) {
+                        System.out.println("delete file error!");
+                        e.printStackTrace();
+                    }
+                    System.out.println("parse successfully!");
                 }
             } else {
-                throw new BadRequestException("Request ID invalid");
+                throw new BadRequestException("Request has already been answered or rejected.");
             }
-            System.out.println("upload over");
+        } else {
+            throw new BadRequestException("Request ID invalid");
         }
+        System.out.println("upload over");
     }
 
     @GET
