@@ -26,6 +26,7 @@
     <script src="/assets/js/filterResultFunctions.js"></script>
     <script src="/assets/js/requestForm/commonLEOfunctions.js"></script>
     <script src="/assets/js/globalFunctions.js"></script>
+    <!--Making the "Private Message Tab" the default tab when opened-->
     <script>
         $(function(){
             $('#myTab li:eq(13) a').tab('show');
@@ -37,6 +38,7 @@
             //addRow();
         });
     </script>
+    <!--Directing each row of "conversation" to the "messages", unfinished-->
     <script>
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {
@@ -55,7 +57,7 @@
         <h2>Results</h2>
     </div>
 
-    <ul id="myTab" class="nav nav-tabs">
+    <ul id="myTab" class="nav nav-tabs ulBurly">
         <li class="active">
             <a href="#info" data-toggle="tab">
                 Profile Contact Information
