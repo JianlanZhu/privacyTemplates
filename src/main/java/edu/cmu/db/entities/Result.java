@@ -30,6 +30,10 @@ public class Result {
     @JoinColumn(name = "resultID")
     private List<Conversation> conversations;
 
+    @ManyToOne
+    @JoinColumn(name = "requestID")
+    private Request request;
+
     public Result() {
         this.conversations = new ArrayList<>();
     }
@@ -64,5 +68,13 @@ public class Result {
 
     public void setConversations(List<Conversation> conversations) {
         this.conversations = conversations;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

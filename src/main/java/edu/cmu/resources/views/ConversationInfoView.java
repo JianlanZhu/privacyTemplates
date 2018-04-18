@@ -8,13 +8,19 @@ import java.util.Set;
 
 public class ConversationInfoView extends View {
     private List<Conversation> conversations;
+    private int id;
 
-    public ConversationInfoView(List<Conversation> conversations) {
+    public ConversationInfoView(List<Conversation> conversations, int id) {
         super("FilterResult.mustache");
         this.conversations = conversations;
+        this.id = id;
     }
 
     public List<Conversation> getConversations() {
         return conversations;
+    }
+
+    public int getId() {
+        return id;
     }
 }

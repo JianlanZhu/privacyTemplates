@@ -23,6 +23,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Blob;
+import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +115,7 @@ public class RequestResource {
         }
         */
         try {
-            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), Instant.EPOCH, Instant.EPOCH, parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
+            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), new Date(Date.parse(parsedInput.getRequestedDataStartDate())), new Date(Date.parse(parsedInput.getRequestedDataEndDate())), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
             request = requestDAO.persistNewRequest(request);
             return request;
         } catch (IllegalArgumentException e) {
@@ -136,7 +137,7 @@ public class RequestResource {
     @Path("/{id}")
     public View getRequestDetails(@PathParam("id") int id) {
         List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
-        return new ConversationInfoView(conversations);
+        return new ConversationInfoView(conversations, id);
     }
 
     @POST
@@ -150,7 +151,7 @@ public class RequestResource {
             name = senderName.getValueAs(String.class);
         }
         List<Conversation> conversations = conversationDAO.findByParticipant(id, name);
-        return new ConversationInfoView(conversations);
+        return new ConversationInfoView(conversations, id);
     }
 }
 

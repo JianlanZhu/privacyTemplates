@@ -3,6 +3,7 @@ package edu.cmu.db.dao;
 import com.google.common.io.Files;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Message;
+import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,7 +15,9 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -29,6 +32,7 @@ public class Parser {
     private MessageDAO messageDAO;
     private String topDirectory;
     private Result result;
+    private Request request;
 
     public Parser() {
     }
@@ -37,6 +41,7 @@ public class Parser {
         this.conversationDAO = conversationDAO;
         this.messageDAO = messageDAO;
         this.result = result;
+        this.request = result.getRequest();
     }
 
     /**
@@ -93,7 +98,7 @@ public class Parser {
             Message thisMessage = new Message();
             // elements
             String sender; // message sender
-            Timestamp sentTime; // message sent time
+            Date sentTime; // message sent time
             String content; // message content
             String participants; // message participants
             // get participants
@@ -116,7 +121,8 @@ public class Parser {
                     // get message sent time
                     String originalTime = messageHeader.select("span.meta").first().text();
                     String convertedTime = getConvertedTime(originalTime);
-                    sentTime = Timestamp.valueOf(convertedTime);
+                    sentTime = Date.valueOf(convertedTime);
+                    //Timestamp.valueOf(convertedTime);
                     // update participants
                     if (!par.contains(sender)) {
                         par.add(sender);
@@ -135,10 +141,19 @@ public class Parser {
                         // change state
                         count = 0;
                         // store this message
+                        Date startDate = request.getRequestedDataStartDate();
+                        Date endDate = request.getRequestedDataEndDate();
+                        if (startDate != null && thisMessage.getStartingTime().compareTo(startDate) < 0) {
+//                            System.out.println("Less than start date: " + thisMessage.getStartingTime().toString());
+                            continue;
+                        }
+                        if (endDate != null && thisMessage.getStartingTime().compareTo(endDate) > 0) {
+//                            System.out.println("More than end date: " + thisMessage.getStartingTime().toString());
+                            continue;
+                        }
                         try {
                             thisMessage = messageDAO.persistNewMessage(thisMessage);
                             thisMessage.getConversation().getMessages().add(thisMessage);
-
                         } catch (Exception ee) {
                             System.out.println("Error long text: " + thisMessage.getMessageContent());
                             ee.printStackTrace();
@@ -225,8 +240,9 @@ public class Parser {
         // converted to time like: 1985-04-12T23:20:50.52
         String[] weekDay = originalTime.split(",");
         String[] timeElements = weekDay[1].trim().split(" ");
-        String convertedTime = timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0] +
-                " " + timeElements[4] + ":00";
+//        String convertedTime = timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0] +
+//                " " + timeElements[4] + ":00";
+        String convertedTime = timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0];
         return convertedTime;
     }
 

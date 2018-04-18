@@ -1,5 +1,4 @@
 //Global functions that will be used by all js files
-
 function logout(){
     var url = "/logout";
     postData(url, null, "", function (url){

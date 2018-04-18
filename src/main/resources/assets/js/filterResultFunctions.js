@@ -22,7 +22,8 @@ function changeHeight(){
 
 //validation: 1) at list one of the filter is filed if the button is clicked
 //2) pass the seperated validation
-function validFilters() {
+function validFilters(id) {
+    // alert("beginning of function" + id);
     //get all the values in these fields
     var fromName = document.getElementById("sender");
     var sender = fromName.value;
@@ -37,6 +38,10 @@ function validFilters() {
         alert("Enter at least one filter!");
         return false;
     }
+    // console.log(id);
+    //window.location.href = "/request/" + id + "?sender=" + sender;
+
+
     //else check the validity of each field
     //validDate();
     //validText();

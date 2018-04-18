@@ -5,6 +5,7 @@ import edu.cmu.db.enums.RequestState;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.sql.Date;
 import java.time.Instant;
 
 /**
@@ -58,10 +59,10 @@ public class Request {
     private String suspectRegisteredPhoneNumber;
 
     @Column(name = "requestedDataStartDate")
-    private Instant requestedDataStartDate;
+    private Date requestedDataStartDate;
 
     @Column(name = "requestedDataEndDate")
-    private Instant requestedDataEndDate;
+    private Date requestedDataEndDate;
 
     @Column(name = "isContactInformationRequested")
     private Boolean isContactInformationRequested;
@@ -109,10 +110,10 @@ public class Request {
     private Boolean isIPLogRequested;
 
     @Column(name = "filterStartTime")
-    private Instant filterStartTime;
+    private Date filterStartTime;
 
     @Column(name = "filterEndTime")
-    private Instant filterEndTime;
+    private Date filterEndTime;
 
     // TODO what's that?
     @Column(name = "filterCommunicantsUserName")
@@ -141,7 +142,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Instant requestedDataStartDate, Instant requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Instant filterStartTime, Instant filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
+    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Date requestedDataStartDate, Date requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Date filterStartTime, Date filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
         this.status = status.name();
         this.requestCreatedDate = Instant.now();
         this.createdBy = createdBy;
@@ -267,19 +268,19 @@ public class Request {
         this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
     }
 
-    public Instant getRequestedDataStartDate() {
+    public Date getRequestedDataStartDate() {
         return requestedDataStartDate;
     }
 
-    public void setRequestedDataStartDate(Instant requestedDataStartDate) {
+    public void setRequestedDataStartDate(Date requestedDataStartDate) {
         this.requestedDataStartDate = requestedDataStartDate;
     }
 
-    public Instant getRequestedDataEndDate() {
+    public Date getRequestedDataEndDate() {
         return requestedDataEndDate;
     }
 
-    public void setRequestedDataEndDate(Instant requestedDataEndDate) {
+    public void setRequestedDataEndDate(Date requestedDataEndDate) {
         this.requestedDataEndDate = requestedDataEndDate;
     }
 
@@ -403,19 +404,19 @@ public class Request {
         this.isIPLogRequested = IPLogRequested;
     }
 
-    public Instant getFilterStartTime() {
+    public Date getFilterStartTime() {
         return filterStartTime;
     }
 
-    public void setFilterStartTime(Instant filterStartTime) {
+    public void setFilterStartTime(Date filterStartTime) {
         this.filterStartTime = filterStartTime;
     }
 
-    public Instant getFilterEndTime() {
+    public Date getFilterEndTime() {
         return filterEndTime;
     }
 
-    public void setFilterEndTime(Instant filterEndTime) {
+    public void setFilterEndTime(Date filterEndTime) {
         this.filterEndTime = filterEndTime;
     }
 
