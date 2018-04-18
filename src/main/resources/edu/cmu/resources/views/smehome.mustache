@@ -16,13 +16,11 @@
         });
         function nav(e) {
             try {
-                window.location.assign("http://localhost:8080/socialMedia/DataUploadForm");
-                /*
+                window.location.assign("http://localhost:8080/socialMedia/DataUploadForm?requestId=" + $(e.cells[0]).text());
                 alert('Row Index: ' + ($(e).index() + 1) +
                         '\nRequest ID: ' + $(e.cells[0]).text() +
                         '\nCase ID: ' + $(e.cells[1]).text() +
                         '\nStatus: ' + $(e.cells[2]).text());
-                        */
             }
             catch(err) {
                 alert(err);
