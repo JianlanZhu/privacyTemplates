@@ -1,3 +1,5 @@
+//get the username and password from the input
+//post the data to server for validation
 function login(){
     var uName = getElement("uname");
     var pwd = getElement("psw");

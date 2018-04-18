@@ -123,18 +123,3 @@ function postData(url, data, requestHeader, onResponse) {
     XHR.send(JSON.stringify(data));
 }
 
-function postDataSync(url, data, requestHeader){
-    jQuery.ajax({
-        type: "POST",
-        beforeSend: function(request) {
-            request.setRequestHeader("content-type", requestHeader);
-        },
-        url: url,
-        data: data,
-        success: function(result) {
-            if(result.isOk == false)
-                alert(result.message);
-        },
-        async:   false
-    });
-}

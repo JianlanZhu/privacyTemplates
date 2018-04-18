@@ -1,3 +1,5 @@
+//function that adds a navigation bar
+//the bar contains: 1) the portal header 2) the SME header
 function loadSmeNav() {
     loadHeader();
     var navBar = getElement('navSME');
