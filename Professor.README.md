@@ -45,7 +45,7 @@ The relevant code is now on the master branch.
 1. Click on the request the now appears in the list to verify that there is no information yet.
 1. Log out and back in as SME with credentials HaHa / HH. 
 1. Click on the newly generated request.
-1. Upload the sample data (located in src/test/resources/SomeonesData.zip)
+1. Upload the sample data (located in src/test/resources/SomeonesData.zip). Unfortunately, there is no feedback yet when the upload is finished. For now, assume that it should take at most 30 seconds.
 1. Go back to Home and see that the request state has changed from PENDING to ANSWERED.
 1. Log out and back in as the LEO.
 1. Notice how the state of the request has changed here, too.
@@ -56,6 +56,7 @@ The relevant code is now on the master branch.
 - So far, only messages are parsed and stored in the database. We are now familiar with the structure, so one or two more categories should be included in the final version.
 - The filtering is working but unstable. We decided not to include it in the prototype in order not to break functionality.
 - Details of a conversation are not yet implemented.
+- When uploading data, there is still a request id field. However, it is already populated with the right ID and will be hidden in the final version. Notice that even though the id is visible in the URL, this does not pose a vulnerability because a user still needs an authentication token to access it.
 
 ## Privacy Notice
 We were thinking hard about how to incorporate a suiting privacy notice. Reluctantly, we decided that its implementation was out of scope for the project. However, please have a look at the PrivacyNotice.docx file that is located in the root folder of this project. 
