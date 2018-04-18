@@ -22,9 +22,13 @@ Once the Social Media Employee logs in, the SME can view all the requests. Curre
         - package `auth`: Contains code for authenticating users via tokens
         - class LoginResource: Contains endpoints for retrieving and deleting tokens
     - Parsing
-        - file: description
+        - package: `edu.cmu.db.dao`
+        - class Parser: Contains methods unzip, parse and delete the user data html files
     - Filtering
-        - file: description
+        - package: `edu.cmu.resources`
+        - class RequestResource: Contains functions that law enforcement officers can refer to for filtering by participants name
+        - The filtering functions are designed to better protect involved people's privacy.
+        - This part is still not fully functional.
 - Frontend
 	- Location: privacyTemplates/src/main/resources/edu/cmu/resources/views
 	- Description: This folder contains all the moustache files
