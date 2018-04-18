@@ -90,11 +90,7 @@ function generateFormData(form) {
                 value = "";
             formData[element.id] = value;
         }
-        else {
-            alert(element.type);
         }
-        }
-        alert(JSON.stringify(formData));
     }
     catch(e){
         alert(e);
