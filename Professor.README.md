@@ -1,45 +1,52 @@
 # Professor, Read Me Please!
  
 
-## Structure of our Code
-There are two major parts to our code:
-1. The front-end (html and JavaScript)
-2. The back-end (.java files)
+## Project functionality
+There are three different visible aspects of our code:
+1. The login functionality
+2. The LEO's view
+3. The SME's view.
  
-### Front-End
-#### Description
-For the front-end, we currently have the UI for the Request Generation. We are able to pass a basic request generation request to the backend (including caseNumber and suspectUserName). However, full support for all fields still needs to be implemented. Also, note that this is the first basic thing we came up with. UX has not yet been greatly considered. For example, when you try to generate a request, there is a “Submit” button where you might expect a “Next” button. It immediately performs all currently existing validations instead of taking you to the next part of the request form. To switch between the different parts of the request form, use the links on the left.
-#### Relevant code
-- RequestForm.html
-  - Location: privacyTemplates/src/main/resources/assets/Request/RequestForm.html
-  - Description: This file contains the UI for the request form.
-
-- requestFormFunctions.js
-    - Location: privacyTemplates/src/main/resources/assets/Request/requestFormFunctions.js
-    - Description: This file contains the JavaScript functions specific to request form
-
-- globalFunctions.js
-    - Location: privacyTemplates/src/main/resources/assets/globalFunctions.js
-    - Description: This file contains the JavaScript functions which will be shared by multiple java files.
+### Login and logout functionality
+If a user does not yet have a cookie, all her requests will result in a 401 response. She can retrieve a token by logging in through the login form. From that point on, the cookie is set in the browser and used to automatically reauthenticate every access. We are already setting an expiration date of 60 minutes, however not checking that yet. This is intended for the final version.
  
-### Back-End
-#### Description
-Currently, we have the code written to handle the simple request data as described above. We are also able to persist the generated request in the database. Support for other request parameters and complete mediation still need to be implemented.
+### LEO's View
+Once the LEO logs in, the LEO will have all the requests displayed. On clicking any of the requests, he can view the requests in detail. However, though all possibilities of responses (video listing, user photos, etc.) are shown, the LEO can currently only view the conversations. The LEO can also create a new request. The changes for this part from prototype 1 is that in prototype the server was accepting only caseId and username. However, the server currently accepts all the paramters.
 
-#### Relevant code
-- GenerateRequestInput.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/resources/interaction/GenerateRequestInput.java
-    - Description: This file represents the request object that the frontend passes to the backend. It contains all the fields which should be there in the request object. Currently, we are only supporting two fields. More fields will be added in the future.
-- RequestResource.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/resources/RequestResource.java
-    - Description: This file is the entry point of the ‘Request calls’ from the UI. This is using the class in the above file to parse incoming JSON into a Java object.
-- Request.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/db/entities/Request.java
-    - Description: This represents the corresponding table in the database. It will be generated from the incoming request data. This entity will be used to filter the input uploaded by the social media.
-- RequestDAO.java
-    - Location: privacyTemplates/src/main/java/edu/cmu/db/dao/RequestDAO.java
-    - Description: An object of this class is used to perform database accesses regarding requests. DAOs are the only classes that can interact with the database.
+#### SME's View
+Once the Social Media Employee logs in, the SME can view all the requests. Currently, when the SME clicks on the row, the SME will be taken to a page where he can upload the results. We aim to enhance this functionality by showing the SME the details that LEO is requesting for. 
 
-### Other things:
-- Other files like EmployeeResource.java or SayingOutput.java etc. are for exemplary purpose only obtained from tutorials. They will be removed as soon as everyone feels fully comfortable with the framework.
-- We've got a sample test running, but in general, there has not been effort put into it so far.
+## Relevant code:
+- Backend
+    - Authentication 
+        - package `auth`: Contains code for authenticating users via tokens
+        - class LoginResource: Contains endpoints for retrieving / deleting tokens
+    -     
+- Frontend
+	- Location: privacyTemplates/src/main/resources/edu/cmu/resources/views
+	- Description: This folder contains all the moustache files
+- External JavaScript logic
+    - Location: privacyTemplates/src/main/resources/assets/js/
+    - Description: This folder contains all the external JavaScript files.
+- Styling files
+	- Location: privacyTemplates/src/main/resources/assets/css
+	- Description: This folder contains the external styling files shared by the moustache files
+	
+## Suggested flow for testing project
+1. Log in as a LEO with the credentials SaSm / SS. Generate a request by setting at least the case id, the username, and start/end dates. Go back to the Home site.
+1. Click on the request the now appears in the list to verify that there is no information yet.
+1. Log out and back in as SME with credentials HaHa / HH. 
+1. Click on the newly generated request.
+1. Upload the sample data (located in src/test/resources/SomeonesData.zip)
+1. Go back to Home and see that the request state has changed from PENDING to ANSWERED.
+1. Log out and back in as the LEO.
+1. Notice how the state of the request has changed here, too.
+1. Finally, click on the request and notice the data that is now listed here.  	
+
+## Limitations
+- We do not yet discard data that lies outside of the selected range date. We are working on it and this will be done in the final version.
+- So far, only have messages parsed and stored in the database. We are now familiar with the structure, so one or two more categories should be included in the final version.
+- The filtering is working but unstable. We decided not to include it in the prototype in order not to break functionality.
+
+## Privacy Notice
+We were thinking hard about how to incorporate a suiting privacy notice. Reluctantly, we decided that its implementation was out of scope for the project. However, please have a look at the PrivacyNotice.docx file that is located in the root folder of this project. 

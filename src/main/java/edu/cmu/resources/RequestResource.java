@@ -1,12 +1,10 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.io.ByteStreams;
 import edu.cmu.db.dao.ConversationDAO;
 import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Conversation;
-import edu.cmu.db.entities.Message;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
@@ -85,8 +83,8 @@ public class RequestResource {
     /**
      * Endpoint for creating a new request.
      *
-     * @param generateRequestInput Parameters for the generated request
-     * @param fileField            The warrant file
+     * @param parsedInput Parameters for the generated request
+     * @param user the user who generates the request
      * @return the generated request including generated fields like ID.
      */
     @POST

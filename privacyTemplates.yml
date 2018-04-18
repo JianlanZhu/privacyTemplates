@@ -8,7 +8,7 @@ database:
     # the username
     user: root
     # the password
-    password: Epsproject18;
+    password: root
     # the JDBC URL; the database is called privacytemplates
     url: jdbc:mysql://localhost:3306/privacytemplates
 

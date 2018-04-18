@@ -66,4 +66,5 @@ function validateBasicInfo() {
 // The function purpose will be modified later.
 function showResponseFromServer(response) {
     alert("Response from server: " + response);
+    window.location.assign("http://localhost:8080/leoHome");
 }

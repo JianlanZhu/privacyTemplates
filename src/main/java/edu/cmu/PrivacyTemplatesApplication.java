@@ -49,9 +49,9 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     };
 
     /**
-     * Enables serving static assets.
+     * Enables serving static assets like js files, images, etc.
      */
-    private final AssetsBundle viewAssets = new AssetsBundle("/assets", "/assets");
+    private final AssetsBundle assetsBundle = new AssetsBundle("/assets", "/assets");
 
     /**
      * Main entry point.
@@ -68,8 +68,10 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
     @Override
     public void initialize(final Bootstrap<PrivacyTemplatesConfiguration> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
-        bootstrap.addBundle(viewAssets);
+        bootstrap.addBundle(assetsBundle);
+        // for uplaoding files
         bootstrap.addBundle(new MultiPartBundle());
+        // for generating HTML from mustache templates
         bootstrap.addBundle(new ViewBundle<>());
     }
 
@@ -91,12 +93,40 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
         ResultDAO resultDAO = new ResultDAO(sessionFactory);
         ConversationDAO conversationDao = new ConversationDAO(sessionFactory);
 
+        registerResources(environment, requestDAO, tokenDAO, userDAO, messageDAO, resultDAO, conversationDao);
+
+        setupAuthentication(environment, sessionFactory);
+
+        environment.jersey().register(new JsonProcessingExceptionMapper(true));
+
+    }
+
+    /**
+     * All endpoints need to be registered here.
+     *
+     * @param environment
+     * @param requestDAO
+     * @param tokenDAO
+     * @param userDAO
+     * @param messageDAO
+     * @param resultDAO
+     * @param conversationDao
+     */
+    private void registerResources(Environment environment, RequestDAO requestDAO, TokenDAO tokenDAO, UserDAO userDAO, MessageDAO messageDAO, ResultDAO resultDAO, ConversationDAO conversationDao) {
         environment.jersey().register(new RequestResource(requestDAO, conversationDao, messageDAO));
         environment.jersey().register(new LandingPageResource(requestDAO));
         environment.jersey().register(new RequestResource(requestDAO, conversationDao, messageDAO));
         environment.jersey().register(new LoginResource(tokenDAO, userDAO, requestDAO));
         environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
+    }
 
+    /**
+     * Sets up authentication via token.
+     *
+     * @param environment
+     * @param sessionFactory
+     */
+    private void setupAuthentication(Environment environment, SessionFactory sessionFactory) {
         TokenAuthenticator tokenAuthenticator = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(TokenAuthenticator.class, TokenDAO.class, new TokenDAO(sessionFactory));
 
@@ -106,9 +136,6 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-
-        environment.jersey().register(new JsonProcessingExceptionMapper(true));
-
     }
 
 }

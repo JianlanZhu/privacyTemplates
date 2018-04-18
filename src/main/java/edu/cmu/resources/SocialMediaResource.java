@@ -7,7 +7,6 @@ import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.views.ListAllRequestsForSmeView;
-import edu.cmu.resources.views.SmeHomeView;
 import edu.cmu.resources.views.UploadDataFormView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -136,8 +135,8 @@ public class SocialMediaResource {
     @Path("DataUploadForm")
     @UnitOfWork
     @Timed
-    public UploadDataFormView getUploadForm() {
-        return new UploadDataFormView();
+    public UploadDataFormView getUploadForm(@QueryParam("requestId") int requestId) {
+        return new UploadDataFormView(requestId);
     }
 
 }

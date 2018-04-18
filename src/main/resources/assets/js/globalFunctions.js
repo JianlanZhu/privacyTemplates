@@ -1,7 +1,4 @@
 //Global functions that will be used by all js files
-//Function that adding a header
-function loadHeader(getFolderLevelToAssets) {
-
 function logout(){
     var url = "/logout";
     postData(url, null, "", function (url){
@@ -9,6 +6,7 @@ function logout(){
     });
 }
 
+//Function that adding a header
 function loadHeader(showLogout) {
     if(showLogout === undefined)
         showLogout = true;
@@ -93,11 +91,7 @@ function generateFormData(form) {
                 value = "";
             formData[element.id] = value;
         }
-        else {
-            alert(element.type);
         }
-        }
-        alert(JSON.stringify(formData));
     }
     catch(e){
         alert(e);
@@ -117,29 +111,14 @@ function postData(url, data, requestHeader, onResponse) {
         XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
         if (XHR.readyState == 4) {
-            if (XHR.status == 200) {
+            if (XHR.status == 200 || XHR.status == 204) {
                 onResponse(XHR.responseText);
             } else {
                 //ToDo: correct this
-                onResponse("error");
+                alert("some error occurred");
             }
         }
     };
     XHR.send(JSON.stringify(data));
 }
 
-function postDataSync(url, data, requestHeader){
-    jQuery.ajax({
-        type: "POST",
-        beforeSend: function(request) {
-            request.setRequestHeader("content-type", requestHeader);
-        },
-        url: url,
-        data: data,
-        success: function(result) {
-            if(result.isOk == false)
-                alert(result.message);
-        },
-        async:   false
-    });
-}
