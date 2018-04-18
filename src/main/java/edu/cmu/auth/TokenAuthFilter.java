@@ -10,6 +10,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Cookie;
 
+/**
+ * This custom filter is used to provide authentication via a token that a client can get from /login.
+ */
 @PreMatching
 @Priority(Priorities.AUTHENTICATION)
 public class TokenAuthFilter extends AuthFilter<String, User> {

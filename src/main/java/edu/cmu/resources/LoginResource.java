@@ -9,11 +9,8 @@ import edu.cmu.db.entities.Token;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.UserType;
 import edu.cmu.resources.interaction.LoginInput;
-import edu.cmu.resources.views.LeoHomeView;
 import edu.cmu.resources.views.LoginView;
-import edu.cmu.resources.views.SmeHomeView;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.dropwizard.views.View;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Endpoints for retrieving and destroying tokens.
+ */
 @Path("/")
 public class LoginResource {
 
@@ -45,6 +45,10 @@ public class LoginResource {
         return new LoginView();
     }
 
+    /**
+     * @param loginInput contains username and password
+     * @return a new cookie if user is authenticated
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
@@ -57,39 +61,47 @@ public class LoginResource {
         }
 
         User user = userOptional.get();
-        String salt = user.getSalt();
+        validateUserAuthenticity(user, loginInput.getPassword());
 
-        String hashedPassword = Hashing.sha256()
-                .hashString(salt + loginInput.getPassword(), StandardCharsets.UTF_8)
-                .toString().toUpperCase();
+        String nextView = determineNextView(user);
 
-        if (!userOptional.get().getPassword().equals(hashedPassword)) {
-            throw new NotAuthorizedException("Invalid username / password");
-        }
-
-        String nextView = null;
-        if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
-            nextView = "http://localhost:8080/leoHome";//new LeoHomeView();
-        } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
-            nextView = "http://localhost:8080/smeHome";//new SmeHomeView();
-        } else {
-            throw new BadRequestException("unknown role");
-        }
-
-        String tokenString = SecureTokenGenerator.nextToken();
-        Instant instant = Instant.now();
-        instant.plus(Duration.ofMinutes(60));
-
-        Token token = new Token(user, tokenString, instant);
+        Token token = new Token(user, SecureTokenGenerator.nextToken(), Instant.now().plus(Duration.ofMinutes(60)));
 
         token = tokenDAO.persistToken(token);
 
-        Cookie cookie = new Cookie("pepToken", tokenString);
-        NewCookie newCookie = new NewCookie(cookie);
+        NewCookie newCookie = new NewCookie(new Cookie("pepToken", token.getToken()));
 
         return Response.status(Response.Status.OK).entity(nextView).cookie(newCookie).build();
     }
 
+    private String determineNextView(User user) {
+        if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
+            return "http://localhost:8080/leoHome";//new LeoHomeView();
+        } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
+            return "http://localhost:8080/smeHome";//new SmeHomeView();
+        } else {
+            throw new BadRequestException("unknown role");
+        }
+    }
+
+    private void validateUserAuthenticity(User user, String password) {
+        String salt = user.getSalt();
+
+        String hashedPassword = Hashing.sha256()
+                .hashString(salt + password, StandardCharsets.UTF_8)
+                .toString().toUpperCase();
+
+        if (!user.getPassword().equals(hashedPassword)) {
+            throw new NotAuthorizedException("Invalid username / password");
+        }
+    }
+
+    /**
+     * Destroys the user's token
+     *
+     * @param requestContext
+     * @return
+     */
     @POST
     @Path("/logout")
     @UnitOfWork
