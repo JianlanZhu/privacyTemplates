@@ -53,7 +53,7 @@ public class TokenAuthFilterTest {
         TokenAuthenticator tokenAuthenticator = mock(TokenAuthenticator.class);
         // returning empty Optional to avoid mocking the whole ContainerRequestContext
         when(tokenAuthenticator.authenticate(any())).thenReturn(Optional.empty());
-        TokenAuthFilter tokenAuthFilter = spy(new TokenAuthFilter(tokenAuthenticator, appAuthorizer));
+        TokenAuthFilter tokenAuthFilter = new TokenAuthFilter(tokenAuthenticator, appAuthorizer);
 
         Map<String, Cookie> cookies = new HashMap<>();
         cookies.put("pepToken", new Cookie("pepToken", "tokenString"));
