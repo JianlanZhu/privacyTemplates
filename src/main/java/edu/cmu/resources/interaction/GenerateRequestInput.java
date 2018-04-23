@@ -22,21 +22,21 @@ public class GenerateRequestInput {
     private String phoneNumber;
     private String requestedDataStartDate;
     private String requestedDataEndDate;
-    private boolean isSharesRequested;
+    private Boolean isSharesRequested;
     private Boolean isNotesRequested;
-    private boolean isWallPostingsRequested;
-    private boolean isFriendListRequested;
-    private boolean isVideosRequested;
-    private boolean isGroupsRequested;
-    private boolean isPastEventsRequested;
-    private boolean isFutureEventsRequested;
-    private boolean isPhotosRequested;
-    private boolean isGroupInfoRequested;
-    private boolean isPrivateMessagesRequested;
-    private boolean isIPLogRequested;
-    private boolean isContactInformationRequested;
-    private boolean isMiniFeedRequested;
-    private boolean isStatusHistoryReuested;
+    private Boolean isWallPostingsRequested;
+    private Boolean isFriendListRequested;
+    private Boolean isVideosRequested;
+    private Boolean isGroupsRequested;
+    private Boolean isPastEventsRequested;
+    private Boolean isFutureEventsRequested;
+    private Boolean isPhotosRequested;
+    private Boolean isGroupInfoRequested;
+    private Boolean isPrivateMessagesRequested;
+    private Boolean isIPLogRequested;
+    private Boolean isContactInformationRequested;
+    private Boolean isMiniFeedRequested;
+    private Boolean isStatusHistoryReuested;
     private String communicantsUserNames;
     private String keywords;
     private Integer keywordCategories;
@@ -48,7 +48,7 @@ public class GenerateRequestInput {
         // Jackson deserialization
     }
 
-    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, String requestedDataStartDate, String requestedDataEndDate, boolean isSharesRequested, Boolean isNotesRequested, boolean isWallPostingsRequested, boolean isFriendListRequested, boolean isVideosRequested, boolean isGroupsRequested, boolean isPastEventsRequested, boolean isFutureEventsRequested, boolean isPhotosRequested, boolean isGroupInfoRequested, boolean isPrivateMessagesRequested, boolean isIPLogRequested, boolean isContactInformationRequested, boolean isMiniFeedRequested, boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, Integer keywordCategories, String locationZipCode, String startTime, String endTime) {
+    public GenerateRequestInput(long caseID, String suspectUserName, String caseType, String profileLink, String firstName, String middleName, String lastName, String email, String phoneNumber, String requestedDataStartDate, String requestedDataEndDate, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRequested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isGroupInfoRequested, Boolean isPrivateMessagesRequested, Boolean isIPLogRequested, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryReuested, String communicantsUserNames, String keywords, Integer keywordCategories, String locationZipCode, String startTime, String endTime) {
         this.caseID = caseID;
         //this.userID = userID;
         this.suspectUserName = suspectUserName;
@@ -155,7 +155,7 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public boolean isSharesRequested() {
+    public Boolean isSharesRequested() {
         return isSharesRequested;
     }
 
@@ -165,52 +165,52 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public boolean isWallPostingsRequested() {
+    public Boolean isWallPostingsRequested() {
         return isWallPostingsRequested;
     }
 
     @JsonProperty
-    public boolean isFriendListRequested() {
+    public Boolean isFriendListRequested() {
         return isFriendListRequested;
     }
 
     @JsonProperty
-    public boolean isVideosRequested() {
+    public Boolean isVideosRequested() {
         return isVideosRequested;
     }
 
     @JsonProperty
-    public boolean isGroupsRequested() {
+    public Boolean isGroupsRequested() {
         return isGroupsRequested;
     }
 
     @JsonProperty
-    public boolean isPastEventsRequested() {
+    public Boolean isPastEventsRequested() {
         return isPastEventsRequested;
     }
 
     @JsonProperty
-    public boolean isFutureEventsRequested() {
+    public Boolean isFutureEventsRequested() {
         return isFutureEventsRequested;
     }
 
     @JsonProperty
-    public boolean isPhotosRequested() {
+    public Boolean isPhotosRequested() {
         return isPhotosRequested;
     }
 
     @JsonProperty
-    public boolean isGroupInfoRequested() {
+    public Boolean isGroupInfoRequested() {
         return isGroupInfoRequested;
     }
 
     @JsonProperty
-    public boolean isPrivateMessagesRequested() {
+    public Boolean isPrivateMessagesRequested() {
         return isPrivateMessagesRequested;
     }
 
     @JsonProperty
-    public boolean isIPLogRequested() {
+    public Boolean isIPLogRequested() {
         return isIPLogRequested;
     }
 
@@ -235,17 +235,17 @@ public class GenerateRequestInput {
     }
 
     @JsonProperty
-    public boolean isContactInformationRequested() {
+    public Boolean isContactInformationRequested() {
         return isContactInformationRequested;
     }
 
     @JsonProperty
-    public boolean isMiniFeedRequested() {
+    public Boolean isMiniFeedRequested() {
         return isMiniFeedRequested;
     }
 
     @JsonProperty
-    public boolean isStatusHistoryRequested() {
+    public Boolean isStatusHistoryRequested() {
         return isStatusHistoryReuested;
     }
 }
