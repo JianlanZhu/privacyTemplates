@@ -70,7 +70,7 @@ public class SocialMediaResource {
         checkIfZipFile(dataZipFileInputStream);
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
-        int requestIdNumber = Integer.parseInt(requestId.getValue());
+        int requestIdNumber = requestId.getValueAs(Integer.class);
         comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
 
         Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
@@ -113,7 +113,7 @@ public class SocialMediaResource {
                 throw new BadRequestException("Uploaded file was not a zip file!");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new BadRequestException("Uploaded file was not a zip file!");
         }
     }
 
