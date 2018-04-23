@@ -1,6 +1,8 @@
-package edu.cmu.db.dao;
+package edu.cmu.core.util;
 
 import com.google.common.io.Files;
+import edu.cmu.db.dao.ConversationDAO;
+import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Message;
 import edu.cmu.db.entities.Result;
@@ -121,9 +123,8 @@ public class Parser {
                     String convertedTime = getConvertedTime(originalTime);
                     sentTime = Timestamp.valueOf(convertedTime);
                     // update participants
-                    if (!par.contains(sender)) {
-                        par.add(sender);
-                    }
+                    par.add(sender);
+
                     thisMessage.setMessageSender(sender);
                     thisMessage.setStartingTime(sentTime);
                     thisMessage.setConversation(conversation);
