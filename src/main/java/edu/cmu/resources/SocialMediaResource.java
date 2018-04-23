@@ -66,54 +66,55 @@ public class SocialMediaResource {
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
-
-        if (fileField != null) {
-            InputStream warrantFileInputStream = new BufferedInputStream(fileField.getValueAs(InputStream.class));
-            try {
-                // getNextEntry returns null if the InputStream is not a zip file
-                if (new ZipInputStream(warrantFileInputStream).getNextEntry() == null) {
-                    throw new BadRequestException("Uploaded file was not a zip file!");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
+        checkIfZipFile(dataZipFileInputStream);
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
         int requestIdNumber = Integer.parseInt(requestId.getValue());
         comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
 
-
         Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
         if (requestOptional.isPresent()) {
             Request request = requestOptional.get();
             if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
+                // handle uploaded data
+                Result result = new Result();
+                result.setSMEUser(user);
+                // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
+
+                result = resultDAO.persistNewResult(result);
+                request.setResult(result);
+
+                parseUploadedData(result, dataZipFileInputStream);
+
+                LOG.info("parse successfully!");
                 boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
                 if (!success) {
-                    throw new NotFoundException();
-                }
-                // handle uploaded data
-                if (fileField != null) {
-                    Result result = new Result();
-
-                    result.setSMEUser(user);
-                    // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
-
-                    result = resultDAO.persistNewResult(result);
-                    request.setResult(result);
-
-                    InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-                    parseUploadedData(result, dataZipFileInputStream);
-
-                    LOG.info("parse successfully!");
+                    LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
                 }
             } else {
-                throw new BadRequestException("Request has already been answered or rejected.");
+                throw new BadRequestException("Request has already been dealt with.");
             }
         } else {
             throw new BadRequestException("Request ID invalid");
         }
         LOG.info("upload over");
+    }
+
+    private void checkIfZipFile(InputStream uploadedFile) {
+        if (uploadedFile == null) {
+            throw new BadRequestException("File upload failed");
+        }
+
+        uploadedFile = new BufferedInputStream(uploadedFile);
+        try {
+            // getNextEntry returns null if the InputStream is not a zip file
+            if (new ZipInputStream(uploadedFile).getNextEntry() == null) {
+                throw new BadRequestException("Uploaded file was not a zip file!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void parseUploadedData(Result result, InputStream dataZipFileInputStream) {
