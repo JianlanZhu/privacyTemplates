@@ -113,9 +113,8 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
      * @param conversationDao
      */
     private void registerResources(Environment environment, RequestDAO requestDAO, TokenDAO tokenDAO, UserDAO userDAO, MessageDAO messageDAO, ResultDAO resultDAO, ConversationDAO conversationDao) {
-        environment.jersey().register(new RequestResource(requestDAO, conversationDao, messageDAO));
+        environment.jersey().register(new RequestResource(requestDAO));
         environment.jersey().register(new LandingPageResource(requestDAO));
-        environment.jersey().register(new RequestResource(requestDAO, conversationDao, messageDAO));
         environment.jersey().register(new LoginResource(tokenDAO, userDAO, requestDAO));
         environment.jersey().register(new SocialMediaResource(requestDAO, resultDAO, conversationDao, messageDAO));
     }

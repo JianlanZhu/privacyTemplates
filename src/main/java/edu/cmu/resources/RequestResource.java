@@ -1,8 +1,6 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import edu.cmu.db.dao.ConversationDAO;
-import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Request;
@@ -11,13 +9,12 @@ import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
-import edu.cmu.resources.views.ConversationInfoView;
 import edu.cmu.resources.views.GenerateRequestView;
+import edu.cmu.resources.views.NotAnsweredView;
+import edu.cmu.resources.views.RequestDetailsView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -26,6 +23,8 @@ import java.sql.Blob;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -37,13 +36,9 @@ public class RequestResource {
      * Responsible for accessing the database.
      */
     private RequestDAO requestDAO;
-    private ConversationDAO conversationDAO;
-    private MessageDAO messageDAO;
 
-    public RequestResource(RequestDAO requestDAO, ConversationDAO conversationDAO, MessageDAO messageDAO) {
+    public RequestResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
-        this.conversationDAO = conversationDAO;
-        this.messageDAO = messageDAO;
     }
 
     /**
@@ -53,8 +48,8 @@ public class RequestResource {
      * @return true if data format is valid, false otherwise.
      */
     private static void checkInputValidity(GenerateRequestInput input) {
-        if (input.getSuspectUserName() == null) {
-            throw new BadRequestException("Invalid user name.");
+        if (input.getSuspectUserName() == null && input.getProfileLink() == null && (input.getFirstName() == null || input.getLastName() == null)) {
+            throw new BadRequestException("Need to provide at least one of (user name, profile link, first + last name)");
         }
 
         if (input.getCaseID() <= 0) {
@@ -68,7 +63,7 @@ public class RequestResource {
                 CaseType.valueOf(input.getCaseType().toUpperCase());
             }
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Invalid Case Type.");
+            throw new BadRequestException("Invalid case Type.");
         }
 
         //TODO additional checks
@@ -129,23 +124,24 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Path("/{id}")
-    public View getRequestDetails(@PathParam("id") int id) {
-        List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
-        return new ConversationInfoView(conversations);
-    }
-
-    @POST
-    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @UnitOfWork
-    @Path("/{id}/conversations")
-    public View getfilteredConversationInfo(@PathParam("id") int id,
-                                            @FormDataParam("sender") FormDataBodyPart senderName) {
-        String name = null;
-        if (senderName != null) {
-            name = senderName.getValueAs(String.class);
+    public View getRequestDetails(@PathParam("id") int id,
+                                  @QueryParam("sender") String senderName) {
+        Optional<Request> requestOptional = requestDAO.findById(id);
+        if (!requestOptional.isPresent()) {
+            throw new NotFoundException(String.format("No request with id %d found.", id));
         }
-        List<Conversation> conversations = conversationDAO.findByParticipant(id, name);
-        return new ConversationInfoView(conversations);
+
+        Result result = requestOptional.get().getResult();
+
+        if (result == null) {
+            return new NotAnsweredView();
+        }
+
+        List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
+        if (senderName != null && senderName.length() > 0) {
+            conversations = conversations.stream().filter(c -> c.getParticipants().contains(senderName)).collect(Collectors.toList());
+        }
+        return new RequestDetailsView(conversations);
     }
 }
 
