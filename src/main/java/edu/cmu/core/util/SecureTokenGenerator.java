@@ -15,15 +15,15 @@ public class SecureTokenGenerator {
 
     private static final char[] symbols = CHARACTERS.toCharArray();
 
-    private static final char[] buf = new char[SECURE_TOKEN_LENGTH];
+    private static final char[] buffer = new char[SECURE_TOKEN_LENGTH];
 
     /**
      * Generate the next secure random token in the series.
      * @return a new token
      */
     public static String nextToken() {
-        for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols[random.nextInt(symbols.length)];
-        return new String(buf);
+        for (int i = 0; i < buffer.length; ++i)
+            buffer[i] = symbols[random.nextInt(symbols.length)];
+        return new String(buffer);
     }
 }
