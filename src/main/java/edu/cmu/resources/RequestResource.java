@@ -73,7 +73,7 @@ public class RequestResource {
      * Endpoint for creating a new request.
      *
      * @param parsedInput Parameters for the generated request
-     * @param user the user who generates the request
+     * @param user        the user who generates the request
      * @return the generated request including generated fields like ID.
      */
     @POST
@@ -103,13 +103,10 @@ public class RequestResource {
             }
         }
         */
-        try {
-            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), Instant.EPOCH, Instant.EPOCH, parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
-            request = requestDAO.persistNewRequest(request);
-            return request;
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Malformed Request");
-        }
+        Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), Instant.EPOCH, Instant.EPOCH, parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
+        request = requestDAO.persistNewRequest(request);
+        return request;
+
 
     }
 

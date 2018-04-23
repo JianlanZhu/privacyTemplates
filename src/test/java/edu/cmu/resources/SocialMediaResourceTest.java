@@ -91,18 +91,29 @@ public class SocialMediaResourceTest {
 
     @Test
     public void uploadDataForNonexistentRequest() {
-        User user = mock(User.class);
         FormDataBodyPart fileField = mock(FormDataBodyPart.class);
 
         when(fileField.getValueAs(InputStream.class)).thenReturn(null);
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(user, fileField, null, null));
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, null, null));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("upload failed");
     }
 
+    @Test
+    public void uploadNonZipFile() {
+        FormDataBodyPart fileField = mock(FormDataBodyPart.class);
 
+        InputStream is = this.getClass().getResourceAsStream("/textFile.txt");
+
+        when(fileField.getValueAs(InputStream.class)).thenReturn(is);
+
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, null, null));
+
+        assertThat(thrown).isInstanceOf(BadRequestException.class);
+        assertThat(thrown.getMessage()).contains("not a zip");
+    }
 
     @Test
     public void getUploadForm() {
