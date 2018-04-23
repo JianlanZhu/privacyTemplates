@@ -13,6 +13,8 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -28,6 +30,8 @@ import java.util.zip.ZipInputStream;
 @Path("/socialMedia")
 @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
 public class SocialMediaResource {
+
+    private static Logger LOG = LoggerFactory.getLogger(SocialMediaResource.class);
 
     private RequestDAO requestDAO;
     private ResultDAO resultDAO;
@@ -88,38 +92,20 @@ public class SocialMediaResource {
                 if (!success) {
                     throw new NotFoundException();
                 }
-                // handle uploaded data participants
+                // handle uploaded data
                 if (fileField != null) {
-                    int SMEUserID = user.getUserID();
-                    // find a result ID
                     Result result = new Result();
+
                     result.setSMEUser(user);
-                    // TODO hard code, just for testing
-                    result.setRetentionID(1);
-                    // store to db
+                    // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
+
                     result = resultDAO.persistNewResult(result);
                     request.setResult(result);
-//                    int resultID = result.getResultID();
-                    // begin parsing
+
                     InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-                    Parser parser = new Parser(conversationDAO, messageDAO, result);
-                    try {
-                        // unzip and parse
-                        parser.parseProfile(dataZipFileInputStream);
-                    } catch (IOException e) {
-                        // if parse failed
-                        e.printStackTrace();
-                        resultDAO.deleteResultByID(result.getResultID());
-                    }
-                    // delete files under data folder
-                    java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
-                    try {
-                        Parser.deleteFileOrFolder(path);
-                    } catch (IOException e) {
-                        System.out.println("delete file error!");
-                        e.printStackTrace();
-                    }
-                    System.out.println("parse successfully!");
+                    parseUploadedData(result, dataZipFileInputStream);
+
+                    LOG.info("parse successfully!");
                 }
             } else {
                 throw new BadRequestException("Request has already been answered or rejected.");
@@ -127,7 +113,25 @@ public class SocialMediaResource {
         } else {
             throw new BadRequestException("Request ID invalid");
         }
-        System.out.println("upload over");
+        LOG.info("upload over");
+    }
+
+    private void parseUploadedData(Result result, InputStream dataZipFileInputStream) {
+        Parser parser = new Parser(conversationDAO, messageDAO, result);
+        try {
+            parser.parseProfile(dataZipFileInputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            resultDAO.deleteResultByID(result.getResultID());
+        }
+        // delete files under data folder
+        java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
+        try {
+            Parser.deleteFileOrFolder(path);
+        } catch (IOException e) {
+            LOG.warn("delete file error!");
+            e.printStackTrace();
+        }
     }
 
     @GET

@@ -8,6 +8,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.FileVisitResult;
@@ -24,6 +26,7 @@ public class Parser {
     private static final String HTML = "html";
     private static final int BUFFER_SIZE = 4096;
     private static final String DESTINATION_PATH = "src/main/resources/data";
+    private static Logger LOG = LoggerFactory.getLogger(Parser.class);
 
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
@@ -140,7 +143,7 @@ public class Parser {
                             thisMessage.getConversation().getMessages().add(thisMessage);
 
                         } catch (Exception ee) {
-                            System.out.println("Error long text: " + thisMessage.getMessageContent());
+                            LOG.warn("Error long text: " + thisMessage.getMessageContent());
                             ee.printStackTrace();
                         }
                     } else if (count == 1) {

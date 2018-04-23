@@ -40,10 +40,6 @@ public class RequestResource {
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
 
-//    public RequestResource(RequestDAO requestDAO) {
-//        this.requestDAO = requestDAO;
-//    }
-
     public RequestResource(RequestDAO requestDAO, ConversationDAO conversationDAO, MessageDAO messageDAO) {
         this.requestDAO = requestDAO;
         this.conversationDAO = conversationDAO;
@@ -62,7 +58,6 @@ public class RequestResource {
         }
 
         if (input.getCaseID() <= 0) {
-            // TODO maybe replace with actual check whether case is present in data base?
             throw new BadRequestException("Invalid case ID.");
         }
 

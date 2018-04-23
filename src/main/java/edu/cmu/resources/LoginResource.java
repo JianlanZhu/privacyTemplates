@@ -67,7 +67,6 @@ public class LoginResource {
         String nextView = determineNextView(user);
 
         Token token = new Token(user, SecureTokenGenerator.nextToken(), Instant.now().plus(Duration.ofMinutes(60)));
-
         token = tokenDAO.persistToken(token);
 
         NewCookie newCookie = new NewCookie(new Cookie("pepToken", token.getToken()));
@@ -113,7 +112,6 @@ public class LoginResource {
         if (cookies != null) {
             List<String> tokens = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("pepToken")).map(javax.servlet.http.Cookie::getValue).collect(Collectors.toList());
             tokens.forEach(token -> {
-                System.out.println("" + token);
                 tokenDAO.deleteToken(token);
             });
         }
