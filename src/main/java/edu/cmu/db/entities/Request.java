@@ -109,13 +109,6 @@ public class Request {
     @Column(name = "isIPLogRequested")
     private Boolean isIPLogRequested;
 
-    @Column(name = "filterStartTime")
-    private Date filterStartTime;
-
-    @Column(name = "filterEndTime")
-    private Date filterEndTime;
-
-    // TODO what's that?
     @Column(name = "filterCommunicantsUserName")
     private String filterCommunicantsUserName;
 
@@ -142,7 +135,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Date requestedDataStartDate, Date requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, Date filterStartTime, Date filterEndTime, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
+    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Date requestedDataStartDate, Date requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
         this.status = status.name();
         this.requestCreatedDate = Instant.now();
         this.createdBy = createdBy;
@@ -171,8 +164,6 @@ public class Request {
         this.isPrivateMessagesRequested = isPrivateMessagesRequested;
         this.isGroupInfoRequested = isGroupInfoRequested;
         this.isIPLogRequested = isIPLogRequested;
-        this.filterStartTime = filterStartTime;
-        this.filterEndTime = filterEndTime;
         this.filterCommunicantsUserName = filterCommunicantsUserName;
         this.filterKeywords = filterKeywords;
         this.filterKeywordsCategory = filterKeywordsCategory;
@@ -402,22 +393,6 @@ public class Request {
 
     public void setIPLogRequested(Boolean IPLogRequested) {
         this.isIPLogRequested = IPLogRequested;
-    }
-
-    public Date getFilterStartTime() {
-        return filterStartTime;
-    }
-
-    public void setFilterStartTime(Date filterStartTime) {
-        this.filterStartTime = filterStartTime;
-    }
-
-    public Date getFilterEndTime() {
-        return filterEndTime;
-    }
-
-    public void setFilterEndTime(Date filterEndTime) {
-        this.filterEndTime = filterEndTime;
     }
 
     public String getFilterCommunicantsUserName() {

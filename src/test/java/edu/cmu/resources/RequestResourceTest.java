@@ -39,7 +39,7 @@ public class RequestResourceTest {
     @Test
     public void generateRequest() {
         User user = new User();
-        GenerateRequestInput generateRequestInput = new GenerateRequestInput(3, "someSuspect", "FELONY", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        GenerateRequestInput generateRequestInput = new GenerateRequestInput(3, "someSuspect", "FELONY", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "04/01/2018", "04/30/2018");
 
         requestResource.generateRequest(user, generateRequestInput);
 

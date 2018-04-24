@@ -5,6 +5,7 @@ import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -58,6 +59,10 @@ public class SocialMediaResourceTest {
         when(fileField.getValueAs(InputStream.class)).thenReturn(is);
         when(requestId.getValueAs(Integer.class)).thenReturn(id);
         when(requestDAO.findById(1)).thenReturn(Optional.of(request));
+
+        Result result = new Result();
+        result.setRequest(request);
+        when(resultDAO.persistNewResult(any())).thenReturn(result);
 
         socialMediaResource.uploadData(user, fileField, requestId, comment);
 
