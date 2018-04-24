@@ -70,6 +70,10 @@ public class SocialMediaResource {
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
+        if (fileField == null) {
+            throw new BadRequestException("no data uploaded.");
+        }
+
         InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
         checkIfZipFile(dataZipFileInputStream);
 
@@ -78,34 +82,38 @@ public class SocialMediaResource {
         comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
 
         Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
-        if (requestOptional.isPresent()) {
-            Request request = requestOptional.get();
-            if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
-                // handle uploaded data
-
-                // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
-                Result result = new Result();
-                result.setSMEUser(user);
-                result.setRequest(request);
-                result.setRetentionID(1);
-                result = resultDAO.persistNewResult(result);
-                request.setResult(result);
-
-//                parseUploadedData(result, dataZipFileInputStream);
-                parseUploadedData(result, fileField.getValueAs(InputStream.class));
-
-                LOG.info("parse successfully!");
-                boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
-                if (!success) {
-                    LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
-                }
-            } else {
-                throw new BadRequestException("Request has already been dealt with.");
-            }
-        } else {
+        if (!requestOptional.isPresent()) {
             throw new BadRequestException("Request ID invalid");
         }
+
+        Request request = requestOptional.get();
+        if (request.getStatus() != null && !request.getStatus().equals(RequestState.PENDING.name())) {
+            throw new BadRequestException("Request has already been dealt with.");
+        }
+
+        // handle uploaded data
+        Result result = createNewResult(user, request);
+        request.setResult(result);
+
+        parseUploadedData(result, fileField.getValueAs(InputStream.class));
+
+        boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
+        if (!success) {
+            LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
+        }
+
         LOG.info("upload over");
+    }
+
+    private Result createNewResult(User user, Request request) {
+        Result result = new Result();
+        result.setSMEUser(user);
+        result.setRequest(request);
+        // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
+        result.setRetentionID(1);
+        result = resultDAO.persistNewResult(result);
+
+        return result;
     }
 
     private void checkIfZipFile(InputStream uploadedFile) {
@@ -120,7 +128,7 @@ public class SocialMediaResource {
                 throw new BadRequestException("Uploaded file was not a zip file!");
             }
         } catch (IOException e) {
-            throw new BadRequestException("Uploaded file was not a zip file!");
+            throw new BadRequestException("Uploaded file corrupt.");
         }
     }
 
@@ -128,6 +136,7 @@ public class SocialMediaResource {
         Parser parser = new Parser(conversationDAO, messageDAO, result);
         try {
             parser.parseProfile(dataZipFileInputStream);
+            LOG.info("parsing successfully completed!");
         } catch (IOException e) {
             e.printStackTrace();
             resultDAO.deleteResultByID(result.getResultID());
@@ -137,7 +146,7 @@ public class SocialMediaResource {
         try {
             Parser.deleteFileOrFolder(path);
         } catch (IOException e) {
-            LOG.warn("delete file error!");
+            LOG.warn("could not delete intermediate files");
             e.printStackTrace();
         }
     }

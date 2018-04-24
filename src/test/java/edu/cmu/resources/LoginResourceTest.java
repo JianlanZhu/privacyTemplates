@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
@@ -82,7 +83,14 @@ public class LoginResourceTest {
 
     @Test
     public void determineNextView() {
+        User user = new User();
+        user.setUserType(UserType.SOCIAL_MEDIA_EMPLOYEE.name());
+        assertThat(loginResource.determineNextView(user)).contains("smeHome");
 
+        user.setUserType(UserType.ANALYST.name());
+        Throwable thrown = catchThrowable(() -> loginResource.determineNextView(user));
+        assertThat(thrown).isInstanceOf(BadRequestException.class);
+        assertThat(thrown.getMessage()).contains("unknown role");
     }
 
     @Test
