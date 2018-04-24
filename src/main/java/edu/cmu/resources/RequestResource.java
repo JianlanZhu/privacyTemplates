@@ -1,8 +1,6 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import edu.cmu.db.dao.ConversationDAO;
-import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Conversation;
 import edu.cmu.db.entities.Request;
@@ -11,13 +9,12 @@ import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
-import edu.cmu.resources.views.ConversationInfoView;
 import edu.cmu.resources.views.GenerateRequestView;
+import edu.cmu.resources.views.NotAnsweredView;
+import edu.cmu.resources.views.RequestDetailsView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -27,6 +24,8 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is used for registering endpoints regarding requests.
@@ -38,17 +37,9 @@ public class RequestResource {
      * Responsible for accessing the database.
      */
     private RequestDAO requestDAO;
-    private ConversationDAO conversationDAO;
-    private MessageDAO messageDAO;
 
-//    public RequestResource(RequestDAO requestDAO) {
-//        this.requestDAO = requestDAO;
-//    }
-
-    public RequestResource(RequestDAO requestDAO, ConversationDAO conversationDAO, MessageDAO messageDAO) {
+    public RequestResource(RequestDAO requestDAO) {
         this.requestDAO = requestDAO;
-        this.conversationDAO = conversationDAO;
-        this.messageDAO = messageDAO;
     }
 
     /**
@@ -58,12 +49,11 @@ public class RequestResource {
      * @return true if data format is valid, false otherwise.
      */
     private static void checkInputValidity(GenerateRequestInput input) {
-        if (input.getSuspectUserName() == null) {
-            throw new BadRequestException("Invalid user name.");
+        if (input.getSuspectUserName() == null && input.getProfileLink() == null && (input.getFirstName() == null || input.getLastName() == null)) {
+            throw new BadRequestException("Need to provide at least one of (user name, profile link, first + last name)");
         }
 
         if (input.getCaseID() <= 0) {
-            // TODO maybe replace with actual check whether case is present in data base?
             throw new BadRequestException("Invalid case ID.");
         }
 
@@ -74,7 +64,7 @@ public class RequestResource {
                 CaseType.valueOf(input.getCaseType().toUpperCase());
             }
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Invalid Case Type.");
+            throw new BadRequestException("Invalid case Type.");
         }
 
         //TODO additional checks
@@ -84,7 +74,7 @@ public class RequestResource {
      * Endpoint for creating a new request.
      *
      * @param parsedInput Parameters for the generated request
-     * @param user the user who generates the request
+     * @param user        the user who generates the request
      * @return the generated request including generated fields like ID.
      */
     @POST
@@ -114,13 +104,10 @@ public class RequestResource {
             }
         }
         */
-        try {
-            Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), new Date(Date.parse(parsedInput.getRequestedDataStartDate())), new Date(Date.parse(parsedInput.getRequestedDataEndDate())), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
-            request = requestDAO.persistNewRequest(request);
-            return request;
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("Malformed Request");
-        }
+        Request request = new Request(user, parsedInput.getCaseID(), parsedInput.getCaseType(), parsedInput.getSuspectUserName(), parsedInput.getLastName(), parsedInput.getFirstName(), parsedInput.getMiddleName(), parsedInput.getEmail(), parsedInput.getPhoneNumber(), new Date(Date.parse(parsedInput.getRequestedDataStartDate())), new Date(Date.parse(parsedInput.getRequestedDataEndDate())), parsedInput.isContactInformationRequested(), parsedInput.isMiniFeedRequested(), parsedInput.isStatusHistoryRequested(), parsedInput.isSharesRequested(), parsedInput.isNotesRequested(), parsedInput.isWallPostingsRequested(), parsedInput.isFriendListRequested(), parsedInput.isVideosRequested(), parsedInput.isGroupsRequested(), parsedInput.isPastEventsRequested(), parsedInput.isFutureEventsRequested(), parsedInput.isPhotosRequested(), parsedInput.isPrivateMessagesRequested(), parsedInput.isGroupInfoRequested(), parsedInput.isIPLogRequested(), null, null, parsedInput.getCommunicantsUserNames(), parsedInput.getKeywords(), parsedInput.getKeywordCategories(), parsedInput.getLocationZipCode(), warrantBlob, RequestState.PENDING);
+        request = requestDAO.persistNewRequest(request);
+        return request;
+
 
     }
 
@@ -135,23 +122,24 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Path("/{id}")
-    public View getRequestDetails(@PathParam("id") int id) {
-        List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
-        return new ConversationInfoView(conversations, id);
-    }
-
-    @POST
-    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
-    @UnitOfWork
-    @Path("/{id}/conversations")
-    public View getfilteredConversationInfo(@PathParam("id") int id,
-                                            @FormDataParam("sender") FormDataBodyPart senderName) {
-        String name = null;
-        if (senderName != null) {
-            name = senderName.getValueAs(String.class);
+    public View getRequestDetails(@PathParam("id") int id,
+                                  @QueryParam("sender") String senderName) {
+        Optional<Request> requestOptional = requestDAO.findById(id);
+        if (!requestOptional.isPresent()) {
+            throw new NotFoundException(String.format("No request with id %d found.", id));
         }
-        List<Conversation> conversations = conversationDAO.findByParticipant(id, name);
-        return new ConversationInfoView(conversations, id);
+
+        Result result = requestOptional.get().getResult();
+
+        if (result == null) {
+            return new NotAnsweredView();
+        }
+
+        List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
+        if (senderName != null && senderName.length() > 0) {
+            conversations = conversations.stream().filter(c -> c.getParticipants().contains(senderName)).collect(Collectors.toList());
+        }
+        return new RequestDetailsView(conversations);
     }
 }
 

@@ -6,6 +6,7 @@ import edu.cmu.db.entities.User;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -22,8 +23,12 @@ public class TokenAuthenticator implements Authenticator<String, User> {
     @UnitOfWork
     @Override
     public Optional<User> authenticate(String token) {
-        // FIXME: check token expiration date
         Optional<Token> tokenOptional = tokenDAO.findUserByToken(token);
+        if (tokenOptional.isPresent()) {
+            if (tokenOptional.get().getValidUntil().compareTo(Instant.now()) < 0) {
+                return Optional.empty();
+            }
+        }
         return tokenOptional.map(Token::getUser);
     }
 }

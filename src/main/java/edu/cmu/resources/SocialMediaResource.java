@@ -1,7 +1,11 @@
 package edu.cmu.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import edu.cmu.db.dao.*;
+import edu.cmu.core.util.Parser;
+import edu.cmu.db.dao.ConversationDAO;
+import edu.cmu.db.dao.MessageDAO;
+import edu.cmu.db.dao.RequestDAO;
+import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
@@ -13,6 +17,8 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.View;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -28,6 +34,8 @@ import java.util.zip.ZipInputStream;
 @Path("/socialMedia")
 @RolesAllowed("SOCIAL_MEDIA_EMPLOYEE")
 public class SocialMediaResource {
+
+    private static Logger LOG = LoggerFactory.getLogger(SocialMediaResource.class);
 
     private RequestDAO requestDAO;
     private ResultDAO resultDAO;
@@ -62,73 +70,74 @@ public class SocialMediaResource {
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
-
-        if (fileField != null) {
-            InputStream warrantFileInputStream = new BufferedInputStream(fileField.getValueAs(InputStream.class));
-            try {
-                // getNextEntry returns null if the InputStream is not a zip file
-                if (new ZipInputStream(warrantFileInputStream).getNextEntry() == null) {
-                    throw new BadRequestException("Uploaded file was not a zip file!");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
+        checkIfZipFile(dataZipFileInputStream);
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
-        int requestIdNumber = Integer.parseInt(requestId.getValue());
+        int requestIdNumber = requestId.getValueAs(Integer.class);
         comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);
-
 
         Optional<Request> requestOptional = requestDAO.findById(requestIdNumber);
         if (requestOptional.isPresent()) {
             Request request = requestOptional.get();
             if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
+                // handle uploaded data
+                Result result = new Result();
+                result.setSMEUser(user);
+                // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
+
+                result = resultDAO.persistNewResult(result);
+                request.setResult(result);
+                result.setRequest(request);
+
+                parseUploadedData(result, dataZipFileInputStream);
+
+                LOG.info("parse successfully!");
                 boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
                 if (!success) {
-                    throw new NotFoundException();
-                }
-                // handle uploaded data participants
-                if (fileField != null) {
-                    int SMEUserID = user.getUserID();
-                    // find a result ID
-                    Result result = new Result();
-                    result.setSMEUser(user);
-                    // TODO hard code, just for testing
-                    result.setRetentionID(1);
-                    // store to db
-                    result = resultDAO.persistNewResult(result);
-                    result.setRequest(request);
-                    request.setResult(result);
-//                    int resultID = result.getResultID();
-                    // begin parsing
-                    InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-                    Parser parser = new Parser(conversationDAO, messageDAO, result);
-                    try {
-                        // unzip and parse
-                        parser.parseProfile(dataZipFileInputStream);
-                    } catch (IOException e) {
-                        // if parse failed
-                        e.printStackTrace();
-                        resultDAO.deleteResultByID(result.getResultID());
-                    }
-                    // delete files under data folder
-                    java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
-                    try {
-                        Parser.deleteFileOrFolder(path);
-                    } catch (IOException e) {
-                        System.out.println("delete file error!");
-                        e.printStackTrace();
-                    }
-                    System.out.println("parse successfully!");
+                    LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
                 }
             } else {
-                throw new BadRequestException("Request has already been answered or rejected.");
+                throw new BadRequestException("Request has already been dealt with.");
             }
         } else {
             throw new BadRequestException("Request ID invalid");
         }
-        System.out.println("upload over");
+        LOG.info("upload over");
+    }
+
+    private void checkIfZipFile(InputStream uploadedFile) {
+        if (uploadedFile == null) {
+            throw new BadRequestException("File upload failed");
+        }
+
+        uploadedFile = new BufferedInputStream(uploadedFile);
+        try {
+            // getNextEntry returns null if the InputStream is not a zip file
+            if (new ZipInputStream(uploadedFile).getNextEntry() == null) {
+                throw new BadRequestException("Uploaded file was not a zip file!");
+            }
+        } catch (IOException e) {
+            throw new BadRequestException("Uploaded file was not a zip file!");
+        }
+    }
+
+    private void parseUploadedData(Result result, InputStream dataZipFileInputStream) {
+        Parser parser = new Parser(conversationDAO, messageDAO, result);
+        try {
+            parser.parseProfile(dataZipFileInputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            resultDAO.deleteResultByID(result.getResultID());
+        }
+        // delete files under data folder
+        java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
+        try {
+            Parser.deleteFileOrFolder(path);
+        } catch (IOException e) {
+            LOG.warn("delete file error!");
+            e.printStackTrace();
+        }
     }
 
     @GET

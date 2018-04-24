@@ -17,14 +17,19 @@ Once the LEO logs in, the LEO will have all the requests displayed. On clicking 
 Once the Social Media Employee logs in, the SME can view all the requests. Currently, when the SME clicks on the row, the SME will be taken to a page where he can upload the results. We aim to enhance this functionality by showing the SME the details that LEO is requesting for. 
 
 ## Relevant code:
+The relevant code is now on the master branch.
 - Backend
     - Authentication 
         - package `auth`: Contains code for authenticating users via tokens
         - class LoginResource: Contains endpoints for retrieving and deleting tokens
     - Parsing
-        - file: description
+        - package: `edu.cmu.db.dao`
+        - class Parser: Contains methods unzip, parse and delete the user data html files
     - Filtering
-        - file: description
+        - package: `edu.cmu.resources`
+        - class RequestResource: Contains functions that law enforcement officers can refer to for filtering by participants name
+        - The filtering functions are designed to better protect involved people's privacy.
+        - This part is still not fully functional.
 - Frontend
 	- Location: privacyTemplates/src/main/resources/edu/cmu/resources/views
 	- Description: This folder contains all the moustache files
@@ -44,12 +49,13 @@ Once the Social Media Employee logs in, the SME can view all the requests. Curre
 1. Go back to Home and see that the request state has changed from PENDING to ANSWERED.
 1. Log out and back in as the LEO.
 1. Notice how the state of the request has changed here, too.
-1. Finally, click on the request and notice the data that is now listed here.  	
+1. Finally, click on the request and notice the data that is now listed here. However, the details are not yet available (hence clicking on a conversation will result in an error).	
 
 ## Limitations
 - When uploading data as a SME, we do not yet discard data that lies outside of the selected range date. We are working on it and this will be done in the final version.
-- So far, only have messages parsed and stored in the database. We are now familiar with the structure, so one or two more categories should be included in the final version.
+- So far, only messages are parsed and stored in the database. We are now familiar with the structure, so one or two more categories should be included in the final version.
 - The filtering is working but unstable. We decided not to include it in the prototype in order not to break functionality.
+- Details of a conversation are not yet implemented.
 
 ## Privacy Notice
 We were thinking hard about how to incorporate a suiting privacy notice. Reluctantly, we decided that its implementation was out of scope for the project. However, please have a look at the PrivacyNotice.docx file that is located in the root folder of this project. 

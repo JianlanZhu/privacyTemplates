@@ -4,14 +4,13 @@ import edu.cmu.db.entities.Conversation;
 import io.dropwizard.views.View;
 
 import java.util.List;
-import java.util.Set;
 
-public class ConversationInfoView extends View {
+public class RequestDetailsView extends View {
     private List<Conversation> conversations;
     private int id;
 
-    public ConversationInfoView(List<Conversation> conversations, int id) {
-        super("FilterResult.mustache");
+    public RequestDetailsView(List<Conversation> conversations) {
+        super("requestDetails.mustache");
         this.conversations = conversations;
         this.id = id;
     }

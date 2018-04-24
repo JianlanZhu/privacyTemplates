@@ -1,5 +1,6 @@
 package edu.cmu.resources;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.hash.Hashing;
 import edu.cmu.core.util.SecureTokenGenerator;
 import edu.cmu.db.dao.RequestDAO;
@@ -66,7 +67,6 @@ public class LoginResource {
         String nextView = determineNextView(user);
 
         Token token = new Token(user, SecureTokenGenerator.nextToken(), Instant.now().plus(Duration.ofMinutes(60)));
-
         token = tokenDAO.persistToken(token);
 
         NewCookie newCookie = new NewCookie(new Cookie("pepToken", token.getToken()));
@@ -74,7 +74,8 @@ public class LoginResource {
         return Response.status(Response.Status.OK).entity(nextView).cookie(newCookie).build();
     }
 
-    private String determineNextView(User user) {
+    @VisibleForTesting
+    String determineNextView(User user) {
         if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
             return "http://localhost:8080/leoHome";//new LeoHomeView();
         } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
@@ -84,7 +85,8 @@ public class LoginResource {
         }
     }
 
-    private void validateUserAuthenticity(User user, String password) {
+    @VisibleForTesting
+    void validateUserAuthenticity(User user, String password) {
         String salt = user.getSalt();
 
         String hashedPassword = Hashing.sha256()
@@ -110,7 +112,6 @@ public class LoginResource {
         if (cookies != null) {
             List<String> tokens = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("pepToken")).map(javax.servlet.http.Cookie::getValue).collect(Collectors.toList());
             tokens.forEach(token -> {
-                System.out.println("" + token);
                 tokenDAO.deleteToken(token);
             });
         }
