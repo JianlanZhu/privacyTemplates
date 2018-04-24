@@ -21,7 +21,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Blob;
 import java.sql.Date;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -139,7 +138,7 @@ public class RequestResource {
         if (senderName != null && senderName.length() > 0) {
             conversations = conversations.stream().filter(c -> c.getParticipants().contains(senderName)).collect(Collectors.toList());
         }
-        return new RequestDetailsView(conversations);
+        return new RequestDetailsView(conversations, id);
     }
 }
 

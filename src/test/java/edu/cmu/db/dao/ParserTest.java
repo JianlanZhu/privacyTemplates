@@ -79,13 +79,3 @@ public class ParserTest {
 //            resultDAO.deleteResultByID(result.getResultID());
 //        }
     }
-
-//    @Test
-//    public void getDestinationPath() {
-//    }
-
-//    @Test
-//    public void deleteFileOrFolder() {
-//
-//    }
-}
