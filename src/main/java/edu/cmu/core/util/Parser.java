@@ -71,7 +71,7 @@ public class Parser {
                 // find a conversation ID
                 Conversation conversation = new Conversation();
                 conversation.setResult(result);
-                conversation = conversationDAO.persistNewConversation(conversation);
+
                 // parse each message file
                 parseOneMessageFile(file, conversation);
 
@@ -110,6 +110,11 @@ public class Parser {
             String[] strs = conv.first().ownText().split(":");
             participants = strs[1].trim();
             conversation.setParticipants(participants);
+            if (participants != null && participants.length() != 0) {
+                conversation = conversationDAO.persistNewConversation(conversation);
+            } else {
+                return;
+            }
 
             int count = 0; // count the number of valid tags
 
