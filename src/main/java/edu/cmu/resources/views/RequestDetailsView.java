@@ -7,9 +7,9 @@ import java.util.List;
 
 public class RequestDetailsView extends View {
     private List<Conversation> conversations;
-    private int id;
+    private long id;
 
-    public RequestDetailsView(List<Conversation> conversations) {
+    public RequestDetailsView(List<Conversation> conversations, long id) {
         super("requestDetails.mustache");
         this.conversations = conversations;
         this.id = id;
@@ -19,7 +19,7 @@ public class RequestDetailsView extends View {
         return conversations;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 }
