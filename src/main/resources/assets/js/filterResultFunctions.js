@@ -15,9 +15,9 @@
 
 //adjust the height of iFrame
 //not automatic by now
-function changeHeight(){
+function changeHeight() {
     //ifm.height=document.documentElement.clientHeight + 200;
-    ifm.height=document.documentElement.scrollHeight + 120;
+    ifm.height = document.documentElement.scrollHeight + 120;
 }
 
 //validation: 1) at list one of the filter is filed if the button is clicked
@@ -39,7 +39,7 @@ function validFilters(id) {
         return false;
     }
     // console.log(id);
-    //window.location.href = "/request/" + id + "?sender=" + sender;
+    window.location.href = "/request/" + id + "?sender=" + sender;
 
 
     //else check the validity of each field
