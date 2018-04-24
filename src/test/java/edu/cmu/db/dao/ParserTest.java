@@ -79,3 +79,4 @@ public class ParserTest {
 //            resultDAO.deleteResultByID(result.getResultID());
 //        }
     }
+}

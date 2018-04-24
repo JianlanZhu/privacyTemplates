@@ -91,7 +91,8 @@ public class SocialMediaResource {
                 result = resultDAO.persistNewResult(result);
                 request.setResult(result);
 
-                parseUploadedData(result, dataZipFileInputStream);
+//                parseUploadedData(result, dataZipFileInputStream);
+                parseUploadedData(result, fileField.getValueAs(InputStream.class));
 
                 LOG.info("parse successfully!");
                 boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
