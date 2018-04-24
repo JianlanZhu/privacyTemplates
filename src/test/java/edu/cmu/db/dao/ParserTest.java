@@ -49,181 +49,10 @@ public class ParserTest {
     private ResultDAO resultDAO;
     private Result result;
     private InputStream inputStream;
-    private Parser parser;
+//    private Parser parser;
 
     @Before
     public void setUp() {
-//        SessionFactory sessionFactory = new SessionFactory() {
-//            @Override
-//            public SessionFactoryOptions getSessionFactoryOptions() {
-//                return null;
-//            }
-//
-//            @Override
-//            public SessionBuilder withOptions() {
-//                return null;
-//            }
-//
-//            @Override
-//            public Session openSession() throws HibernateException {
-//                return null;
-//            }
-//
-//            @Override
-//            public Session getCurrentSession() throws HibernateException {
-//                return null;
-//            }
-//
-//            @Override
-//            public StatelessSessionBuilder withStatelessOptions() {
-//                return null;
-//            }
-//
-//            @Override
-//            public StatelessSession openStatelessSession() {
-//                return null;
-//            }
-//
-//            @Override
-//            public StatelessSession openStatelessSession(Connection connection) {
-//                return null;
-//            }
-//
-//            @Override
-//            public Statistics getStatistics() {
-//                return null;
-//            }
-//
-//            @Override
-//            public void close() throws HibernateException {
-//
-//            }
-//
-//            @Override
-//            public boolean isClosed() {
-//                return false;
-//            }
-//
-//            @Override
-//            public Cache getCache() {
-//                return null;
-//            }
-//
-//            @Override
-//            public Set getDefinedFilterNames() {
-//                return null;
-//            }
-//
-//            @Override
-//            public FilterDefinition getFilterDefinition(String filterName) throws HibernateException {
-//                return null;
-//            }
-//
-//            @Override
-//            public boolean containsFetchProfileDefinition(String name) {
-//                return false;
-//            }
-//
-//            @Override
-//            public TypeHelper getTypeHelper() {
-//                return null;
-//            }
-//
-//            @Override
-//            public ClassMetadata getClassMetadata(Class entityClass) {
-//                return null;
-//            }
-//
-//            @Override
-//            public ClassMetadata getClassMetadata(String entityName) {
-//                return null;
-//            }
-//
-//            @Override
-//            public CollectionMetadata getCollectionMetadata(String roleName) {
-//                return null;
-//            }
-//
-//            @Override
-//            public Map<String, ClassMetadata> getAllClassMetadata() {
-//                return null;
-//            }
-//
-//            @Override
-//            public Map getAllCollectionMetadata() {
-//                return null;
-//            }
-//
-//            @Override
-//            public Reference getReference() throws NamingException {
-//                return null;
-//            }
-//
-//            @Override
-//            public <T> List<EntityGraph<? super T>> findEntityGraphsByType(Class<T> entityClass) {
-//                return null;
-//            }
-//
-//            @Override
-//            public Metamodel getMetamodel() {
-//                return null;
-//            }
-//
-//            @Override
-//            public EntityManager createEntityManager() {
-//                return null;
-//            }
-//
-//            @Override
-//            public EntityManager createEntityManager(Map map) {
-//                return null;
-//            }
-//
-//            @Override
-//            public EntityManager createEntityManager(SynchronizationType synchronizationType) {
-//                return null;
-//            }
-//
-//            @Override
-//            public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
-//                return null;
-//            }
-//
-//            @Override
-//            public CriteriaBuilder getCriteriaBuilder() {
-//                return null;
-//            }
-//
-//            @Override
-//            public boolean isOpen() {
-//                return false;
-//            }
-//
-//            @Override
-//            public Map<String, Object> getProperties() {
-//                return null;
-//            }
-//
-//            @Override
-//            public PersistenceUnitUtil getPersistenceUnitUtil() {
-//                return null;
-//            }
-//
-//            @Override
-//            public void addNamedQuery(String name, Query query) {
-//
-//            }
-//
-//            @Override
-//            public <T> T unwrap(Class<T> cls) {
-//                return null;
-//            }
-//
-//            @Override
-//            public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
-//
-//            }
-//        };
         SessionFactory sessionFactory = database.getSessionFactory();
         this.conversationDAO = new ConversationDAO(sessionFactory);
         this.messageDAO = new MessageDAO(sessionFactory);
@@ -236,19 +65,19 @@ public class ParserTest {
             System.out.println("Read zip file error");
             e.printStackTrace();
         }
-        this.parser = new Parser(conversationDAO, messageDAO, result);
+//        this.parser = new Parser(conversationDAO, messageDAO, result);
     }
 
     @Test
     public void parseProfile() {
-        try {
-            // unzip and parse
-            parser.parseProfile(inputStream);
-        } catch (IOException e) {
-            // if parse failed
-            e.printStackTrace();
-            resultDAO.deleteResultByID(result.getResultID());
-        }
+//        try {
+//            // unzip and parse
+//            parser.parseProfile(inputStream);
+//        } catch (IOException e) {
+//            // if parse failed
+//            e.printStackTrace();
+//            resultDAO.deleteResultByID(result.getResultID());
+//        }
     }
 
 //    @Test

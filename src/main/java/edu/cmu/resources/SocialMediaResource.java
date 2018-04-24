@@ -82,13 +82,14 @@ public class SocialMediaResource {
             Request request = requestOptional.get();
             if (request.getStatus() == null || request.getStatus().equals(RequestState.PENDING.name())) {
                 // handle uploaded data
+
+                // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
                 Result result = new Result();
                 result.setSMEUser(user);
-                // TODO: This is the place to set a retention policy id (e.g. depending on caseType) as soon as retention policies are incorporated.
-
+                result.setRequest(request);
+                result.setRetentionID(1);
                 result = resultDAO.persistNewResult(result);
                 request.setResult(result);
-                result.setRequest(request);
 
                 parseUploadedData(result, dataZipFileInputStream);
 
