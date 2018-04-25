@@ -5,6 +5,7 @@ import edu.cmu.db.dao.MessageDAO;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.dao.ResultDAO;
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -44,20 +45,25 @@ public class SocialMediaResourceTest {
     @Test
     public void uploadData() {
         final int id = 1;
-
         User user = mock(User.class);
-        FormDataBodyPart fileField = mock(FormDataBodyPart.class);
-        FormDataBodyPart requestId = mock(FormDataBodyPart.class);
-        FormDataBodyPart comment = mock(FormDataBodyPart.class);
+
         Request request = new Request();
         request.setRequestID(id);
         request.setStatus(RequestState.PENDING.name());
-
-        InputStream is = this.getClass().getResourceAsStream("/SomeonesData.zip");
-
-        when(fileField.getValueAs(InputStream.class)).thenReturn(is);
-        when(requestId.getValueAs(Integer.class)).thenReturn(id);
         when(requestDAO.findById(1)).thenReturn(Optional.of(request));
+
+        FormDataBodyPart comment = mock(FormDataBodyPart.class);
+
+        FormDataBodyPart fileField = mock(FormDataBodyPart.class);
+        InputStream is = this.getClass().getResourceAsStream("/SomeonesData.zip");
+        when(fileField.getValueAs(InputStream.class)).thenReturn(is);
+
+        FormDataBodyPart requestId = mock(FormDataBodyPart.class);
+        when(requestId.getValueAs(Integer.class)).thenReturn(id);
+
+        Result result = new Result();
+        result.setRequest(request);
+        when(resultDAO.persistNewResult(any())).thenReturn(result);
 
         socialMediaResource.uploadData(user, fileField, requestId, comment);
 
@@ -68,19 +74,22 @@ public class SocialMediaResourceTest {
     @Test
     public void uploadDataForAnsweredRequest() {
         final int id = 1;
+        FormDataBodyPart comment = mock(FormDataBodyPart.class);
 
         User user = mock(User.class);
-        FormDataBodyPart fileField = mock(FormDataBodyPart.class);
-        FormDataBodyPart requestId = mock(FormDataBodyPart.class);
-        FormDataBodyPart comment = mock(FormDataBodyPart.class);
+
         Request request = new Request();
         request.setRequestID(id);
         request.setStatus(RequestState.ANSWERED.name());
 
         InputStream is = this.getClass().getResourceAsStream("/SomeonesData.zip");
 
+        FormDataBodyPart fileField = mock(FormDataBodyPart.class);
         when(fileField.getValueAs(InputStream.class)).thenReturn(is);
+
+        FormDataBodyPart requestId = mock(FormDataBodyPart.class);
         when(requestId.getValueAs(Integer.class)).thenReturn(id);
+
         when(requestDAO.findById(id)).thenReturn(Optional.of(request));
 
         Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(user, fileField, requestId, comment));
@@ -91,14 +100,22 @@ public class SocialMediaResourceTest {
 
     @Test
     public void uploadDataForNonexistentRequest() {
+        final int id = 3;
+        FormDataBodyPart comment = mock(FormDataBodyPart.class);
+
         FormDataBodyPart fileField = mock(FormDataBodyPart.class);
+        InputStream is = this.getClass().getResourceAsStream("/SomeonesData.zip");
+        when(fileField.getValueAs(InputStream.class)).thenReturn(is);
 
-        when(fileField.getValueAs(InputStream.class)).thenReturn(null);
+        FormDataBodyPart requestId = mock(FormDataBodyPart.class);
+        when(requestId.getValueAs(Integer.class)).thenReturn(id);
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, null, null));
+        when(requestDAO.findById(id)).thenReturn(Optional.empty());
+
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, requestId, comment));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class);
-        assertThat(thrown.getMessage()).contains("upload failed");
+        assertThat(thrown.getMessage()).contains("ID invalid");
     }
 
     @Test
@@ -110,9 +127,12 @@ public class SocialMediaResourceTest {
         when(fileField.getValueAs(InputStream.class)).thenReturn(is);
 
         Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, null, null));
-
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("not a zip");
+
+        thrown = catchThrowable(() -> socialMediaResource.uploadData(null, null, null, null));
+        assertThat(thrown).isInstanceOf(BadRequestException.class);
+        assertThat(thrown.getMessage()).contains("no data");
     }
 
     @Test

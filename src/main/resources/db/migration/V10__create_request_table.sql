@@ -32,8 +32,6 @@ CREATE TABLE request (
   isPrivateMessagesRequested    BIT(1),
   isGroupInfoRequested          BIT(1),
   isIPLogRequested              BIT(1),
-  filterStartTime               DATE,
-  filterEndTime                 DATE,
   filterCommunicantsUserName    VARCHAR(256),
   filterKeywords                VARCHAR(256),
   filterKeywordsCategory        INT,
