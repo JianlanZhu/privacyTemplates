@@ -41,11 +41,30 @@
             </tr>
             </thead>
             <tbody>
-                {{#requests}}<tr class='clickable-row' data-href='/request/{{requestID}}'>
+            {{#rejectedRequests}}
+                <tr class='clickable-row' data-href='/request/{{requestID}}'>
                     <td>{{caseID}}</td>
                     <td>{{suspectUserName}}</td>
                     <td>{{status}}</td>
-                </tr>{{/requests}}
+                </tr>{{/rejectedRequests}}
+            {{#answeredRequests}}
+                <tr class='clickable-row' data-href='/request/{{requestID}}'>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/answeredRequests}}
+            {{#pendingRequests}}
+                <tr class='clickable-row' data-href='/request/{{requestID}}'>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/pendingRequests}}
+            {{#closedRequests}}
+                <tr class='clickable-row' data-href='/request/{{requestID}}'>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/closedRequests}}
             </tbody>
         </table>
     </div>
