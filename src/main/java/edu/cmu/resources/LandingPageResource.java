@@ -3,6 +3,7 @@ package edu.cmu.resources;
 import edu.cmu.db.dao.RequestDAO;
 import edu.cmu.db.entities.Request;
 import edu.cmu.db.entities.User;
+import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.views.LeoHomeView;
 import edu.cmu.resources.views.LoginView;
 import edu.cmu.resources.views.SmeHomeView;
@@ -30,7 +31,12 @@ public class LandingPageResource {
     @UnitOfWork
     @Path("leoHome")
     public View leoHome(@Auth User user){
-        return new LeoHomeView(requestDAO.findAll().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList()));
+        List<Request> requests = requestDAO.findAll().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList());
+        List<Request> rejectedRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.REJECTED.name())).collect(Collectors.toList());
+        List<Request> answeredRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.ANSWERED.name())).collect(Collectors.toList());
+        List<Request> pendingRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.PENDING.name())).collect(Collectors.toList());
+        List<Request> closedRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.CLOSED.name())).collect(Collectors.toList());
+        return new LeoHomeView(rejectedRequests, answeredRequests, pendingRequests, closedRequests);
     }
 
     @GET
