@@ -17,11 +17,10 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -39,8 +38,8 @@ public class Parser {
     private Result result;
     private Request request;
 
-    public Parser() {
-    }
+//    public Parser() {
+//    }
 
     public Parser(ConversationDAO conversationDAO, MessageDAO messageDAO, Result result) {
         this.conversationDAO = conversationDAO;
@@ -57,6 +56,14 @@ public class Parser {
     public void parseProfile(InputStream inputStream) throws IOException {
         unzip(inputStream);
         parseMessageFiles(DESTINATION_PATH + "/" + topDirectory + "messages"); // should take path here
+        // delete files after storage
+        java.nio.file.Path path = Paths.get(DESTINATION_PATH);
+        try {
+            deleteFileOrFolder(path);
+        } catch (IOException e) {
+            LOG.warn("delete file error!");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -161,8 +168,9 @@ public class Parser {
                             continue;
                         }
                         try {
+                            conversation.getMessages().add(thisMessage);
                             thisMessage = messageDAO.persistNewMessage(thisMessage);
-                            thisMessage.getConversation().getMessages().add(thisMessage);
+//                            thisMessage.getConversation().getMessages().add(thisMessage);
                         } catch (Exception ee) {
                             LOG.warn("Error long text: " + thisMessage.getMessageContent());
                             ee.printStackTrace();
@@ -181,7 +189,8 @@ public class Parser {
             }
             // update participants information
             conversation = conversationDAO.persistNewConversation(conversation);
-            conversation.getResult().getConversations().add(conversation);
+//            conversation.getResult().getConversations().add(conversation);
+            result.getConversations().add(conversation);
         }
     }
 
@@ -292,17 +301,13 @@ public class Parser {
         }
     }
 
-    public static String getDestinationPath() {
-        return DESTINATION_PATH;
-    }
-
     /**
      * deleteFileOrFolder is used to delte a file or an empty folder.
      *
      * @param path file path
      * @throws IOException io exception
      */
-    public static void deleteFileOrFolder(Path path) throws IOException {
+    private void deleteFileOrFolder(Path path) throws IOException {
         java.nio.file.Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)

@@ -141,14 +141,6 @@ public class SocialMediaResource {
             e.printStackTrace();
             resultDAO.deleteResultByID(result.getResultID());
         }
-        // delete files under data folder
-        java.nio.file.Path path = Paths.get(Parser.getDestinationPath());
-        try {
-            Parser.deleteFileOrFolder(path);
-        } catch (IOException e) {
-            LOG.warn("could not delete intermediate files");
-            e.printStackTrace();
-        }
     }
 
     @GET
