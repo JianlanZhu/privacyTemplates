@@ -13,3 +13,6 @@ INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status)
 VALUES (112, "Suspect 2", "FELONY", 2, "ANSWERED");
 INSERT INTO Request (caseID, suspectUserName, caseType, createdByID, status)
 VALUES (13, "Suspect 3", "FELONY", 1, "PENDING");
+
+INSERT INTO retentiontype (retentionID, retentionDays) VALUES (1, 180);
+INSERT INTO retentiontype (retentionID, retentionDays) VALUES (2, 360);

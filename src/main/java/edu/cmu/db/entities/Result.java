@@ -1,10 +1,8 @@
 package edu.cmu.db.entities;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "result")
@@ -19,7 +17,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int resultID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "SMEUserID")
     private User SMEUser;
 
@@ -30,7 +28,7 @@ public class Result {
     @JoinColumn(name = "resultID")
     private List<Conversation> conversations;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "requestID")
     private Request request;
 

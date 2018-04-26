@@ -32,6 +32,7 @@ public class LandingPageResource {
     @Path("leoHome")
     public View leoHome(@Auth User user){
         List<Request> requests = requestDAO.findAll().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList());
+        //List<Request> requests = user.getRequests().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList());
         List<Request> rejectedRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.REJECTED.name())).collect(Collectors.toList());
         List<Request> answeredRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.ANSWERED.name())).collect(Collectors.toList());
         List<Request> pendingRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.PENDING.name())).collect(Collectors.toList());

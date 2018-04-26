@@ -3,6 +3,7 @@ package edu.cmu.db.entities;
 import javax.persistence.*;
 import java.security.Principal;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -41,6 +42,10 @@ public class User implements Principal {
 
     @Column(name = "userCreatedDate")
     private Instant userCreatedDate;
+
+    @OneToMany
+    @JoinColumn(name = "userId")
+    private List<Request> requests;
 
     public int getUserID() {
         return userID;
@@ -113,6 +118,14 @@ public class User implements Principal {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
     }
 
     @Override

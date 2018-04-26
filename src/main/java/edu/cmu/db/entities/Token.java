@@ -19,7 +19,7 @@ public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private long tokenId;
+    private int tokenId;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -41,11 +41,11 @@ public class Token {
         this.validUntil = validUntil;
     }
 
-    public long getTokenId() {
+    public int getTokenId() {
         return tokenId;
     }
 
-    public void setTokenId(long tokenId) {
+    public void setTokenId(int tokenId) {
         this.tokenId = tokenId;
     }
 
