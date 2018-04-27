@@ -11,6 +11,7 @@ import edu.cmu.db.entities.Result;
 import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.views.ListAllRequestsForSmeView;
+import edu.cmu.resources.views.SmeHomeView;
 import edu.cmu.resources.views.UploadDataFormView;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -66,11 +67,11 @@ public class SocialMediaResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @UnitOfWork
     @Timed
-    public void uploadData(@Auth User user,
-                           @FormDataParam("submit") String actionTaken,
-                           @FormDataParam("data") final FormDataBodyPart fileField,
-                           @FormDataParam("caseID") FormDataBodyPart requestId,
-                           @FormDataParam("comment") FormDataBodyPart comment) {
+    public View uploadData(@Auth User user,
+                               @FormDataParam("submit") String actionTaken,
+                               @FormDataParam("data") final FormDataBodyPart fileField,
+                               @FormDataParam("caseID") FormDataBodyPart requestId,
+                               @FormDataParam("comment") FormDataBodyPart comment) {
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
         int requestIdNumber = requestId.getValueAs(Integer.class);
@@ -86,7 +87,7 @@ public class SocialMediaResource {
             throw new BadRequestException("Request has already been dealt with.");
         }
 
-        if(actionTaken == "submit") {
+        if(actionTaken.equalsIgnoreCase("submit")) {
             if (fileField == null) {
                 throw new BadRequestException("no data uploaded.");
             }
@@ -107,12 +108,14 @@ public class SocialMediaResource {
 
             LOG.info("upload over");
         }
-        else if(actionTaken == "reject") {
+        else if(actionTaken.equalsIgnoreCase("reject")) {
             boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.REJECTED);
             if (!success) {
                 LOG.warn(String.format("Could not update status of request %s after reject.", requestIdNumber));
             }
         }
+        List<Request> requests = requestDAO.findAll();
+        return new SmeHomeView(requests);
     }
 
     private Result createNewResult(User user, Request request) {

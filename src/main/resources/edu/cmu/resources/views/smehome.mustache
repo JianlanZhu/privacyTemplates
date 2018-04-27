@@ -42,14 +42,34 @@
             </tr>
             </thead>
             <tbody>
-                {{#allRequests}}
+            {{#pendingRequests}}
                 <tr onclick=nav(this)>
-                <td>{{requestID}}</td>
-                <td>{{caseID}}</td>
-                <td>{{suspectUserName}}</td>
-                <td>{{status}}</td>
-                </tr>
-                {{/allRequests}}
+                    <td>{{requestID}}</td>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/pendingRequests}}
+            {{#answeredRequests}}
+                <tr onclick=nav(this)>
+                    <td>{{requestID}}</td>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/answeredRequests}}
+            {{#rejectedRequests}}
+                <tr onclick=nav(this)>
+                    <td>{{requestID}}</td>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/rejectedRequests}}
+            {{#closedRequests}}
+                <tr onclick=nav(this)>
+                    <td>{{requestID}}</td>
+                    <td>{{caseID}}</td>
+                    <td>{{suspectUserName}}</td>
+                    <td>{{status}}</td>
+                </tr>{{/closedRequests}}
             </tbody>
         </table>
     </div>
