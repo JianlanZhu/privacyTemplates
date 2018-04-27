@@ -27,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipInputStream;
@@ -68,10 +67,10 @@ public class SocialMediaResource {
     @UnitOfWork
     @Timed
     public View uploadData(@Auth User user,
-                               @FormDataParam("submit") String actionTaken,
-                               @FormDataParam("data") final FormDataBodyPart fileField,
-                               @FormDataParam("caseID") FormDataBodyPart requestId,
-                               @FormDataParam("comment") FormDataBodyPart comment) {
+                           @FormDataParam("submit") String actionTaken,
+                           @FormDataParam("data") final FormDataBodyPart fileField,
+                           @FormDataParam("caseID") FormDataBodyPart requestId,
+                           @FormDataParam("comment") FormDataBodyPart comment) {
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
         int requestIdNumber = requestId.getValueAs(Integer.class);
@@ -87,7 +86,10 @@ public class SocialMediaResource {
             throw new BadRequestException("Request has already been dealt with.");
         }
 
-        if(actionTaken.equalsIgnoreCase("submit")) {
+        boolean success = false;
+        if (actionTaken.equalsIgnoreCase("reject")) {
+            success = requestDAO.updateStatus(request.getRequestID(), RequestState.REJECTED);
+        } else if (actionTaken.equalsIgnoreCase("submit")) {
             if (fileField == null) {
                 throw new BadRequestException("no data uploaded.");
             }
@@ -101,21 +103,15 @@ public class SocialMediaResource {
 
             parseUploadedData(result, fileField.getValueAs(InputStream.class));
 
-            boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
-            if (!success) {
-                LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
-            }
+            success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
+        }
 
-            LOG.info("upload over");
+        if (!success) {
+            LOG.warn(String.format("Could not update status of request %s after data upload / rejection.", requestIdNumber));
         }
-        else if(actionTaken.equalsIgnoreCase("reject")) {
-            boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.REJECTED);
-            if (!success) {
-                LOG.warn(String.format("Could not update status of request %s after reject.", requestIdNumber));
-            }
-        }
-        List<Request> requests = requestDAO.findAll();
-        return new SmeHomeView(requests);
+        LOG.info("upload over");
+
+        return new SmeHomeView(requestDAO.findAll());
     }
 
     private Result createNewResult(User user, Request request) {
