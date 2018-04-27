@@ -17,12 +17,6 @@
         function nav(e) {
             try {
                 window.location.assign("http://localhost:8080/socialMedia/DataUploadForm?requestId=" + $(e.cells[0]).text());
-                /*
-                alert('Row Index: ' + ($(e).index() + 1) +
-                        '\nRequest ID: ' + $(e.cells[0]).text() +
-                        '\nCase ID: ' + $(e.cells[1]).text() +
-                        '\nStatus: ' + $(e.cells[2]).text());
-                        */
             }
             catch(err) {
                 alert(err);
@@ -43,6 +37,7 @@
             <tr>
                 <th>Request ID</th>
                 <th>Case ID</th>
+                <th>Suspect User Name</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -51,6 +46,7 @@
                 <tr onclick=nav(this)>
                 <td>{{requestID}}</td>
                 <td>{{caseID}}</td>
+                <td>{{suspectUserName}}</td>
                 <td>{{status}}</td>
                 </tr>
                 {{/allRequests}}
