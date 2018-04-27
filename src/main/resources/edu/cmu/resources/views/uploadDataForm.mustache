@@ -21,7 +21,7 @@
 <nav class="navbar navbar-default" id="navSME"></nav>
 <div class="container">
     <div class="page-header">
-        <h2>Upload data for a request</h2>
+        <h2>Respond to request: {{requestId}}</h2>
     </div>
     <div class="container">
         <form action="/socialMedia/DataUploadForm" method="post" enctype="multipart/form-data">
@@ -59,9 +59,10 @@
                 <div class="form-group ">
                     <div class="row">
                         <div class="col-sm-4">
+                            <button type="submit" name="submit" value="submit" class="btn btn-primary pull-right">Submit</button>
                         </div>
-                        <div class="col-sm-8">
-                            <button type="submit" class="btn btn-primary pull-left" >Submit</button>
+                        <div class="col-sm-4">
+                            <button type="submit" name="submit" value="reject" class="btn btn-primary pull-left">Reject</button>
                         </div>
                     </div>
                 </div>

@@ -67,15 +67,10 @@ public class SocialMediaResource {
     @UnitOfWork
     @Timed
     public void uploadData(@Auth User user,
+                           @FormDataParam("submit") String actionTaken,
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
-        if (fileField == null) {
-            throw new BadRequestException("no data uploaded.");
-        }
-
-        InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
-        checkIfZipFile(dataZipFileInputStream);
 
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
         int requestIdNumber = requestId.getValueAs(Integer.class);
@@ -91,18 +86,33 @@ public class SocialMediaResource {
             throw new BadRequestException("Request has already been dealt with.");
         }
 
-        // handle uploaded data
-        Result result = createNewResult(user, request);
-        request.setResult(result);
+        if(actionTaken == "submit") {
+            if (fileField == null) {
+                throw new BadRequestException("no data uploaded.");
+            }
 
-        parseUploadedData(result, fileField.getValueAs(InputStream.class));
+            InputStream dataZipFileInputStream = fileField.getValueAs(InputStream.class);
+            checkIfZipFile(dataZipFileInputStream);
 
-        boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
-        if (!success) {
-            LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
+            // handle uploaded data
+            Result result = createNewResult(user, request);
+            request.setResult(result);
+
+            parseUploadedData(result, fileField.getValueAs(InputStream.class));
+
+            boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
+            if (!success) {
+                LOG.warn(String.format("Could not update status of request %s after data upload.", requestIdNumber));
+            }
+
+            LOG.info("upload over");
         }
-
-        LOG.info("upload over");
+        else if(actionTaken == "reject") {
+            boolean success = requestDAO.updateStatus(request.getRequestID(), RequestState.REJECTED);
+            if (!success) {
+                LOG.warn(String.format("Could not update status of request %s after reject.", requestIdNumber));
+            }
+        }
     }
 
     private Result createNewResult(User user, Request request) {

@@ -65,7 +65,7 @@ public class SocialMediaResourceTest {
         result.setRequest(request);
         when(resultDAO.persistNewResult(any())).thenReturn(result);
 
-        socialMediaResource.uploadData(user, fileField, requestId, comment);
+        socialMediaResource.uploadData(user, "sumbit", fileField, requestId, comment);
 
         verify(resultDAO).persistNewResult(any());
         verify(requestDAO).updateStatus(id, RequestState.ANSWERED);
@@ -92,7 +92,7 @@ public class SocialMediaResourceTest {
 
         when(requestDAO.findById(id)).thenReturn(Optional.of(request));
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(user, fileField, requestId, comment));
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(user, "submit", fileField, requestId, comment));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("already been dealt");
@@ -112,7 +112,7 @@ public class SocialMediaResourceTest {
 
         when(requestDAO.findById(id)).thenReturn(Optional.empty());
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, requestId, comment));
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", fileField, requestId, comment));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("ID invalid");
@@ -126,11 +126,11 @@ public class SocialMediaResourceTest {
 
         when(fileField.getValueAs(InputStream.class)).thenReturn(is);
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, fileField, null, null));
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", fileField, null, null));
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("not a zip");
 
-        thrown = catchThrowable(() -> socialMediaResource.uploadData(null, null, null, null));
+        thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", null, null, null));
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("no data");
     }
