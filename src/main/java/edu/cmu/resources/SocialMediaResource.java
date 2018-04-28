@@ -71,7 +71,6 @@ public class SocialMediaResource {
                            @FormDataParam("data") final FormDataBodyPart fileField,
                            @FormDataParam("caseID") FormDataBodyPart requestId,
                            @FormDataParam("comment") FormDataBodyPart comment) {
-
         requestId.setMediaType(MediaType.TEXT_PLAIN_TYPE);
         int requestIdNumber = requestId.getValueAs(Integer.class);
         comment.setMediaType(MediaType.TEXT_PLAIN_TYPE);

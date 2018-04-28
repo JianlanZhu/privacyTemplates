@@ -162,7 +162,7 @@ public class Request {
         return createdBy;
     }
 
-    public void setCreatedByID(User createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 

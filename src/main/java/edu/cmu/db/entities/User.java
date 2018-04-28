@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
@@ -131,5 +132,25 @@ public class User implements Principal {
     @Override
     public String getName() {
         return userName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userID == user.userID &&
+                accountEnabled == user.accountEnabled &&
+                Objects.equals(userType, user.userType) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(userName, user.userName) &&
+                Objects.equals(userCreatedDate, user.userCreatedDate);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(userID, userType, lastName, firstName, userName, accountEnabled, userCreatedDate);
     }
 }

@@ -99,6 +99,26 @@ public class RequestResource {
         return request;
     }
 
+    @PUT
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
+    @UnitOfWork
+    @Path("/{id}")
+    public void updateRequestStatus(@Auth User user,
+                                    @PathParam("id") int id,
+                                    @QueryParam("newStatus") String newStatus) {
+        Request request = getRequestOrThrowNotFound(user, id);
+        request.setStatus(newStatus);
+    }
+
+    private Request getRequestOrThrowNotFound(User user, int id) {
+        Optional<Request> requestOptional = requestDAO.findById(id);
+        // return 404 in case request exists but user is not authorized to see it in order to prevent inference about existence of requests
+        if (!requestOptional.isPresent() || !requestOptional.get().getCreatedBy().equals(user)) {
+            throw new NotFoundException(String.format("No request with id %d found.", id));
+        }
+        return requestOptional.get();
+    }
+
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/requestForm")
@@ -110,14 +130,12 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Path("/{id}")
-    public View getRequestDetails(@PathParam("id") int id,
+    public View getRequestDetails(@Auth User user,
+                                  @PathParam("id") int id,
                                   @QueryParam("sender") String senderName) {
-        Optional<Request> requestOptional = requestDAO.findById(id);
-        if (!requestOptional.isPresent()) {
-            throw new NotFoundException(String.format("No request with id %d found.", id));
-        }
+        Request request = getRequestOrThrowNotFound(user, id);
 
-        Result result = requestOptional.get().getResult();
+        Result result = request.getResult();
 
         if (result == null) {
             return new NotAnsweredView();
@@ -146,26 +164,27 @@ public class RequestResource {
      * @return true if data format is valid, false otherwise.
      */
     private static void checkInputValidity(GenerateRequestInput input) {
-        if (Strings.isNullOrEmpty(input.getRequestedDataStartDate()) || Strings.isNullOrEmpty(input.getRequestedDataEndDate())) {
-            throw new BadRequestException("Request start and end dates are mandatory.");
+        if (input.getCaseID() <= 0) {
+            throw new BadRequestException("Invalid case ID.");
         }
 
         if (Strings.isNullOrEmpty(input.getSuspectUserName()) && (Strings.isNullOrEmpty(input.getFirstName()) || Strings.isNullOrEmpty(input.getLastName())) && Strings.isNullOrEmpty(input.getProfileLink())) {
             throw new BadRequestException("Basic identification needs to be provided. Specify at least one of [FB username, first + last name, FB profile link].");
         }
 
-        if (input.getCaseID() <= 0) {
-            throw new BadRequestException("Invalid case ID.");
+        if (Strings.isNullOrEmpty(input.getCaseType())) {
+            throw new BadRequestException("Specification of case type is mandatory.");
         }
 
         try {
-            // for now, case type can either be null, or oe of the values specified in the enum
-            if (input.getCaseType() != null) {
-                // will throw exception if case type is invalid
-                CaseType.valueOf(input.getCaseType().toUpperCase());
-            }
+            // will throw exception if case type is invalid
+            CaseType.valueOf(input.getCaseType().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid case Type.");
+        }
+
+        if (Strings.isNullOrEmpty(input.getRequestedDataStartDate()) || Strings.isNullOrEmpty(input.getRequestedDataEndDate())) {
+            throw new BadRequestException("Request start and end dates are mandatory.");
         }
 
         if (input.isIPLogRequested() && !input.getCaseType().equalsIgnoreCase(CaseType.FELONY.name())) {

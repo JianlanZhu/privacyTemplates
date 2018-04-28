@@ -39,7 +39,7 @@ public class RequestResourceTest {
     @Test
     public void generateRequest() {
         User user = new User();
-        GenerateRequestInput generateRequestInput = new GenerateRequestInput(3, "someSuspect", "FELONY", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "04/01/2018", "04/30/2018");
+        GenerateRequestInput generateRequestInput = new GenerateRequestInput(3, "someSuspect", "FELONY", null, null, null, null, null, null, "04/01/2018", "04/30/2018", null, null, null, null, null, null, null, null, null, null, null, true, null, null, null, null, null, null, null, "04/01/2018", "04/30/2018");
 
         requestResource.generateRequest(user, generateRequestInput);
 
@@ -83,21 +83,23 @@ public class RequestResourceTest {
     public void getRequestDetailsForUnansweredRequest() {
         final int unansweredId = 5;
         final Request unansweredRequest = new Request();
+        final User user = new User();
+        unansweredRequest.setCreatedBy(user);
         unansweredRequest.setResult(null);
         when(requestDAO.findById(unansweredId)).thenReturn(Optional.of(unansweredRequest));
 
-        View view = requestResource.getRequestDetails(unansweredId, null);
+        View view = requestResource.getRequestDetails(user, unansweredId, null);
 
         assertThat(view).isInstanceOf(NotAnsweredView.class);
     }
 
     @Test
-    public void getRequestDetailsInvalidId() {
+    public void getRequestDetailsWithInvalidId() {
         final int requestId = 5;
 
         when(requestDAO.findById(requestId)).thenReturn(Optional.empty());
 
-        Throwable thrown = catchThrowable(() -> requestResource.getRequestDetails(requestId, null));
+        Throwable thrown = catchThrowable(() -> requestResource.getRequestDetails(null, requestId, null));
 
         assertThat(thrown).isInstanceOf(NotFoundException.class);
     }
@@ -106,12 +108,14 @@ public class RequestResourceTest {
     public void getRequestDetailsForAnsweredRequest() {
         final int requestId = 5;
         final Result result = new Result();
+        final User user = new User();
         final Request request = new Request();
+        request.setCreatedBy(user);
         request.setResult(result);
 
         when(requestDAO.findById(requestId)).thenReturn(Optional.of(request));
 
-        View view = requestResource.getRequestDetails(requestId, null);
+        View view = requestResource.getRequestDetails(user, requestId, null);
 
         assertThat(view).isInstanceOf(RequestDetailsView.class);
     }
@@ -121,6 +125,8 @@ public class RequestResourceTest {
         final int requestId = 5;
         final Result result = new Result();
         final Request request = new Request();
+        final User user = new User();
+        request.setCreatedBy(user);
         request.setResult(result);
 
         Conversation conversation1 = new Conversation();
@@ -134,7 +140,7 @@ public class RequestResourceTest {
 
         when(requestDAO.findById(requestId)).thenReturn(Optional.of(request));
 
-        View view = requestResource.getRequestDetails(requestId, "User2");
+        View view = requestResource.getRequestDetails(user, requestId, "User2");
 
         assertThat(view).isInstanceOf(RequestDetailsView.class);
         assertThat(((RequestDetailsView) view).getConversations()).contains(conversation1);
