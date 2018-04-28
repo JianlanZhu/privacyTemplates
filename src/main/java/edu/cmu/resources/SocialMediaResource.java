@@ -86,9 +86,8 @@ public class SocialMediaResource {
             throw new BadRequestException("Request has already been dealt with.");
         }
 
-        boolean success = false;
         if (actionTaken.equalsIgnoreCase("reject")) {
-            success = requestDAO.updateStatus(request.getRequestID(), RequestState.REJECTED);
+            request.setStatus(RequestState.REJECTED.name());
         } else if (actionTaken.equalsIgnoreCase("submit")) {
             if (fileField == null) {
                 throw new BadRequestException("no data uploaded.");
@@ -103,13 +102,10 @@ public class SocialMediaResource {
 
             parseUploadedData(result, fileField.getValueAs(InputStream.class));
 
-            success = requestDAO.updateStatus(request.getRequestID(), RequestState.ANSWERED);
+            request.setStatus(RequestState.ANSWERED.name());
         }
 
-        if (!success) {
-            LOG.warn(String.format("Could not update status of request %s after data upload / rejection.", requestIdNumber));
-        }
-        LOG.info("upload over");
+        request.setSocialMediaComment(comment.getValue());
 
         return new SmeHomeView(requestDAO.findAll());
     }

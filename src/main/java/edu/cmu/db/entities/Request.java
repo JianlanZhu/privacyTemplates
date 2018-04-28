@@ -1,10 +1,8 @@
 package edu.cmu.db.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.cmu.db.enums.RequestState;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.sql.Date;
 import java.time.Instant;
 
@@ -124,9 +122,8 @@ public class Request {
     @Column(name = "status")
     private String status;
 
-    @JsonIgnore
-    @Column(name = "warrant")
-    private Blob warrant;
+    @Column(name = "socialMediaComment")
+    private String socialMediaComment;
 
     @OneToOne
     @JoinColumn(name = "resultID")
@@ -135,40 +132,14 @@ public class Request {
     public Request() {
     }
 
-    public Request(User createdBy, long caseID, String caseType, String suspectUserName, String suspectLastName, String suspectFirstName, String suspectMiddleName, String suspectRegisteredEmailAddress, String suspectRegisteredPhoneNumber, Date requestedDataStartDate, Date requestedDataEndDate, Boolean isContactInformationRequested, Boolean isMiniFeedRequested, Boolean isStatusHistoryRequested, Boolean isSharesRequested, Boolean isNotesRequested, Boolean isWallPostingsRequested, Boolean isFriendListRequested, Boolean isVideosRequested, Boolean isGroupsRequested, Boolean isPastEventsRquested, Boolean isFutureEventsRequested, Boolean isPhotosRequested, Boolean isPrivateMessagesRequested, Boolean isGroupInfoRequested, Boolean isIPLogRequested, String filterCommunicantsUserName, String filterKeywords, Integer filterKeywordsCategory, String filterLocation, Blob warrant, RequestState status) {
-        this.status = status.name();
-        this.requestCreatedDate = Instant.now();
+    public Request(User createdBy, long caseID, String caseType, Date requestedDataStartDate, Date requestedDataEndDate, RequestState status) {
         this.createdBy = createdBy;
         this.caseID = caseID;
         this.caseType = caseType;
-        this.suspectUserName = suspectUserName;
-        this.suspectLastName = suspectLastName;
-        this.suspectFirstName = suspectFirstName;
-        this.suspectMiddleName = suspectMiddleName;
-        this.suspectRegisteredEmailAddress = suspectRegisteredEmailAddress;
-        this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
+        this.requestCreatedDate = Instant.now();
         this.requestedDataStartDate = requestedDataStartDate;
         this.requestedDataEndDate = requestedDataEndDate;
-        this.isContactInformationRequested = isContactInformationRequested;
-        this.isMiniFeedRequested = isMiniFeedRequested;
-        this.isStatusHistoryRequested = isStatusHistoryRequested;
-        this.isSharesRequested = isSharesRequested;
-        this.isNotesRequested = isNotesRequested;
-        this.isWallPostingsRequested = isWallPostingsRequested;
-        this.isFriendListRequested = isFriendListRequested;
-        this.isVideosRequested = isVideosRequested;
-        this.isGroupsRequested = isGroupsRequested;
-        this.isPastEventsRquested = isPastEventsRquested;
-        this.isFutureEventsRequested = isFutureEventsRequested;
-        this.isPhotosRequested = isPhotosRequested;
-        this.isPrivateMessagesRequested = isPrivateMessagesRequested;
-        this.isGroupInfoRequested = isGroupInfoRequested;
-        this.isIPLogRequested = isIPLogRequested;
-        this.filterCommunicantsUserName = filterCommunicantsUserName;
-        this.filterKeywords = filterKeywords;
-        this.filterKeywordsCategory = filterKeywordsCategory;
-        this.filterLocation = filterLocation;
-        this.warrant = warrant;
+        this.status = status.name();
     }
 
     public long getRequestID() {
@@ -241,22 +212,6 @@ public class Request {
 
     public void setSuspectMiddleName(String suspectMiddleName) {
         this.suspectMiddleName = suspectMiddleName;
-    }
-
-    public String getSusoectRegisteredEmailAddress() {
-        return suspectRegisteredEmailAddress;
-    }
-
-    public void setSusoectRegisteredEmailAddress(String suspectRegisteredEmailAddress) {
-        this.suspectRegisteredEmailAddress = suspectRegisteredEmailAddress;
-    }
-
-    public String getSusoectRegisteredPhoneNumber() {
-        return suspectRegisteredPhoneNumber;
-    }
-
-    public void setSusoectRegisteredPhoneNumber(String suspectRegisteredPhoneNumber) {
-        this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
     }
 
     public Date getRequestedDataStartDate() {
@@ -443,12 +398,12 @@ public class Request {
         this.suspectRegisteredPhoneNumber = suspectRegisteredPhoneNumber;
     }
 
-    public Blob getWarrant() {
-        return warrant;
+    public String getSocialMediaComment() {
+        return socialMediaComment;
     }
 
-    public void setWarrant(Blob warrant) {
-        this.warrant = warrant;
+    public void setSocialMediaComment(String socialMediaComment) {
+        this.socialMediaComment = socialMediaComment;
     }
 
     public String getStatus() {

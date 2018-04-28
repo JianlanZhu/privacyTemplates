@@ -31,16 +31,16 @@ CREATE TABLE request (
   isPhotosRequested             BIT(1),
   isPrivateMessagesRequested    BIT(1),
   isGroupInfoRequested          BIT(1),
-  isIPLogRequested              BIT(1),
-  filterCommunicantsUserName    VARCHAR(256),
-  filterKeywords                VARCHAR(256),
-  filterKeywordsCategory        INT,
+  isIPLogRequested           BIT(1),
+  filterCommunicantsUserName VARCHAR(256),
+  filterKeywords             VARCHAR(256),
+  filterKeywordsCategory     INT,
   FOREIGN KEY (filterKeywordsCategory) REFERENCES keywordcategory (categoryId),
-  filterLocation                VARCHAR(256),
-  status                        VARCHAR(256) CHECK (
+  filterLocation             VARCHAR(256),
+  status                     VARCHAR(256) CHECK (
     status = 'PENDING' OR status = 'REJECTED' OR status = 'ANSWERED' OR status = 'CLOSED'
   ),
-  resultID                      INT,
+  resultID                   INT,
   FOREIGN KEY (resultID) REFERENCES result (resultID),
-  warrant                       LONGBLOB
+  socialMediaComment         VARCHAR(256)
 );
