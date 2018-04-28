@@ -65,10 +65,9 @@ public class SocialMediaResourceTest {
         result.setRequest(request);
         when(resultDAO.persistNewResult(any())).thenReturn(result);
 
-        socialMediaResource.uploadData(user, "sumbit", fileField, requestId, comment);
+        socialMediaResource.uploadData(user, "submit", fileField, requestId, comment);
 
         verify(resultDAO).persistNewResult(any());
-        verify(requestDAO).updateStatus(id, RequestState.ANSWERED);
     }
 
     @Test
@@ -120,17 +119,25 @@ public class SocialMediaResourceTest {
 
     @Test
     public void uploadNonZipFile() {
+        final int id = 1;
         FormDataBodyPart fileField = mock(FormDataBodyPart.class);
+        FormDataBodyPart requestIdField = mock(FormDataBodyPart.class);
+        FormDataBodyPart comment = mock(FormDataBodyPart.class);
+
+        when(requestIdField.getValueAs(Integer.class)).thenReturn(id);
 
         InputStream is = this.getClass().getResourceAsStream("/textFile.txt");
-
         when(fileField.getValueAs(InputStream.class)).thenReturn(is);
 
-        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", fileField, null, null));
+        Request request = new Request();
+
+        when(requestDAO.findById(id)).thenReturn(Optional.of(request));
+
+        Throwable thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", fileField, requestIdField, comment));
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("not a zip");
 
-        thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", null, null, null));
+        thrown = catchThrowable(() -> socialMediaResource.uploadData(null, "submit", null, requestIdField, comment));
         assertThat(thrown).isInstanceOf(BadRequestException.class);
         assertThat(thrown.getMessage()).contains("no data");
     }
