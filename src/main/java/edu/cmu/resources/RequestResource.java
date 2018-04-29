@@ -187,7 +187,7 @@ public class RequestResource {
             throw new BadRequestException("Request start and end dates are mandatory.");
         }
 
-        if (input.isIPLogRequested() != null && input.isIPLogRequested() && !input.getCaseType().equalsIgnoreCase(CaseType.FELONY.name())) {
+        if (Boolean.TRUE.equals(input.isIPLogRequested()) && !input.getCaseType().equalsIgnoreCase(CaseType.FELONY.name())) {
             throw new BadRequestException("IP logs cannot only be requested for felony cases");
         }
 

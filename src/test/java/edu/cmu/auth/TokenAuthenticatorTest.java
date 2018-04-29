@@ -34,7 +34,7 @@ public class TokenAuthenticatorTest {
         userWithValidToken.setUserName("validUser");
         final Token validToken = new Token(userWithValidToken, validTokenString, validUntil);
 
-        when(tokenDAO.findUserByToken(validTokenString)).thenReturn(Optional.of(validToken));
+        when(tokenDAO.findTokenByTokenString(validTokenString)).thenReturn(Optional.of(validToken));
 
         Optional<User> userOptional = tokenAuthenticator.authenticate(validTokenString);
 
@@ -53,7 +53,7 @@ public class TokenAuthenticatorTest {
         final User userWithExpiredToken = mock(User.class);
         final Token expiredToken = new Token(userWithExpiredToken, expiredTokenString, validUntil);
 
-        when(tokenDAO.findUserByToken(expiredTokenString)).thenReturn(Optional.of(expiredToken));
+        when(tokenDAO.findTokenByTokenString(expiredTokenString)).thenReturn(Optional.of(expiredToken));
 
         Optional<User> userOptional = tokenAuthenticator.authenticate(expiredTokenString);
 
@@ -64,7 +64,7 @@ public class TokenAuthenticatorTest {
     public void rejectUnknownToken() {
         final String unknownTokenString = "unknownToken";
 
-        when(tokenDAO.findUserByToken(unknownTokenString)).thenReturn(Optional.empty());
+        when(tokenDAO.findTokenByTokenString(unknownTokenString)).thenReturn(Optional.empty());
 
         Optional<User> userOptional = tokenAuthenticator.authenticate(unknownTokenString);
 

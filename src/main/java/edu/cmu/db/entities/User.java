@@ -46,6 +46,10 @@ public class User implements Principal {
 
     @OneToMany
     @JoinColumn(name = "userId")
+    private List<Token> tokens;
+
+    @OneToMany
+    @JoinColumn(name = "userId")
     private List<Request> requests;
 
     public int getUserID() {
@@ -127,6 +131,14 @@ public class User implements Principal {
 
     public void setRequests(List<Request> requests) {
         this.requests = requests;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
 
     @Override

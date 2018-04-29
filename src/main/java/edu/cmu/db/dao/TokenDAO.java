@@ -20,12 +20,12 @@ public class TokenDAO extends AbstractDAO<Token> {
         return token;
     }
 
-    public Optional<Token> findUserByToken(String token) {
-        return namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
+    public Optional<Token> findTokenByTokenString(String token) {
+        return namedQuery("edu.cmu.db.entities.Token.findTokenByTokenString").setParameter("token", token).uniqueResultOptional();
     }
 
     public void deleteToken(String token) {
-        Optional<Token> tokenOptional = namedQuery("edu.cmu.db.entities.Token.findUserByToken").setParameter("token", token).uniqueResultOptional();
+        Optional<Token> tokenOptional = namedQuery("edu.cmu.db.entities.Token.findTokenByTokenString").setParameter("token", token).uniqueResultOptional();
         tokenOptional.ifPresent(t -> currentSession().delete(t));
     }
 }
