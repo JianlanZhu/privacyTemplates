@@ -3,6 +3,7 @@ package edu.cmu;
 import edu.cmu.auth.AppAuthorizer;
 import edu.cmu.auth.TokenAuthFilter;
 import edu.cmu.auth.TokenAuthenticator;
+import edu.cmu.core.util.RuntimeExceptionMapper;
 import edu.cmu.db.dao.*;
 import edu.cmu.db.entities.*;
 import edu.cmu.resources.LandingPageResource;
@@ -97,6 +98,7 @@ public class PrivacyTemplatesApplication extends Application<PrivacyTemplatesCon
 
         setupAuthentication(environment, sessionFactory);
 
+        environment.jersey().register(new RuntimeExceptionMapper());
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
 
     }

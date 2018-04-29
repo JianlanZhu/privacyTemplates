@@ -118,7 +118,7 @@ function postData(url, data, requestHeader, onResponse, method, onError) {
                 onResponse(XHR.responseText);
             } else {
                 if (onError == undefined)
-                    alert("some error occurred: "+ XHR.status);
+                    alert("some error occurred: " + XHR.status + ": " + XHR.statusText);
                 else
                     onError(XHR.status, XHR.responseText);
             }
