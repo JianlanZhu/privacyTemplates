@@ -14,3 +14,18 @@ function loadLEONav() {
 
     $('#leoHome').background = 'blue';
 }
+
+function closeCase() {
+    postData(window.location.href+'?newStatus=CLOSED', null, "", closeSuccess, 'PUT', closeError);
+}
+
+function closeSuccess() {
+    alert("Case has been successfully closed");
+    window.location.assign('http://localhost:8080/leoHome')
+}
+
+
+function closeError() {
+    alert("There was an error. The case could not be closed");
+    window.location.assign('http://localhost:8080/leoHome')
+}

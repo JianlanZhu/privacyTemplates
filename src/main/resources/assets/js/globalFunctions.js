@@ -104,9 +104,12 @@ function generateFormData(form) {
 //data: data to be posted
 //onResponse: the function that must be executed when server responds
 //Return the response text
-function postData(url, data, requestHeader, onResponse) {
+function postData(url, data, requestHeader, onResponse, method, onError) {
     var XHR = new XMLHttpRequest();
-    XHR.open("POST", url);
+    if (method == undefined) {
+        method = "POST"
+    }
+    XHR.open(method, url);
     if(requestHeader !== "")
         XHR.setRequestHeader("content-type", requestHeader);
     XHR.onreadystatechange = function () {
@@ -114,8 +117,10 @@ function postData(url, data, requestHeader, onResponse) {
             if (XHR.status == 200 || XHR.status == 204) {
                 onResponse(XHR.responseText);
             } else {
-                //ToDo: correct this
-                alert("some error occurred");
+                if (onError == undefined)
+                    alert("some error occurred: "+ XHR.status);
+                else
+                    onError(XHR.status, XHR.responseText);
             }
         }
     };
