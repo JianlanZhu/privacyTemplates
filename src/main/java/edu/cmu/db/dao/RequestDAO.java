@@ -1,6 +1,7 @@
 package edu.cmu.db.dao;
 
 import edu.cmu.db.entities.Request;
+import edu.cmu.db.entities.User;
 import edu.cmu.db.enums.RequestState;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
@@ -42,8 +43,8 @@ public class RequestDAO extends AbstractDAO<Request> {
         }
     }
 
-    public List<Request> findAllForUser(long userID) {
-        return list(namedQuery("edu.cmu.db.entities.Request.findAllForUser").setParameter("userId", userID));
+    public List<Request> findAllForUser(User user) {
+        return list(namedQuery("edu.cmu.db.entities.Request.findAllForUser").setParameter("userId", user.getUserID()));
     }
 
     public List<Request> findAllWithStatus(RequestState status) {

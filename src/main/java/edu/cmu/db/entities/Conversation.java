@@ -1,9 +1,8 @@
 package edu.cmu.db.entities;
 
-import org.hibernate.mapping.ToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +16,9 @@ import java.util.List;
 public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @ManyToOne
     private int conversationID;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "resultID")
     private Result result;

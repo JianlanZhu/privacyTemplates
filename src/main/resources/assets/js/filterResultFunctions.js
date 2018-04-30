@@ -47,6 +47,11 @@ function validFilters(id) {
     //validText();
 }
 
+function filterMessagesBySender(requestId, conversationId) {
+    var senderName = document.getElementById("senderName").value;
+    window.location.href = "/request/" + requestId + "/conversations/" + conversationId + "?senderName=" + senderName;
+}
+
 //validation: the date should be 1) within the initial filter
 ///2) within the current data
 function validDate() {

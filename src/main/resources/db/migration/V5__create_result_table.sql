@@ -4,6 +4,5 @@ CREATE TABLE result (
   SMEUserID   INT,
   FOREIGN KEY (SMEUserID) REFERENCES user (userId),
   retentionID INT,
-  FOREIGN KEY (retentionID) REFERENCES retentiontype (retentionID),
-  requestID   INT
+  FOREIGN KEY (retentionID) REFERENCES retentiontype (retentionID)
 );

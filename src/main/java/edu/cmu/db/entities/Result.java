@@ -28,8 +28,7 @@ public class Result {
     @JoinColumn(name = "resultID")
     private List<Conversation> conversations;
 
-    @OneToOne
-    @JoinColumn(name = "requestID")
+    @OneToOne(optional = false, mappedBy = "result")
     private Request request;
 
     public Result() {

@@ -38,9 +38,6 @@ public class Parser {
     private Result result;
     private Request request;
 
-//    public Parser() {
-//    }
-
     public Parser(ConversationDAO conversationDAO, MessageDAO messageDAO, Result result) {
         this.conversationDAO = conversationDAO;
         this.messageDAO = messageDAO;

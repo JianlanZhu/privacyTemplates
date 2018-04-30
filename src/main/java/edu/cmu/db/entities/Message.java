@@ -1,8 +1,9 @@
 package edu.cmu.db.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
-import java.time.Instant;
 
 @Entity
 @Table(name = "message")
@@ -25,6 +26,7 @@ public class Message {
     @Column(name = "messageSender")
     private String messageSender;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "conversationID")
     private Conversation conversation;

@@ -3,13 +3,11 @@ package edu.cmu.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
 import edu.cmu.db.dao.RequestDAO;
-import edu.cmu.db.entities.Conversation;
-import edu.cmu.db.entities.Request;
-import edu.cmu.db.entities.Result;
-import edu.cmu.db.entities.User;
+import edu.cmu.db.entities.*;
 import edu.cmu.db.enums.CaseType;
 import edu.cmu.db.enums.RequestState;
 import edu.cmu.resources.interaction.GenerateRequestInput;
+import edu.cmu.resources.views.ConversationView;
 import edu.cmu.resources.views.GenerateRequestView;
 import edu.cmu.resources.views.NotAnsweredView;
 import edu.cmu.resources.views.RequestDetailsView;
@@ -146,6 +144,30 @@ public class RequestResource {
             conversations = conversations.stream().filter(c -> c.getParticipants().contains(senderName)).collect(Collectors.toList());
         }
         return new RequestDetailsView(conversations, id);
+    }
+
+    @GET
+    @UnitOfWork
+    @Path("/{requestId}/conversations/{conversationId}")
+    public View getConversation(@Auth User user,
+                                @PathParam("requestId") int requestId,
+                                @PathParam("conversationId") int conversationId,
+                                @QueryParam("senderName") String senderName
+    ) {
+        Optional<Request> requestOptional = requestDAO.findById(requestId).filter(r -> r.getCreatedBy().equals(user));
+        if (!requestOptional.isPresent()) {
+            throw new NotFoundException();
+        }
+
+        Optional<Conversation> conversationOptional = requestOptional.get().getResult().getConversations().stream().filter(c -> c.getConversationID() == conversationId).findFirst();
+
+        List<Message> messagesToDisplay = conversationOptional.map(Conversation::getMessages).orElse(new ArrayList<>());
+
+        if (!Strings.isNullOrEmpty(senderName)) {
+            messagesToDisplay = messagesToDisplay.stream().filter(m -> m.getMessageSender().toLowerCase().contains(senderName.toLowerCase())).collect(Collectors.toList());
+        }
+
+        return new ConversationView(conversationOptional.orElseThrow(NotFoundException::new), requestId, messagesToDisplay);
     }
 
     private Date parseDate(String dateInput) {
