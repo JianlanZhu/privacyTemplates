@@ -171,23 +171,22 @@
                 <h4>Hint: click to see the detail of messages!</h4>
                 <table id="myMessageTable"
                        width="100%"
-                       class="table table-hover table-bordered"
+                       class="table table-bordered"
                        data-show-refresh="true"
                        data-show-toggle="true"
-                       style="float: right"
-                       clickToSelect="true">
+                       style="float: right">
                     <thead style="background-color: aliceblue">
                     <tr>
                         <th style="text-align: center">Sender</th>
-                        <th style="text-align: center">Time</th>
+                        <th style="text-align: center">Date</th>
                         <th style="text-align: center">Content</th>
                     </tr>
                     </thead>
                     <tbody>
                     {{#messages}}
                         <tr>
-                            <td>Sender: {{messageSender}}</td>
-                            <td>({{startingTime}})</td>
+                            <td>{{messageSender}}</td>
+                            <td>{{startingTime}}</td>
                             <td>{{messageContent}}</td>
                         </tr>
                     {{/messages}}
@@ -199,7 +198,7 @@
                 <div style="position: fixed">
                     <h4>More Filters:</h4>
                     <div class="form-group">
-                        <label for="sender">Participant:</label>
+                        <label for="sender">Sender:</label>
                         <input type="text" class="form-control" id="senderName" name="sender"
                                placeholder="Enter sender name"/>
                     </div>

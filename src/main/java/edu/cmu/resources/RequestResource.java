@@ -130,7 +130,7 @@ public class RequestResource {
     @Path("/{id}")
     public View getRequestDetails(@Auth User user,
                                   @PathParam("id") int id,
-                                  @QueryParam("sender") String senderName) {
+                                  @QueryParam("participant") String participant) {
         Request request = getRequestOrThrowNotFound(user, id);
 
         Result result = request.getResult();
@@ -140,8 +140,8 @@ public class RequestResource {
         }
 
         List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
-        if (senderName != null && senderName.length() > 0) {
-            conversations = conversations.stream().filter(c -> c.getParticipants().contains(senderName)).collect(Collectors.toList());
+        if (participant != null && participant.length() > 0) {
+            conversations = conversations.stream().filter(c -> c.getParticipants().contains(participant)).collect(Collectors.toList());
         }
         return new RequestDetailsView(conversations, id);
     }
