@@ -56,13 +56,13 @@ public class RequestResource {
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Timed
-    public Request generateRequest(@Auth User user,
-                                   GenerateRequestInput parsedInput) {
+    public void generateRequest(@Auth User user,
+                                GenerateRequestInput parsedInput) {
         checkInputValidity(parsedInput);
 
         Request request = setupRequest(user, parsedInput);
         request = requestDAO.persistNewRequest(request);
-        return request;
+        //return request;
     }
 
     private Request setupRequest(User user, GenerateRequestInput parsedInput) {

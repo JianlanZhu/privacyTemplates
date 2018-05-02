@@ -44,12 +44,8 @@ public class User implements Principal {
     @Column(name = "userCreatedDate")
     private Instant userCreatedDate;
 
-    @OneToMany
-    @JoinColumn(name = "userId")
-    private List<Token> tokens;
-
-    @OneToMany
-    @JoinColumn(name = "userId")
+    @OneToMany//(fetch = FetchType.EAGER)
+    @JoinColumn(name = "createdByID")
     private List<Request> requests;
 
     public int getUserID() {
@@ -131,14 +127,6 @@ public class User implements Principal {
 
     public void setRequests(List<Request> requests) {
         this.requests = requests;
-    }
-
-    public List<Token> getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
     }
 
     @Override

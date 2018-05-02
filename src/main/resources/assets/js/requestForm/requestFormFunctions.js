@@ -18,7 +18,10 @@ function validate() {
             var form = getElement("ReqForm");
             var url = "/request/requestForm";
             var inputData = generateFormData(form);
-            postData(url, inputData, "application/json", showResponseFromServer);
+            postData(url, inputData, "application/json", function () {
+                alert("Request successfully generated!");
+                window.location.assign("http://localhost:8080/leoHome")
+            }, "POST", showResponseFromServer);
             return true;
         }
     }
