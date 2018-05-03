@@ -30,7 +30,7 @@ public class TokenAuthenticator implements Authenticator<String, User> {
     @Override
     public Optional<User> authenticate(String tokenString) {
         Optional<Token> tokenOptional = tokenDAO.findTokenByTokenString(tokenString).filter(t -> t.getValidUntil().compareTo(Instant.now()) > 0);
-        tokenOptional.ifPresent(this::extendToken);
+        //tokenOptional.ifPresent(this::extendToken);
         return tokenOptional.map(Token::getUser);
     }
 
