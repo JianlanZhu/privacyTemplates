@@ -141,7 +141,7 @@ public class RequestResource {
 
         List<Conversation> conversations = requestDAO.findById(id).map(Request::getResult).map(Result::getConversations).orElse(new ArrayList<>());
         if (participant != null && participant.length() > 0) {
-            conversations = conversations.stream().filter(c -> c.getParticipants().contains(participant)).collect(Collectors.toList());
+            conversations = conversations.stream().filter(c -> c.getParticipants().toLowerCase().contains(participant.toLowerCase())).collect(Collectors.toList());
         }
         return new RequestDetailsView(conversations, id);
     }
@@ -171,7 +171,7 @@ public class RequestResource {
     }
 
     private Date parseDate(String dateInput) {
-        DateFormat formatter = new SimpleDateFormat("MM/DD/yyyy");
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         try {
             return dateInput == null ? null : new Date(formatter.parse(dateInput).getTime());
         } catch (ParseException e) {
