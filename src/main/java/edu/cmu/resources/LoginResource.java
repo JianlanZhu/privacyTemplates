@@ -77,9 +77,9 @@ public class LoginResource {
     @VisibleForTesting
     String determineNextView(User user) {
         if (user.getUserType().equals(UserType.LAW_ENFORCEMENT_OFFICER.name())) {
-            return "http://localhost:8080/leoHome";//new LeoHomeView();
+            return "http://localhost:8080/leoHome";
         } else if (user.getUserType().equals(UserType.SOCIAL_MEDIA_EMPLOYEE.name())) {
-            return "http://localhost:8080/smeHome";//new SmeHomeView();
+            return "http://localhost:8080/smeHome";
         } else {
             throw new BadRequestException("unknown role");
         }
@@ -99,10 +99,10 @@ public class LoginResource {
     }
 
     /**
-     * Destroys the user's token
+     * Destroys the user's token.
      *
      * @param requestContext
-     * @return
+     * @return an acknowledgement.
      */
     @POST
     @Path("/logout")

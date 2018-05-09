@@ -21,16 +21,16 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * This class is responsible for parsing a zip file containing a user's data as gathered by Facebook.
+ */
 public class Parser {
-    private static final String HTML = "html";
     private static final int BUFFER_SIZE = 4096;
     private static final String DESTINATION_PATH = "src/main/resources/data";
-    private static Logger LOG = LoggerFactory.getLogger(Parser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Parser.class);
 
     private ConversationDAO conversationDAO;
     private MessageDAO messageDAO;
@@ -46,51 +46,49 @@ public class Parser {
     }
 
     /**
-     * parseProfile is used to parse message files under a certain directory.
-     * @param inputStream
-     * @throws IOException
+     * parseProfile is currently only used to parse message files under a certain directory.
+     * @param inputStream representing the zip file
+     * @throws IOException if unzipping fails
      */
     public void parseProfile(InputStream inputStream) throws IOException {
         unzip(inputStream);
         parseMessageFiles(DESTINATION_PATH + "/" + topDirectory + "messages"); // should take path here
-        // delete files after storage
-        java.nio.file.Path path = Paths.get(DESTINATION_PATH);
+        // delete raw data
         try {
-            deleteFileOrFolder(path);
+            deleteFileOrFolder(Paths.get(DESTINATION_PATH));
         } catch (IOException e) {
-            LOG.warn("delete file error!");
+            LOG.warn("Error while deleting data.");
             e.printStackTrace();
         }
     }
 
     /**
-     * parseMessageFiles is used to parse all message files under message directory.
+     * Parses all message files under message directory.
+     * @param path location of messages
      */
     private void parseMessageFiles(String path) {
-        // store in conversation table
         File directory = new File(path);
         File[] messageFiles = directory.listFiles();
         if (messageFiles != null) {
             for (File file : messageFiles) {
-                // find a conversation ID
                 Conversation conversation = new Conversation();
                 conversation.setResult(result);
 
                 // parse each message file
-                parseOneMessageFile(file, conversation);
+                parseOneConversationFile(file, conversation);
 
             }
         }
     }
 
     /**
-     * parseOneMessageFile is used to parse a single message html file.
+     * Parses a single conversation html file. Dependent on the concrete Facebook format.
      *
      * @param file         file to parse
      * @param conversation which conversation the message belongs to
      */
-    private void parseOneMessageFile(File file, Conversation conversation) {
-        if (file != null && Files.getFileExtension(file.getName()).equals(HTML)) {
+    private void parseOneConversationFile(File file, Conversation conversation) {
+        if (file != null && Files.getFileExtension(file.getName()).equals("html")) {
             // parse html file
             Document doc;
             try {
@@ -100,76 +98,60 @@ public class Parser {
                 return;
             }
 
-            // get the main conversation part
-            Elements conv = doc.body().select("div.thread");
-            Elements currentLevelTags = conv.first().children();
-            // message class stored to db
-            Message thisMessage = new Message();
-            // elements
-            String sender; // message sender
-            Date sentTime; // message sent time
-            String content; // message content
-            String participants; // message participants
-            // get participants
-            String[] strs = conv.first().ownText().split(":");
-            participants = strs[1].trim();
+            Elements conversationElement = doc.body().select("div.thread");
+            Elements currentLevelTags = conversationElement.first().children();
+
+            String participants = conversationElement.first().ownText().split(":")[1].trim();
             conversation.setParticipants(participants);
-            if (participants != null && participants.length() != 0) {
-                conversation = conversationDAO.persistNewConversation(conversation);
-            } else {
+
+            if (participants.length() <= 0) {
                 return;
             }
+            conversation = conversationDAO.persistNewConversation(conversation);
 
             int count = 0; // count the number of valid tags
 
-            // find all participants
-            Set<String> par = new HashSet<>();
+            Message currentMessage = new Message();
             for (Element e : currentLevelTags) {
                 if (e.hasClass("message")) {
                     // new message record
-                    thisMessage = new Message();
+                    currentMessage = new Message();
                     // get info from this message_header
                     Element messageHeader = e.select("div.message_header").first();
-                    // get sender
-                    sender = messageHeader.select("span.user").first().text();
+
+                    String sender = messageHeader.select("span.user").first().text();
                     // get message sent time
                     String originalTime = messageHeader.select("span.meta").first().text();
                     String convertedTime = getConvertedTime(originalTime);
-                    sentTime = Date.valueOf(convertedTime);
-                    //Timestamp.valueOf(convertedTime);
-                    // update participants
-                    par.add(sender);
+                    Date sentTime = Date.valueOf(convertedTime);
 
-                    thisMessage.setMessageSender(sender);
-                    thisMessage.setStartingTime(sentTime);
-                    thisMessage.setConversation(conversation);
-//                    thisMessage.getConversation().getMessages().add(thisMessage);
+                    currentMessage.setMessageSender(sender);
+                    currentMessage.setStartingTime(sentTime);
+                    currentMessage.setConversation(conversation);
+
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
                     // get message content
                     if (e.hasText()) {
-                        content = e.text();
-                        thisMessage.setMessageContent(content);
-                        // change state
+                        currentMessage.setMessageContent(e.text());
+
                         count = 0;
-                        // store this message
+
+                        // Skip messages of they fall outside the requested time frame
                         Date startDate = request.getRequestedDataStartDate();
                         Date endDate = request.getRequestedDataEndDate();
-                        if (startDate != null && thisMessage.getStartingTime().compareTo(startDate) < 0) {
-//                            System.out.println("Less than start date: " + thisMessage.getStartingTime().toString());
+                        if (startDate != null && currentMessage.getStartingTime().compareTo(startDate) < 0) {
                             continue;
                         }
-                        if (endDate != null && thisMessage.getStartingTime().compareTo(endDate) > 0) {
-//                            System.out.println("More than end date: " + thisMessage.getStartingTime().toString());
+                        if (endDate != null && currentMessage.getStartingTime().compareTo(endDate) > 0) {
                             continue;
                         }
                         try {
-                            conversation.getMessages().add(thisMessage);
-                            thisMessage = messageDAO.persistNewMessage(thisMessage);
-//                            thisMessage.getConversation().getMessages().add(thisMessage);
+                            conversation.getMessages().add(currentMessage);
+                            currentMessage = messageDAO.persistNewMessage(currentMessage);
                         } catch (Exception ee) {
-                            LOG.warn("Error long text: " + thisMessage.getMessageContent());
+                            LOG.warn("Error long text: " + currentMessage.getMessageContent());
                             ee.printStackTrace();
                         }
                     } else if (count == 1) {
@@ -184,15 +166,16 @@ public class Parser {
                     }
                 }
             }
-            // update participants information
+
             conversation = conversationDAO.persistNewConversation(conversation);
-//            conversation.getResult().getConversations().add(conversation);
             result.getConversations().add(conversation);
+        } else {
+            LOG.warn(String.format("Parsing failed: File %s is no HTML file.", file != null ? file.getName() : "null"));
         }
     }
 
     /**
-     * unzip is used to unzip a zip file.
+     * Unzips a zip file. Sets the topDirectory variable.
      *
      * @param in zip file input stream
      * @throws IOException io exception
@@ -201,10 +184,14 @@ public class Parser {
         boolean isTopLevel = true;
         File destDir = new File(DESTINATION_PATH);
         if (!destDir.exists()) {
-            destDir.mkdir();
+            if (!destDir.mkdir()) {
+                throw new IOException("Could not create directory " + destDir.getName());
+            }
         }
+
         ZipInputStream zipIn = new ZipInputStream(in);
         ZipEntry entry = zipIn.getNextEntry();
+
         // iterates over entries in the zip file
         while (entry != null) {
             String filePath = DESTINATION_PATH + File.separator + entry.getName();
@@ -218,7 +205,9 @@ public class Parser {
                     isTopLevel = false;
                 }
                 File dir = new File(filePath);
-                dir.mkdir();
+                if (!dir.mkdir()) {
+                    throw new IOException("Could not create directory " + dir.getName());
+                }
             }
             zipIn.closeEntry();
             entry = zipIn.getNextEntry();
@@ -227,7 +216,7 @@ public class Parser {
     }
 
     /**
-     * extractFile is used to unzip a single file.
+     * Unzips a single file.
      *
      * @param zipIn    input stream of zip file
      * @param filePath path of file needed to be unzipped
@@ -253,12 +242,8 @@ public class Parser {
     private String getConvertedTime(String originalTime) {
         // original time: Monday, 21 December 2015 at 16:37 EST
         // converted to time like: 1985-04-12T23:20:50.52
-        String[] weekDay = originalTime.split(",");
-        String[] timeElements = weekDay[1].trim().split(" ");
-//        String convertedTime = timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0] +
-//                " " + timeElements[4] + ":00";
-        String convertedTime = timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0];
-        return convertedTime;
+        String[] timeElements = originalTime.split(",")[1].trim().split(" ");
+        return timeElements[2] + "-" + getMonth(timeElements[1]) + "-" + timeElements[0];
     }
 
     /**
@@ -299,7 +284,7 @@ public class Parser {
     }
 
     /**
-     * deleteFileOrFolder is used to delte a file or an empty folder.
+     * Deletes a file or an empty folder.
      *
      * @param path file path
      * @throws IOException io exception
@@ -319,7 +304,7 @@ public class Parser {
             }
 
             private FileVisitResult handleException(final IOException e) {
-                e.printStackTrace(); // replace with more robust error handling
+                e.printStackTrace();
                 return FileVisitResult.TERMINATE;
             }
 

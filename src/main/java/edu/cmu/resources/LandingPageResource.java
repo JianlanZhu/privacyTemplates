@@ -26,13 +26,16 @@ public class LandingPageResource {
         this.requestDAO = requestDAO;
     }
 
+    /**
+     * @param user automatically determined through a cookie.
+     * @return a view showing all requests that have been issued by the requesting user.
+     */
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
     @Path("leoHome")
     public View leoHome(@Auth User user){
         List<Request> requests = requestDAO.findAllForUser(user);
-        //List<Request> requests = user.getRequests().stream().filter(request -> request.getCreatedBy().getUserID() == user.getUserID()).collect(Collectors.toList());
         List<Request> rejectedRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.REJECTED.name())).collect(Collectors.toList());
         List<Request> answeredRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.ANSWERED.name())).collect(Collectors.toList());
         List<Request> pendingRequests = requests.stream().filter(r -> r.getStatus().equals(RequestState.PENDING.name())).collect(Collectors.toList());

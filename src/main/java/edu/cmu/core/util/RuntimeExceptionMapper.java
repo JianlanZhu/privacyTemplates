@@ -10,10 +10,13 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.net.URI;
 
+/**
+ * Maps exceptions to appropriate web responses.
+ */
 @Provider
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(RuntimeExceptionMapper.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RuntimeExceptionMapper.class);
 
     @Override
     public Response toResponse(RuntimeException exception) {

@@ -61,8 +61,7 @@ public class RequestResource {
         checkInputValidity(parsedInput);
 
         Request request = setupRequest(user, parsedInput);
-        request = requestDAO.persistNewRequest(request);
-        //return request;
+        requestDAO.persistNewRequest(request);
     }
 
     private Request setupRequest(User user, GenerateRequestInput parsedInput) {
@@ -97,6 +96,13 @@ public class RequestResource {
         return request;
     }
 
+    /**
+     * Endpoint for updating the status of a request.
+     *
+     * @param user
+     * @param id        request id.
+     * @param newStatus
+     */
     @PUT
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @UnitOfWork
@@ -108,6 +114,13 @@ public class RequestResource {
         request.setStatus(newStatus);
     }
 
+    /**
+     * Checks whether request exists and whether user is authorized to retrieve it.
+     *
+     * @param user
+     * @param id   request id.
+     * @return requested requested if existent and allowed, otherwise throws NotFoundException.
+     */
     private Request getRequestOrThrowNotFound(User user, int id) {
         Optional<Request> requestOptional = requestDAO.findById(id);
         // return 404 in case request exists but user is not authorized to see it in order to prevent inference about existence of requests
@@ -117,6 +130,9 @@ public class RequestResource {
         return requestOptional.get();
     }
 
+    /**
+     * Endpoint for retrieving the form to generate a request.
+     */
     @GET
     @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/requestForm")
@@ -146,20 +162,26 @@ public class RequestResource {
         return new RequestDetailsView(conversations, id);
     }
 
+    /**
+     * Endpoint for retrieving details about a conversation within request.
+     * @param user
+     * @param requestId
+     * @param conversationId
+     * @param senderName only messages sent by senderName will be retrieved.
+     * @return
+     */
     @GET
     @UnitOfWork
+    @RolesAllowed("LAW_ENFORCEMENT_OFFICER")
     @Path("/{requestId}/conversations/{conversationId}")
     public View getConversation(@Auth User user,
                                 @PathParam("requestId") int requestId,
                                 @PathParam("conversationId") int conversationId,
                                 @QueryParam("senderName") String senderName
     ) {
-        Optional<Request> requestOptional = requestDAO.findById(requestId).filter(r -> r.getCreatedBy().equals(user));
-        if (!requestOptional.isPresent()) {
-            throw new NotFoundException();
-        }
+        Request request = getRequestOrThrowNotFound(user, requestId);
 
-        Optional<Conversation> conversationOptional = requestOptional.get().getResult().getConversations().stream().filter(c -> c.getConversationID() == conversationId).findFirst();
+        Optional<Conversation> conversationOptional = request.getResult().getConversations().stream().filter(c -> c.getConversationID() == conversationId).findFirst();
 
         List<Message> messagesToDisplay = conversationOptional.map(Conversation::getMessages).orElse(new ArrayList<>());
 
@@ -180,7 +202,7 @@ public class RequestResource {
     }
 
     /**
-     * Responsible for backend mediation. Should check fo data formats etc.. NOT for business logic!
+     * Responsible for backend mediation. Checks for format and logical requirements.
      *
      * @param input the incoming request.
      * @return true if data format is valid, false otherwise.
