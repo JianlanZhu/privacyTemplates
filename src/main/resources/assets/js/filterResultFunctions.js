@@ -25,21 +25,15 @@ function changeHeight() {
 function validFilters(id) {
     // alert("beginning of function" + id);
     //get all the values in these fields
-    var fromName = document.getElementById("sender");
+    var fromName = document.getElementById("participant");
     var sender = fromName.value;
-    var toName = document.getElementById("receiver");
-    var receiver = toName.value;
-    var date = document.getElementById("date");
-    var day = date.value;
-    var keyword = document.getElementById("keyword");
-    var key = keyword.value;
     //if all the fields are empty, return a warning
     if (sender.length == 0 && receiver.length == 0 && day.length == 0 && key.length == 0) {
         alert("Enter at least one filter!");
         return false;
     }
     // console.log(id);
-    window.location.href = "/request/" + id + "?sender=" + sender;
+    window.location.href = "/request/" + id + "?participant=" + sender;
 
 
     //else check the validity of each field

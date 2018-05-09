@@ -41,9 +41,9 @@ The relevant code is now on the master branch.
 	- Description: This folder contains the external styling files shared by the moustache files
 	
 ## Suggested flow for testing project
-1. Log in as a LEO with the credentials SaSm / SS. Generate a request by setting at least the case id, the username, and start/end dates. Go back to the Home site.
+1. Log in as a LEO with the credentials SamSmalltown / SS. Generate a request by setting at least the case id, the username, and start/end dates. Go back to the Home site.
 1. Click on the request the now appears in the list to verify that there is no information yet.
-1. Log out and back in as SME with credentials HaHa / HH. 
+1. Log out and back in as SME with credentials HaylieHipster / HH. 
 1. Click on the newly generated request.
 1. Upload the sample data (located in src/test/resources/SomeonesData.zip)
 1. Go back to Home and see that the request state has changed from PENDING to ANSWERED.
