@@ -73,7 +73,6 @@ public class Parser {
             for (File file : messageFiles) {
                 Conversation conversation = new Conversation();
                 conversation.setResult(result);
-
                 // parse each message file
                 parseOneConversationFile(file, conversation);
 
@@ -118,7 +117,6 @@ public class Parser {
                     currentMessage = new Message();
                     // get info from this message_header
                     Element messageHeader = e.select("div.message_header").first();
-
                     String sender = messageHeader.select("span.user").first().text();
                     // get message sent time
                     String originalTime = messageHeader.select("span.meta").first().text();
@@ -128,16 +126,13 @@ public class Parser {
                     currentMessage.setMessageSender(sender);
                     currentMessage.setStartingTime(sentTime);
                     currentMessage.setConversation(conversation);
-
                     //change states
                     count = 1;
                 } else if (e.tag().getName().equals("p")) {
                     // get message content
                     if (e.hasText()) {
                         currentMessage.setMessageContent(e.text());
-
                         count = 0;
-
                         // Skip messages of they fall outside the requested time frame
                         Date startDate = request.getRequestedDataStartDate();
                         Date endDate = request.getRequestedDataEndDate();
@@ -159,7 +154,7 @@ public class Parser {
                     } else if (count == 2) {
                         // contain pictures
                         count++;
-                        // TODO: store pictures, for right now just ignore it
+                        // store pictures, for right now just ignore it
                         continue;
                     } else {
                         count = 0;
@@ -188,10 +183,8 @@ public class Parser {
                 throw new IOException("Could not create directory " + destDir.getName());
             }
         }
-
         ZipInputStream zipIn = new ZipInputStream(in);
         ZipEntry entry = zipIn.getNextEntry();
-
         // iterates over entries in the zip file
         while (entry != null) {
             String filePath = DESTINATION_PATH + File.separator + entry.getName();
